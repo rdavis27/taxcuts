@@ -1,0 +1,25 @@
+Name,         Filing,  Prop, Nspan, Span1, Span2,   Span3,   Span4,   Span5,    Span6,    Span7
+Current 2017, Single,  Start,    7,     0,  9325,   37950,   91900,  191650,   416700,   418400
+Current 2017, Single,  Rate,     7,    10,    15,      25,      28,      33,       35,     39.6
+Current 2017, Single,  Add,      7,     0,932.50, 5226.25,18713.75,46643.75,120910.25,121505.25
+Current 2017, Married, Start,    7,     0, 18650,   75900,  153100,  233350,   416700,   470700
+Current 2017, Married, Rate,     7,    10,    15,      25,      28,      33,       35,     39.6
+Current 2017, Married, Add,      7,     0,  1865,10452.50,29752.50,52222.50,   112728,   131628
+Current 2018, Single,  Start,    7,     0,  9525,   38700,   93700,  195450,   424950,   426700
+Current 2018, Single,  Rate,     7,    10,    15,      25,      28,      33,       35,     39.6
+Current 2018, Single,  Add,      7,     0,952.50, 5328.75,19078.75,47568.75,123303.75,123916.25
+Current 2018, Married, Start,    7,     0, 19050,   77400,  156150,  237950,   424950,   480050
+Current 2018, Married, Rate,     7,    10,    15,      25,      28,      33,       35,     39.6
+Current 2018, Married, Add,      7,     0,  1905,10657.50,   30345,   53249,   114959,   134244
+House Cuts,   Single,  Start,    4,     0, 45000,  200000,  500000
+House Cuts,   Single,  Rate,     4,    12,    25,      35,    39.6
+House Cuts,   Single,  Add,      4,     0,  5400,   44150,  149150
+House Cuts,   Married, Start,    4,     0, 90000,  260000, 1000000
+House Cuts,   Married, Rate,     4,    12,    25,      35,    39.6
+House Cuts,   Married, Add,      4,     0, 10800,   53300,  312300
+House Cuts2,  Single,  Start,    4,     0, 45000,  200000,  500000
+House Cuts2,  Single,  Rate,     4,    12,    25,      35,    39.6
+House Cuts2,  Single,  Add,      4,     0,  5400,   44150,  149150
+House Cuts2,  Married, Start,    4,     0, 90000,  260000, 1000000
+House Cuts2,  Married, Rate,     4,    12,    25,      35,    39.6
+House Cuts2,  Married, Add,      4,     0, 10800,   53300,  312300
