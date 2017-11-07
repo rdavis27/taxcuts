@@ -100,7 +100,7 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "children", value = 0)
       updateNumericInput(session, "otherdep", value = 1)
       updateNumericInput(session, "filing", value = "Single")
-      Released <<- c("5173","3872","1301","")
+      Released <<- c("5173","3872","-1301","")
       Title <<- "Example 3 - Firefighter Making $48,000 Per Year"
     }
     else if (example == "Example 4"){
@@ -111,7 +111,7 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "stateloc", value = 7.64347)
       updateNumericInput(session, "property", value = 6900)
       updateNumericInput(session, "mortgage", value = 8400)
-      Released <<- c("12180","11050","1130","")
+      Released <<- c("12180","11050","-1130","")
       Title <<- "Example 4 - New Homeowners Making $115,000 Per Year in a High Tax State"
     }
   })
