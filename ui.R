@@ -17,7 +17,7 @@ shinyUI(fluidPage(
                     choices = c("Current 2017", "Current 2018", "House Cuts", "House Cuts w/o Family Credits"),
                     selected = "House Cuts"),
         selectInput("examples", "Tax Examples",
-                    choices = c("Example 1", "Example 2", "Example 3", "Example 4"),
+                    choices = c("Example 1", "Example 2", "Example 3", "Example 4", "Example A", "Example B"),
                     selected = "Example 1")
       ),
       wellPanel(
