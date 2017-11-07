@@ -134,7 +134,7 @@ shinyServer(function(input, output, session) {
        updateNumericInput(session, "mortgage", value = 8000)
        updateNumericInput(session, "charity",  value = 8000)
        Released <<- c("","","","")
-       Title <<- "Example A - Single Person Making $25,000 Per Year with $12,000 in Deductions"
+       Title <<- "Example B - Married Couple Making $50,000 Per Year with $24,000 in Deductions"
     }
   })
   output$taxPrint <- renderPrint({
