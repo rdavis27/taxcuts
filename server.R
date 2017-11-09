@@ -297,7 +297,7 @@ shinyServer(function(input, output, session) {
     Rule2 <- c(td2$Exempt, td2$StdDeduct, td2$ChildCredit, td2$DepCredit)
     RDiff <- Rule2 - Rule1
     rdf <- data.frame("Tax_Rule"=Rules, "Plan_1"=Rule1, "Plan_2"=Rule2, "Change"=RDiff)
-    cat("<h4>Comparison of Deductions (0=not deductible, 1=deductible)</hr>")
+    cat("<h4>Comparison of Tax Rules</hr>")
     cat("<pre>")
     print(rdf)
     cat("</pre>")
@@ -309,7 +309,7 @@ shinyServer(function(input, output, session) {
     Deduct1 <- c(td1$Medical, td1$StateLoc, td1$Property, td1$Mortgage, td1$Charity)
     Deduct2 <- c(td2$Medical, td2$StateLoc, td2$Property, td2$Mortgage, td2$Charity)
     ddf <- data.frame("Deduction"=Deducts, "Plan_1"=Deduct1, "Plan_2"=Deduct2)
-    cat("<h4>Comparison of Tax Rules</hr>")
+    cat("<h4>Comparison of Deductions (0=not deductible, 1=deductible)</hr>")
     cat("<pre>")
     print(ddf)
     cat("</pre>")
