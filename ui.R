@@ -48,8 +48,12 @@ shinyUI(fluidPage(
 
     # Show a plot of the generated distribution
     mainPanel(
-      verbatimTextOutput("taxPrint"),
-      plotOutput("taxPlot")
+      htmlOutput("taxPrint"),
+      HTML("<h4><b>Taxcut (percent)</b></h4>"),
+      plotOutput("taxPlot"),
+      HTML("<h4><b>Change in After-Tax Income (percent)</b></h4>"),
+      plotOutput("incomePlot"),
+      htmlOutput("rulePrint")
     )
   )
 ))

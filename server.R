@@ -187,15 +187,18 @@ shinyServer(function(input, output, session) {
     grid(col = "lightgray")
     abline(v = input$wages, col = "red")
   })
-  # output$distPlot <- renderPlot({
-  # 
-  #   # generate bins based on input$bins from ui.R
-  #   x    <- faithful[, 2]
-  #   bins <- seq(min(x), max(x), length.out = input$bins + 1)
-  # 
-  #   # draw the histogram with the specified number of bins
-  #   hist(x, breaks = bins, col = 'darkgray', border = 'white')
-  # 
-  # })
-
+  output$taxPrint <- renderPrint({
+     filing <- input$filing
+     if (filing == "Married filing jointly") filing = "Married"
+     taxname1 <- input$taxname1
+     if (taxname1 == "House Cuts w/o Family Credits") taxname1 = "House Cuts2"
+     taxname2 <- input$taxname2
+     if (taxname2 == "House Cuts w/o Family Credits") taxname2 = "House Cuts2"
+     taxes1 <- calcTax(getTaxdef(taxname1, filing), getIncdef(), -1)
+     taxes2 <- calcTax(getTaxdef(taxname2, filing), getIncdef(), -1)
+     Names <- c(input$taxname1, input$taxname2, "Change", "% Change")
+     Taxes <- c(taxes1, taxes2, taxes2-taxes1, 100*(taxes2-taxes1)/taxes1)
+     df <- data.frame(Names, Taxes, Released)
+     print(df)
+  })
 })
