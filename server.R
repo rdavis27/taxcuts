@@ -149,7 +149,10 @@ shinyServer(function(input, output, session) {
     Names <- c(input$taxname1, input$taxname2, "Change", "% Change")
     Taxes <- c(taxes1, taxes2, taxes2-taxes1, 100*(taxes2-taxes1)/taxes1)
     df <- data.frame(Names, Taxes, Released)
+    cat("<h4>Comparison of Taxes</hr>")
+    cat("<pre>")
     print(df)
+    cat("</pre>")
   })
   output$taxPlot <- renderPlot({
     filing <- input$filing
@@ -187,18 +190,128 @@ shinyServer(function(input, output, session) {
     grid(col = "lightgray")
     abline(v = input$wages, col = "red")
   })
-  output$taxPrint <- renderPrint({
-     filing <- input$filing
-     if (filing == "Married filing jointly") filing = "Married"
-     taxname1 <- input$taxname1
-     if (taxname1 == "House Cuts w/o Family Credits") taxname1 = "House Cuts2"
-     taxname2 <- input$taxname2
-     if (taxname2 == "House Cuts w/o Family Credits") taxname2 = "House Cuts2"
-     taxes1 <- calcTax(getTaxdef(taxname1, filing), getIncdef(), -1)
-     taxes2 <- calcTax(getTaxdef(taxname2, filing), getIncdef(), -1)
-     Names <- c(input$taxname1, input$taxname2, "Change", "% Change")
-     Taxes <- c(taxes1, taxes2, taxes2-taxes1, 100*(taxes2-taxes1)/taxes1)
-     df <- data.frame(Names, Taxes, Released)
-     print(df)
+  output$incomePlot <- renderPlot({
+    filing <- input$filing
+    if (filing == "Married filing jointly") filing = "Married"
+    taxname1 <- input$taxname1
+    if (taxname1 == "House Cuts w/o Family Credits") taxname1 = "House Cuts2"
+    taxname2 <- input$taxname2
+    if (taxname2 == "House Cuts w/o Family Credits") taxname2 = "House Cuts2"
+    wages <- seq(input$wagemin, input$wagemax, input$wagestep)
+    df <- data.frame(wages)
+    df$taxes1 <- 0
+    df$taxes2 <- 0
+    df$taxcut <- 0
+    taxdef1 <- getTaxdef(taxname1, filing)
+    taxdef2 <- getTaxdef(taxname2, filing)
+    incdef  <- getIncdef()
+    for (i in 1:length(df$wages)){
+      df$taxes1[i] <- calcTax(taxdef1, incdef, wages[i])
+      df$taxes2[i] <- calcTax(taxdef2, incdef, wages[i])
+      df$taxcut[i] <- 100 * (df$taxes1[i] - df$taxes2[i]) / df$taxes1[i]
+      df$aftertax[i] <- 100 * ((wages[i]-df$taxes2[i]) - (wages[i]-df$taxes1[i])) / (wages[i]-df$taxes1[i])
+      if (
+        df$taxes1[i] <= 0 |
+        df$taxes2[i] <= 0 |
+        df$taxcut[i] < input$taxcutmin |
+        df$taxcut[i] > input$taxcutmax
+      ){
+        df$taxcut[i] <- NA
+        df$aftertax[i] <- NA
+      }
+    }
+    #par(mfrow=c(3,1))
+    plot(df$wages, df$aftertax, xlab = "Wages", ylab = "Change in after-tax income (percent)")
+    title(main = Title)
+    #plot(df$wages, 100*df$taxes1/df$wages)
+    #plot(df$wages, 100*df$taxes2/df$wages)
+    grid(col = "lightgray")
+    abline(v = input$wages, col = "red")
+  })
+  output$rulePrint <- renderPrint({
+    filing <- input$filing
+    if (filing == "Married filing jointly") filing = "Married"
+    taxname1 <- input$taxname1
+    if (taxname1 == "House Cuts w/o Family Credits") taxname1 = "House Cuts2"
+    taxname2 <- input$taxname2
+    if (taxname2 == "House Cuts w/o Family Credits") taxname2 = "House Cuts2"
+    td1 <- getTaxdef(taxname1, filing)
+    td2 <- getTaxdef(taxname2, filing)
+    id  <- getIncdef()
+    Start1 <- td1$Start
+    Rate1  <- td1$Rate
+    Start2 <- td2$Start
+    Rate2  <- td2$Rate
+    n1 <- length(Start1)
+    n2 <- length(Start2)
+    ir1 <- ir2 <- 0
+    is1 <- is2 <- 1
+    s1 <- Start1[is1]
+    s2 <- Start2[is2]
+    ss <- rr1 <- rr2 <- NULL
+    while (is1 <= n1 | is2 <= n2){
+      if (s1 == s2){
+        ir1 <- ir1+1
+        ir2 <- ir2+1
+        r1 <- Rate1[ir1]
+        r2 <- Rate2[ir2]
+        ss  <- c(ss,  s1)
+        rr1 <- c(rr1, r1)
+        rr2 <- c(rr2, r2)
+        is1 <- is1+1
+        is2 <- is2+1
+        s1 <- s2 <- 999999999
+        if (is1 <= n1) s1 <- Start1[is1]
+        if (is2 <= n2) s2 <- Start2[is2]
+      } else if (s1 < s2){
+        ir1 <- ir1+1
+        r1 <- Rate1[ir1]
+        ss  <- c(ss,  s1)
+        rr1 <- c(rr1, r1)
+        rr2 <- c(rr2, r2)
+        is1 <- is1+1
+        s1 <- 999999999
+        if (is1 <= n1) s1 <- Start1[is1]
+      } else {
+        ir2 <- ir2+1
+        r2 <- Rate2[ir2]
+        ss  <- c(ss,  s2)
+        rr1 <- c(rr1, r1)
+        rr2 <- c(rr2, r2)
+        is2 <- is2+1
+        s2 <- 999999999
+        if (is2 <= n2) s2 <- Start2[is2]
+      }
+    }
+    Diff <- rr2 - rr1
+    df <- data.frame("Start"=ss, "Rate_1"=rr1, "Rate_2"=rr2, "Change"=Diff)
+    cat("<h4>Comparison of Brackets</hr>")
+    cat("<pre>")
+    print(df)
+    cat("</pre>")
+    Rules  <- c("Exemption Amount",
+                "Standard Deduction",
+                "Child Credit",
+                "Family Credit")
+    Rule1 <- c(td1$Exempt, td1$StdDeduct, td1$ChildCredit, td1$DepCredit)
+    Rule2 <- c(td2$Exempt, td2$StdDeduct, td2$ChildCredit, td2$DepCredit)
+    RDiff <- Rule2 - Rule1
+    rdf <- data.frame("Tax_Rule"=Rules, "Plan_1"=Rule1, "Plan_2"=Rule2, "Change"=RDiff)
+    cat("<h4>Comparison of Deductions (0=not deductible, 1=deductible)</hr>")
+    cat("<pre>")
+    print(rdf)
+    cat("</pre>")
+    Deducts <- c("Medical & Dental (% over 10% of income)",
+                 "State & Local income/sales tax (% of income)",
+                 "Real estate property taxes",
+                 "Mortgage interest",
+                 "Charitable contributions")
+    Deduct1 <- c(td1$Medical, td1$StateLoc, td1$Property, td1$Mortgage, td1$Charity)
+    Deduct2 <- c(td2$Medical, td2$StateLoc, td2$Property, td2$Mortgage, td2$Charity)
+    ddf <- data.frame("Deduction"=Deducts, "Plan_1"=Deduct1, "Plan_2"=Deduct2)
+    cat("<h4>Comparison of Tax Rules</hr>")
+    cat("<pre>")
+    print(ddf)
+    cat("</pre>")
   })
 })
