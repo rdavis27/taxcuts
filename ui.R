@@ -11,10 +11,10 @@ shinyUI(fluidPage(
       wellPanel(
         h4("Tax Plans to Compare"),
         selectInput("taxname1", "Tax Plan 1",
-                    choices = c("Current 2017", "Current 2018", "House Cuts", "House Cuts w/o Family Credits", "Senate 2018"),
+                    choices = c("Current 2017", "Current 2018", "House Cuts", "House Cuts w/o Family Credits", "Senate 2017"),
                     selected = "Current 2017"),
         selectInput("taxname2", "Tax Plan 2",
-                    choices = c("Current 2017", "Current 2018", "House Cuts", "House Cuts w/o Family Credits", "Senate 2018"),
+                    choices = c("Current 2017", "Current 2018", "House Cuts", "House Cuts w/o Family Credits", "Senate 2017"),
                     selected = "House Cuts"),
         selectInput("examples", "Tax Examples",
                     choices = c("Example 1", "Example 2", "Example 3", "Example 4",

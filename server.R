@@ -179,10 +179,10 @@ shinyServer(function(input, output, session) {
     Names <- c(input$taxname1, input$taxname2, "Change", "% Change")
     Taxes <- c(taxes1, taxes2, taxes2-taxes1, 100*(taxes2-taxes1)/taxes1)
     df <- data.frame(Names, Taxes, Released)
-    if (taxname1 == "Senate 2018" | taxname2 == "Senate 2018"){
-      cat("<font color=\"red\">WARNING: Using Current 2018 income brackets as Senate 2018 income brackets have not yet been released</font>")
-    }
-    cat("<h4>Comparison of Taxes</hr>")
+    #if (taxname1 == "Senate 2018" | taxname2 == "Senate 2018"){
+    #  cat("<font color=\"red\">WARNING: Using Current 2018 income brackets as Senate 2018 income brackets have not yet been released</font>")
+    #}
+    cat("<h4>Comparison of Taxes</h4>")
     cat("<pre>")
     print(df)
     cat("</pre>")
@@ -318,7 +318,7 @@ shinyServer(function(input, output, session) {
     }
     Diff <- rr2 - rr1
     df <- data.frame("Start"=ss, "Rate_1"=rr1, "Rate_2"=rr2, "Change"=Diff)
-    cat("<h4>Comparison of Brackets</hr>")
+    cat("<h4>Comparison of Brackets</h4>")
     cat("<pre>")
     print(df)
     cat("</pre>")
@@ -330,7 +330,7 @@ shinyServer(function(input, output, session) {
     Rule2 <- c(td2$Exempt, td2$StdDeduct, td2$ChildCredit, td2$DepCredit)
     RDiff <- Rule2 - Rule1
     rdf <- data.frame("Tax_Rule"=Rules, "Plan_1"=Rule1, "Plan_2"=Rule2, "Change"=RDiff)
-    cat("<h4>Comparison of Tax Rules</hr>")
+    cat("<h4>Comparison of Tax Rules</h4>")
     cat("<pre>")
     print(rdf)
     cat("</pre>")
@@ -342,9 +342,12 @@ shinyServer(function(input, output, session) {
     Deduct1 <- c(td1$Medical, td1$StateLoc, td1$Property, td1$Mortgage, td1$Charity)
     Deduct2 <- c(td2$Medical, td2$StateLoc, td2$Property, td2$Mortgage, td2$Charity)
     ddf <- data.frame("Deduction"=Deducts, "Plan_1"=Deduct1, "Plan_2"=Deduct2)
-    cat("<h4>Comparison of Deductions (0=not deductible, 1=deductible)</hr>")
+    cat("<h4>Comparison of Deductions (0=not deductible, 1=deductible)</h4>")
     cat("<pre>")
     print(ddf)
     cat("</pre>")
+    cat("Source: <A HREF=\"https://www.finance.senate.gov/imo/media/doc/11.9.17%20Chairman's%20Mark.pdf\">Description of the Chairman's Mark of the \"Tax Cuts and Jobs Act\"</A> (Senate).")
+    cat("<br><br>")
+    cat("NOTE: Blog post on this application can be found at <A HREF=\"http://usbudget.blogspot.com/2017/11/the-problems-with-taxpayer-examples.html\">this link</A>.")
   })
 })

@@ -23,9 +23,9 @@ House Cuts2,  Single,  Add,      4,     0,  5400,   44150,  149150
 House Cuts2,  Married, Start,    4,     0, 90000,  260000, 1000000
 House Cuts2,  Married, Rate,     4,    12,    25,      35,    39.6
 House Cuts2,  Married, Add,      4,     0, 10800,   53300,  312300
-Senate 2018,  Single,  Start,    7,     0,  9525,   38700,   93700,  195450,   424950,   500000
-Senate 2018,  Single,  Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
-Senate 2018,  Single,  Add,      0
-Senate 2018,  Married, Start,    7,     0, 19050,   77400,  156150,  237950,   424950,  1000000
-Senate 2018,  Married, Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
-Senate 2018,  Married, Add,      0
+Senate 2017,  Single,  Start,    7,     0,  9525,   38700,   60000,  170000,   200000,   500000
+Senate 2017,  Single,  Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
+Senate 2017,  Single,  Add,      7,     0,952.50, 4453.50,    9246,   36746,    46496,   151496
+Senate 2017,  Married, Start,    7,     0, 19050,   77400,  120000,  290000,   390000,  1000000
+Senate 2017,  Married, Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
+Senate 2017,  Married, Add,      7,     0,  1905,    8907,   18492,   60992,    93492,   306992
