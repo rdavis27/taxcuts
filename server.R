@@ -11,11 +11,25 @@ shinyServer(function(input, output, session) {
     rowRate  <- brackets[brackets$Name == taxname & brackets$Filing == filing & brackets$Prop == "Rate",]
     rowAdd   <- brackets[brackets$Name == taxname & brackets$Filing == filing & brackets$Prop == "Add",]
     rowDef   <- taxdefs[ taxdefs$Name == taxname  & taxdefs$Filing  == filing,]
+    lenStart <- as.numeric(rowStart[4])
+    lenRate  <- as.numeric(rowRate[4])
+    lenAdd   <- as.numeric(rowAdd[4])
+    Start    <- as.numeric(rowStart[5:(4+lenStart)])
+    Rate     <- as.numeric(rowRate[5:(4+lenRate)])
+    if (lenAdd > 0){
+      Add   <- as.numeric(rowAdd[5:(4+lenAdd)])
+    } else {
+      Add <- 0
+      for (i in 2:lenStart){
+        Add <- c(Add, ((Start[i]-Start[i-1]) * Rate[i-1] / 100.0) + Add[i-1])
+      }
+      #print(paste0("Add=",Add)) #DEBUG
+    }
     
     return(list(
-      Start = as.numeric(rowStart[5:(4+as.numeric(rowStart[4]))]),
-      Rate  = as.numeric(rowRate[5:(4+as.numeric(rowRate[4]))]),
-      Add   = as.numeric(rowAdd[5:(4+as.numeric(rowAdd[4]))]),
+      Start       = Start,
+      Rate        = Rate,
+      Add         = Add,
       Exempt      = rowDef$Exempt,
       StdDeduct   = rowDef$StdDeduct,
       ChildCredit = rowDef$ChildCredit,
@@ -149,6 +163,9 @@ shinyServer(function(input, output, session) {
     Names <- c(input$taxname1, input$taxname2, "Change", "% Change")
     Taxes <- c(taxes1, taxes2, taxes2-taxes1, 100*(taxes2-taxes1)/taxes1)
     df <- data.frame(Names, Taxes, Released)
+    if (taxname1 == "Senate 2018" | taxname2 == "Senate 2018"){
+      cat("<font color=\"red\">WARNING: Using Current 2018 income brackets as Senate 2018 income brackets have not yet been released</font>")
+    }
     cat("<h4>Comparison of Taxes</hr>")
     cat("<pre>")
     print(df)
