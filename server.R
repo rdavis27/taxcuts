@@ -166,7 +166,7 @@ shinyServer(function(input, output, session) {
       Released <<- c("","","","")
       Title <<- "Example D - Married Couple Making $50,000 Per Year with 2 Non-Child Dependents"
     }
-    cat(file=stderr(), paste0(example,": ",session$clientData$url_hostname),"\n")
+    cat(file=stderr(), paste0(example,"|",input$taxname1,"|",input$taxname2,"\n"))
   })
   output$taxPrint <- renderPrint({
     filing <- input$filing
