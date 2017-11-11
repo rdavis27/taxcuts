@@ -263,9 +263,7 @@ shinyServer(function(input, output, session) {
       }
     }
     #par(mfrow=c(3,1))
-    #plot(df$wages, df$aftertax, xlab = "Wages", ylab = "Change in after-tax income (percent)")
-    #plot(df$wages, 100 * df$taxes1 / df$wages, xlab = "Wages", ylab = "Effective Tax Rate Under Plan 1 (percent)")
-    plot(df$wages, 100 * df$taxes1 / df$wages, xlab = "Wages", ylab = "Effective Tax Rate Under Plan 1 (percent)", ylim = c(0,40))
+    plot(df$wages, df$aftertax, xlab = "Wages", ylab = "Change in after-tax income (percent)")
     title(main = Title)
     #plot(df$wages, 100*df$taxes1/df$wages)
     #plot(df$wages, 100*df$taxes2/df$wages)
