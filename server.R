@@ -130,25 +130,25 @@ shinyServer(function(input, output, session) {
     }
     else if (example == "Example A"){
       updateNumericInput(session, "wages", value = 25000)
-       updateNumericInput(session, "children", value = 0)
-       updateNumericInput(session, "otherdep", value = 1)
-       updateNumericInput(session, "filing",   value = "Single")
-       updateNumericInput(session, "property", value = 4000)
-       updateNumericInput(session, "mortgage", value = 4000)
-       updateNumericInput(session, "charity",  value = 4000)
-       Released <<- c("","","","")
-       Title <<- "Example A - Single Person Making $25,000 Per Year with $12,000 in Deductions"
+      updateNumericInput(session, "children", value = 0)
+      updateNumericInput(session, "otherdep", value = 1)
+      updateNumericInput(session, "filing",   value = "Single")
+      updateNumericInput(session, "property", value = 4000)
+      updateNumericInput(session, "mortgage", value = 4000)
+      updateNumericInput(session, "charity",  value = 4000)
+      Released <<- c("","","","")
+      Title <<- "Example A - Single Person Making $25,000 Per Year with $12,000 in Deductions"
     }
     else if (example == "Example B"){
       updateNumericInput(session, "wages", value = 50000)
-       updateNumericInput(session, "children", value = 0)
-       updateNumericInput(session, "otherdep", value = 2)
-       updateNumericInput(session, "filing",   value = "Married filing jointly")
-       updateNumericInput(session, "property", value = 8000)
-       updateNumericInput(session, "mortgage", value = 8000)
-       updateNumericInput(session, "charity",  value = 8000)
-       Released <<- c("","","","")
-       Title <<- "Example B - Married Couple Making $50,000 Per Year with $24,000 in Deductions"
+      updateNumericInput(session, "children", value = 0)
+      updateNumericInput(session, "otherdep", value = 2)
+      updateNumericInput(session, "filing",   value = "Married filing jointly")
+      updateNumericInput(session, "property", value = 8000)
+      updateNumericInput(session, "mortgage", value = 8000)
+      updateNumericInput(session, "charity",  value = 8000)
+      Released <<- c("","","","")
+      Title <<- "Example B - Married Couple Making $50,000 Per Year with $24,000 in Deductions"
     }
     else if (example == "Example C"){
       updateNumericInput(session, "wages", value = 25000)
