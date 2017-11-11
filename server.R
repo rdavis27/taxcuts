@@ -3,6 +3,7 @@ library(shiny)
 taxdefs  <- read.csv("taxdefs.csv",  strip.white = TRUE, sep = ",")
 brackets <- read.csv("brackets.csv", strip.white = TRUE, sep = ",")
 incdef   <- NULL
+last_example <- ""
 
 shinyServer(function(input, output, session) {
 
@@ -166,7 +167,6 @@ shinyServer(function(input, output, session) {
       Released <<- c("","","","")
       Title <<- "Example D - Married Couple Making $50,000 Per Year with 2 Non-Child Dependents"
     }
-    cat(file=stderr(), paste0(example,"|",input$taxname1,"|",input$taxname2,"\n"))
   })
   output$taxPrint <- renderPrint({
     filing <- input$filing
@@ -187,6 +187,14 @@ shinyServer(function(input, output, session) {
     cat("<pre>")
     print(df)
     cat("</pre>")
+    if (last_example == input$examples){
+      cat(file=stderr(), paste0(input$taxname1,"|",input$taxname2,"|",input$examples,"#",
+              input$filing,"|", input$children,"|",input$otherdep,"|",input$wages,"#",
+              input$medical,"|",input$stateloc,"|",input$property,"|",input$mortgage,"|",input$charity,"#",
+              input$wagemin,"|",input$wagemax, "|",input$wagestep,"|",input$taxcutmin,"|",input$taxcutmax,"\n"))
+    } else {
+      last_example <<- input$examples # skip since this will rerun after example sets parameters
+    }
   })
   output$taxPlot <- renderPlot({
     filing <- input$filing
@@ -255,7 +263,9 @@ shinyServer(function(input, output, session) {
       }
     }
     #par(mfrow=c(3,1))
-    plot(df$wages, df$aftertax, xlab = "Wages", ylab = "Change in after-tax income (percent)")
+    #plot(df$wages, df$aftertax, xlab = "Wages", ylab = "Change in after-tax income (percent)")
+    #plot(df$wages, 100 * df$taxes1 / df$wages, xlab = "Wages", ylab = "Effective Tax Rate Under Plan 1 (percent)")
+    plot(df$wages, 100 * df$taxes1 / df$wages, xlab = "Wages", ylab = "Effective Tax Rate Under Plan 1 (percent)", ylim = c(0,40))
     title(main = Title)
     #plot(df$wages, 100*df$taxes1/df$wages)
     #plot(df$wages, 100*df$taxes2/df$wages)
