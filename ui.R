@@ -49,12 +49,22 @@ shinyUI(fluidPage(
 
     # Show a plot of the generated distribution
     mainPanel(
-      htmlOutput("taxPrint"),
-      HTML("<h4><b>Taxcut (percent)</b></h4>"),
-      plotOutput("taxPlot"),
-      HTML("<h4><b>Change in After-Tax Income (percent)</b></h4>"),
-      plotOutput("incomePlot"),
-      htmlOutput("rulePrint")
+      tabsetPanel(
+        tabPanel("Tax Cuts",
+          htmlOutput("taxPrint"),
+          HTML("<h4><b>Taxcut (percent)</b></h4>"),
+          plotOutput("taxPlot"),
+          HTML("<h4><b>Change in After-Tax Income (percent)</b></h4>"),
+          plotOutput("incomePlot")
+        ),
+        tabPanel("Effective Taxes",
+          HTML("<h4><b>Effective Tax Rates of Both Tax Plans (percent)</b></h4>"),
+          plotOutput("efftaxPlot")
+        ),
+        tabPanel("Comparison of Plans",
+                 htmlOutput("rulePrint")
+        )
+      )
     )
   )
 ))

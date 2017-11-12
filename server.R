@@ -196,7 +196,7 @@ shinyServer(function(input, output, session) {
       last_example <<- input$examples # skip since this will rerun after example sets parameters
     }
   })
-  output$taxPlot <- renderPlot({
+  taxdata <- reactive({
     filing <- input$filing
     if (filing == "Married filing jointly") filing = "Married"
     taxname1 <- input$taxname1
@@ -207,66 +207,42 @@ shinyServer(function(input, output, session) {
     df <- data.frame(wages)
     df$taxes1 <- 0
     df$taxes2 <- 0
-    df$taxcut <- 0
     taxdef1 <- getTaxdef(taxname1, filing)
     taxdef2 <- getTaxdef(taxname2, filing)
     incdef  <- getIncdef()
     for (i in 1:length(df$wages)){
       df$taxes1[i] <- calcTax(taxdef1, incdef, wages[i])
       df$taxes2[i] <- calcTax(taxdef2, incdef, wages[i])
-      df$taxcut[i] <- 100 * (df$taxes1[i] - df$taxes2[i]) / df$taxes1[i]
-      if (
-        df$taxes1[i] <= 0 |
-        df$taxes2[i] <= 0 |
-        df$taxcut[i] < input$taxcutmin |
-        df$taxcut[i] > input$taxcutmax
-      ){
-        df$taxcut[i] <- NA
-      }
     }
-    #par(mfrow=c(3,1))
+    return(df)
+  })
+  output$taxPlot <- renderPlot({
+    df <- taxdata()
+    df$taxcut <- 100 * (df$taxes1 - df$taxes2) / df$taxes1
+    df$taxcut[df$taxes1 <= 0 | df$taxes2 <= 0] <- NA
+    df$taxcut[df$taxcut < input$taxcutmin | df$taxcut > input$taxcutmax] <- NA
     plot(df$wages, df$taxcut, xlab = "Wages", ylab = "Taxcut (percent)")
     title(main = Title)
-    #plot(df$wages, 100*df$taxes1/df$wages)
-    #plot(df$wages, 100*df$taxes2/df$wages)
     grid(col = "lightgray")
     abline(v = input$wages, col = "red")
   })
   output$incomePlot <- renderPlot({
-    filing <- input$filing
-    if (filing == "Married filing jointly") filing = "Married"
-    taxname1 <- input$taxname1
-    if (taxname1 == "House Cuts w/o Family Credits") taxname1 = "House Cuts2"
-    taxname2 <- input$taxname2
-    if (taxname2 == "House Cuts w/o Family Credits") taxname2 = "House Cuts2"
-    wages <- seq(input$wagemin, input$wagemax, input$wagestep)
-    df <- data.frame(wages)
-    df$taxes1 <- 0
-    df$taxes2 <- 0
-    df$taxcut <- 0
-    taxdef1 <- getTaxdef(taxname1, filing)
-    taxdef2 <- getTaxdef(taxname2, filing)
-    incdef  <- getIncdef()
-    for (i in 1:length(df$wages)){
-      df$taxes1[i] <- calcTax(taxdef1, incdef, wages[i])
-      df$taxes2[i] <- calcTax(taxdef2, incdef, wages[i])
-      df$taxcut[i] <- 100 * (df$taxes1[i] - df$taxes2[i]) / df$taxes1[i]
-      df$aftertax[i] <- 100 * ((wages[i]-df$taxes2[i]) - (wages[i]-df$taxes1[i])) / (wages[i]-df$taxes1[i])
-      if (
-        df$taxes1[i] <= 0 |
-        df$taxes2[i] <= 0 |
-        df$taxcut[i] < input$taxcutmin |
-        df$taxcut[i] > input$taxcutmax
-      ){
-        df$taxcut[i] <- NA
-        df$aftertax[i] <- NA
-      }
-    }
-    #par(mfrow=c(3,1))
+    df <- taxdata()
+    df$aftertax <- 100 * ((df$wages-df$taxes2) - (df$wages-df$taxes1)) / (df$wages-df$taxes1)
     plot(df$wages, df$aftertax, xlab = "Wages", ylab = "Change in after-tax income (percent)")
+    grid(col = "lightgray")
+    abline(v = input$wages, col = "red")
+  })
+  output$efftaxPlot <- renderPlot({
+    df <- taxdata()
+    efftax1 <- 100 * df$taxes1 / df$wages
+    efftax1[efftax1 < 0] <- NA
+    efftax2 <- 100 * df$taxes2 / df$wages
+    efftax2[efftax2 < 0] <- NA
+    efftax  <- matrix(c(efftax1, efftax2), length(efftax1), 2)
+    matplot(df$wages, efftax, type = "l", xlab = "Wages", ylab = "Effective Tax Rate (percent)")
+    legend("topleft", c("Tax Plan 1", "Tax Plan 2"), col = c(1,2), fill = c(1,2))
     title(main = Title)
-    #plot(df$wages, 100*df$taxes1/df$wages)
-    #plot(df$wages, 100*df$taxes2/df$wages)
     grid(col = "lightgray")
     abline(v = input$wages, col = "red")
   })
