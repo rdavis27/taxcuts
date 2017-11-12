@@ -187,14 +187,6 @@ shinyServer(function(input, output, session) {
     cat("<pre>")
     print(df)
     cat("</pre>")
-    if (last_example == input$examples){
-      cat(file=stderr(), paste0(input$taxname1,"|",input$taxname2,"|",input$examples,"#",
-              input$filing,"|", input$children,"|",input$otherdep,"|",input$wages,"#",
-              input$medical,"|",input$stateloc,"|",input$property,"|",input$mortgage,"|",input$charity,"#",
-              input$wagemin,"|",input$wagemax, "|",input$wagestep,"|",input$taxcutmin,"|",input$taxcutmax,"\n"))
-    } else {
-      last_example <<- input$examples # skip since this will rerun after example sets parameters
-    }
   })
   taxdata <- reactive({
     filing <- input$filing
@@ -213,6 +205,14 @@ shinyServer(function(input, output, session) {
     for (i in 1:length(df$wages)){
       df$taxes1[i] <- calcTax(taxdef1, incdef, wages[i])
       df$taxes2[i] <- calcTax(taxdef2, incdef, wages[i])
+    }
+    if (last_example == input$examples){
+      cat(file=stderr(), paste0(input$taxname1,"|",input$taxname2,"|",input$examples,"#",
+                                input$filing,"|", input$children,"|",input$otherdep,"|",input$wages,"#",
+                                input$medical,"|",input$stateloc,"|",input$property,"|",input$mortgage,"|",input$charity,"#",
+                                input$wagemin,"|",input$wagemax, "|",input$wagestep,"|",input$taxcutmin,"|",input$taxcutmax,"\n"))
+    } else {
+      last_example <<- input$examples # skip since this will rerun after example sets parameters
     }
     return(df)
   })
@@ -247,6 +247,7 @@ shinyServer(function(input, output, session) {
     abline(v = input$wages, col = "red")
   })
   output$rulePrint <- renderPrint({
+    df <- taxdata() # log message on change
     filing <- input$filing
     if (filing == "Married filing jointly") filing = "Married"
     taxname1 <- input$taxname1
