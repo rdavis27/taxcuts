@@ -17,9 +17,19 @@ shinyUI(fluidPage(
                     choices = c("Current 2017", "Current 2018", "House Cuts", "House Cuts w/o Family Credits", "Senate 2017"),
                     selected = "House Cuts"),
         selectInput("examples", "Tax Examples",
-                    choices = c("Example 1", "Example 2", "Example 3", "Example 4",
-                                "Example A", "Example B", "Example C", "Example D"),
-                    selected = "Example 1")
+                    choices = c("Example 1 - Family of Four",
+                                "Example 2 - Single Mother",
+                                "Example 3 - Single Taxpayer",
+                                "Example 4 - High Tax State",
+                                "Example A - Single Itemizer",
+                                "Example B - Married Itemizer",
+                                "Example C - Single, Expiring Deductions",
+                                "Example D - Married, Expiring Deductions",
+                                "Example E - Single, High Tax State",
+                                "Example F - Married, High Tax State",
+                                "Example G - Single, 1 Non-Child Dependent",
+                                "Example H - Married, 2 Non-Child Dependents"),
+                    selected = "Example 1 - Family of Four")
       ),
       wellPanel(
         h4("General Items"),
@@ -35,7 +45,8 @@ shinyUI(fluidPage(
         numericInput("stateloc", "State & local income or sales taxes (% of income)", value = 0, min = 0, max = 99, step = 1),
         numericInput("property", "Real estate property taxes", value = 0, min = 0, step = 1000),
         numericInput("mortgage", "Mortgage interest", value = 0, min = 0, step = 1000),
-        numericInput("charity", "Charitable contributions", value = 0, min = 0, step = 1000)
+        numericInput("charity", "Charitable contributions", value = 0, min = 0, step = 1000),
+        numericInput("expiring", "Misc. expiring deductions", value = 0, min = 0, step = 1000)
       ),
       wellPanel(
         h4("Scales"),
