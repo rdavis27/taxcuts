@@ -230,6 +230,7 @@ shinyServer(function(input, output, session) {
     df <- taxdata()
     df$aftertax <- 100 * ((df$wages-df$taxes2) - (df$wages-df$taxes1)) / (df$wages-df$taxes1)
     plot(df$wages, df$aftertax, xlab = "Wages", ylab = "Change in after-tax income (percent)")
+    title(main = Title)
     grid(col = "lightgray")
     abline(v = input$wages, col = "red")
   })
