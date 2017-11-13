@@ -40,7 +40,7 @@ shinyServer(function(input, output, session) {
       Property    = rowDef$Property,
       Mortgage    = rowDef$Mortgage,
       Charity     = rowDef$Charity,
-      Expiring    = rowDef$Expiring
+      Repealed    = rowDef$Repealed
     ))
   }
   getIncdef <- reactive({
@@ -53,7 +53,7 @@ shinyServer(function(input, output, session) {
       property   = input$property,
       mortgage   = input$mortgage,
       charity    = input$charity,
-      expiring   = input$expiring
+      repealed   = input$repealed
     ))
   })
   calcPretax <- function(td, income){
@@ -75,9 +75,9 @@ shinyServer(function(input, output, session) {
     property <- as.numeric(td["Property"]) * as.numeric(id["property"])
     mortgage <- as.numeric(td["Mortgage"]) * as.numeric(id["mortgage"])
     charity  <- as.numeric(td["Charity"])  * as.numeric(id["charity"])
-    expiring <- as.numeric(td["Expiring"]) * as.numeric(id["expiring"])
-    #print(paste0(medical,"|",stateloc,"|",property,"|",mortgage,"|",charity"|",expiring)) #DEBUG
-    CalcDeduct <- medical + stateloc + property + mortgage + charity + expiring
+    repealed <- as.numeric(td["Repealed"]) * as.numeric(id["repealed"])
+    #print(paste0(medical,"|",stateloc,"|",property,"|",mortgage,"|",charity"|",repealed)) #DEBUG
+    CalcDeduct <- medical + stateloc + property + mortgage + charity + repealed
     Deduct <- StdDeduct
     if (Deduct < CalcDeduct) Deduct <- CalcDeduct
     
@@ -92,7 +92,7 @@ shinyServer(function(input, output, session) {
     updateNumericInput(session, "property", value = 0)
     updateNumericInput(session, "mortgage", value = 0)
     updateNumericInput(session, "charity",  value = 0)
-    updateNumericInput(session, "expiring", value = 0)
+    updateNumericInput(session, "repealed", value = 0)
   }
   resetWageLimits <- function(){
     updateNumericInput(session, "wagemin",  value = 0)
@@ -163,16 +163,16 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "children", value = 0)
       updateNumericInput(session, "otherdep", value = 1)
       updateNumericInput(session, "filing",   value = "Single")
-      updateNumericInput(session, "expiring", value = 15000)
+      updateNumericInput(session, "repealed", value = 15000)
       Released <<- c("","","","")
-      Title <<- "Example C - Single Person Making $25,000 Per Year with $15,000 in Expiring Deductions"
+      Title <<- "Example C - Single Person Making $25,000 Per Year with $15,000 in Repealed Deductions"
     }
     else if (example == "Example D"){
       updateNumericInput(session, "wages", value = 50000)
       updateNumericInput(session, "children", value = 0)
       updateNumericInput(session, "otherdep", value = 2)
       updateNumericInput(session, "filing",   value = "Married filing jointly")
-      updateNumericInput(session, "expiring", value = 30000)
+      updateNumericInput(session, "repealed", value = 30000)
       Released <<- c("","","","")
       Title <<- "Example D - Married Couple Making $50,000 Per Year with $30,000 in Deductions"
     }
@@ -259,7 +259,7 @@ shinyServer(function(input, output, session) {
     if (last_example == input$examples){
       cat(file=stderr(), paste0(input$taxname1,"|",input$taxname2,"|",input$examples,"#",
                                 input$filing,"|", input$children,"|",input$otherdep,"|",input$wages,"#",
-                                input$medical,"|",input$stateloc,"|",input$property,"|",input$mortgage,"|",input$charity,"|",input$expiring,"#",
+                                input$medical,"|",input$stateloc,"|",input$property,"|",input$mortgage,"|",input$charity,"|",input$repealed,"#",
                                 input$wagemin,"|",input$wagemax, "|",input$wagestep,"|",input$taxcutmin,"|",input$taxcutmax,"\n"))
     } else {
       last_example <<- input$examples # skip since this will rerun after example sets parameters
@@ -376,9 +376,9 @@ shinyServer(function(input, output, session) {
                  "Real estate property taxes",
                  "Mortgage interest",
                  "Charitable contributions",
-                 "Misc. expiring deductions")
-    Deduct1 <- c(td1$Medical, td1$StateLoc, td1$Property, td1$Mortgage, td1$Charity, td1$Expiring)
-    Deduct2 <- c(td2$Medical, td2$StateLoc, td2$Property, td2$Mortgage, td2$Charity, td2$Expiring)
+                 "Misc. repealed deductions")
+    Deduct1 <- c(td1$Medical, td1$StateLoc, td1$Property, td1$Mortgage, td1$Charity, td1$Repealed)
+    Deduct2 <- c(td2$Medical, td2$StateLoc, td2$Property, td2$Mortgage, td2$Charity, td2$Repealed)
     ddf <- data.frame("Deduction"=Deducts, "Plan_1"=Deduct1, "Plan_2"=Deduct2)
     cat("<h4>Comparison of Deductions (0=not deductible, 1=deductible)</h4>")
     cat("<pre>")

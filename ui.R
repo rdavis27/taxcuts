@@ -20,11 +20,11 @@ shinyUI(fluidPage(
                     choices = c("Example 1 - Family of Four",
                                 "Example 2 - Single Mother",
                                 "Example 3 - Single Taxpayer",
-                                "Example 4 - High Tax State",
+                                "Example 4 - Homeowners, High Tax State",
                                 "Example A - Single Itemizer",
                                 "Example B - Married Itemizer",
-                                "Example C - Single, Expiring Deductions",
-                                "Example D - Married, Expiring Deductions",
+                                "Example C - Single, Repealed Deductions",
+                                "Example D - Married, Repealed Deductions",
                                 "Example E - Single, High Tax State",
                                 "Example F - Married, High Tax State",
                                 "Example G - Single, 1 Non-Child Dependent",
@@ -46,7 +46,7 @@ shinyUI(fluidPage(
         numericInput("property", "Real estate property taxes", value = 0, min = 0, step = 1000),
         numericInput("mortgage", "Mortgage interest", value = 0, min = 0, step = 1000),
         numericInput("charity", "Charitable contributions", value = 0, min = 0, step = 1000),
-        numericInput("expiring", "Misc. expiring deductions", value = 0, min = 0, step = 1000)
+        numericInput("repealed", "Misc. repealed deductions", value = 0, min = 0, step = 1000)
       ),
       wellPanel(
         h4("Scales"),
