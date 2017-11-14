@@ -2,6 +2,7 @@ library(shiny)
 
 taxdefs  <- read.csv("taxdefs.csv",  strip.white = TRUE, sep = ",")
 brackets <- read.csv("brackets.csv", strip.white = TRUE, sep = ",")
+eitcdefs <- read.csv("eitc.csv",     strip.white = TRUE, sep = ",")
 incdef   <- NULL
 last_example <- ""
 
@@ -40,7 +41,8 @@ shinyServer(function(input, output, session) {
       Property    = rowDef$Property,
       Mortgage    = rowDef$Mortgage,
       Charity     = rowDef$Charity,
-      Repealed    = rowDef$Repealed
+      Repealed    = rowDef$Repealed,
+      EITC        = rowDef$EITC
     ))
   }
   getIncdef <- reactive({
@@ -61,6 +63,23 @@ shinyServer(function(input, output, session) {
     i <- max(which(td$Start <= inc))
     pretax <- (income-td$Start[i]) * (td$Rate[i]/100) + td$Add[i]
   }
+  calcEITC <- function(name, wages, children, filing){
+    ee <- eitcdefs[eitcdefs$Name == as.character(name) & as.numeric(eitcdefs$C) == children,]
+    if (identical(filing, "Married filing jointly")){
+      ee$Wage2 <- ee$Wage2 + ee$Madd
+      ee$Wage3 <- ee$Wage3 + ee$Madd
+    }
+    if (wages >= ee$Wage3){
+      eitc <- 0
+    } else if (wages < ee$Wage1){
+      eitc <- wages * ee$Per1/100.0
+    } else if (wages <= ee$Wage2){
+      eitc <- ee$Ymax
+    } else {
+      eitc <- (ee$Wage3 - wages) * ee$Per2/100.0
+    }
+    eitc
+  }
   calcTax <- function(td, id, wages){
     Exempt      <- as.numeric(td["Exempt"])
     StdDeduct   <- as.numeric(td["StdDeduct"])
@@ -76,6 +95,8 @@ shinyServer(function(input, output, session) {
     mortgage <- as.numeric(td["Mortgage"]) * as.numeric(id["mortgage"])
     charity  <- as.numeric(td["Charity"])  * as.numeric(id["charity"])
     repealed <- as.numeric(td["Repealed"]) * as.numeric(id["repealed"])
+    EITCname <- as.character(td["EITC"])
+    eitc     <- calcEITC(EITCname, wages, children, input$filing)
     #print(paste0(medical,"|",stateloc,"|",property,"|",mortgage,"|",charity"|",repealed)) #DEBUG
     CalcDeduct <- medical + stateloc + property + mortgage + charity + repealed
     Deduct <- StdDeduct
@@ -83,7 +104,7 @@ shinyServer(function(input, output, session) {
     
     adjinc <- wages - Deduct - (children + dependents) * Exempt
     pretax <- calcPretax(td, adjinc)
-    tax <- pretax - children * ChildCredit - dependents * DepCredit
+    tax <- pretax - children * ChildCredit - dependents * DepCredit - eitc
     tax
   }
   clearDeductions <- function(){
@@ -236,6 +257,10 @@ shinyServer(function(input, output, session) {
     cat("<pre>")
     cat(paste0(filing,", ",input$children," children, ",input$otherdep," dependents, ",input$wages," in wages\n\n"))
     print(df)
+    eitc <- calcEITC("2017", input$wages, input$children, input$filing)
+    if (eitc > 0){
+      cat(paste0("\nNote: Taxes for both plans include an EITC of $", eitc, " (using the 2017 formula)\n"))
+    }
     cat("</pre>")
   })
   taxdata <- reactive({
