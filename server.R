@@ -119,6 +119,33 @@ shinyServer(function(input, output, session) {
     updateNumericInput(session, "wagemin",  value = 0)
     updateNumericInput(session, "wagemax",  value = 200000)
   }
+  getShortTaxName2 <- function(){
+    taxname2 <- input$taxname2
+    name <- ""
+    if (taxname2 == "Current 2017"){
+      name <- "2017"
+    }
+    else if (taxname2 == "Current 2018"){
+      name <- "2018"
+    }
+    else if (taxname2 == "House Cuts"){
+      name <- "House"
+    }
+    else if (taxname2 == "House Cuts w/o Family Credits"){
+      name <- "House w/o FC"
+    }
+    else if (taxname2 == "Senate 2017"){
+      name <- "Senate"
+    }
+    name
+  }
+  parenTaxName2 <- function(){
+    name <- getShortTaxName2()
+    if (name != ""){
+      name <- paste0(" (",getShortTaxName2(),")")
+    }
+    name
+  }
   observeEvent(input$examples, {
     example <- substr(input$examples, 1, 9)
     #print(paste0("example=",example))
@@ -195,7 +222,7 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "filing",   value = "Married filing jointly")
       updateNumericInput(session, "repealed", value = 30000)
       Released <<- c("","","","")
-      Title <<- "Example D - Married Couple Making $50,000 Per Year with $30,000 in Deductions"
+      Title <<- "Example D - Married Couple Making $50,000 Per Year with $30,000 in Repealed Deductions"
     }
     else if (example == "Example E"){
       updateNumericInput(session, "wages", value = 470000)
@@ -297,7 +324,7 @@ shinyServer(function(input, output, session) {
     df$taxcut[df$taxes1 <= 0 | df$taxes2 <= 0] <- NA
     df$taxcut[df$taxcut < input$taxcutmin | df$taxcut > input$taxcutmax] <- NA
     plot(df$wages, df$taxcut, xlab = "Wages", ylab = "Taxcut (percent)")
-    title(main = Title)
+    title(main = paste0(Title,parenTaxName2()))
     grid(col = "lightgray")
     abline(v = input$wages, col = "red")
   })
@@ -305,7 +332,7 @@ shinyServer(function(input, output, session) {
     df <- taxdata()
     df$aftertax <- 100 * ((df$wages-df$taxes2) - (df$wages-df$taxes1)) / (df$wages-df$taxes1)
     plot(df$wages, df$aftertax, xlab = "Wages", ylab = "Change in after-tax income (percent)")
-    title(main = Title)
+    title(main = paste0(Title,parenTaxName2()))
     grid(col = "lightgray")
     abline(v = input$wages, col = "red")
   })
@@ -318,7 +345,7 @@ shinyServer(function(input, output, session) {
     efftax  <- matrix(c(efftax1, efftax2), length(efftax1), 2)
     matplot(df$wages, efftax, type = "l", xlab = "Wages", ylab = "Effective Tax Rate (percent)")
     legend("topleft", c("Tax Plan 1", "Tax Plan 2"), col = c(1,2), fill = c(1,2))
-    title(main = Title)
+    title(main = paste0(Title,parenTaxName2()))
     grid(col = "lightgray")
     abline(v = input$wages, col = "red")
   })
