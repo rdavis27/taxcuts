@@ -11,18 +11,18 @@ Current 2018, Single,  Add,      7,     0,952.50, 5328.75,19078.75,47568.75,1233
 Current 2018, Married, Start,    7,     0, 19050,   77400,  156150,  237950,   424950,   480050
 Current 2018, Married, Rate,     7,    10,    15,      25,      28,      33,       35,     39.6
 Current 2018, Married, Add,      7,     0,  1905,10657.50,   30345,   53249,   114959,   134244
-House Cuts,   Single,  Start,    4,     0, 45000,  200000,  500000
-House Cuts,   Single,  Rate,     4,    12,    25,      35,    39.6
-House Cuts,   Single,  Add,      4,     0,  5400,   44150,  149150
-House Cuts,   Married, Start,    4,     0, 90000,  260000, 1000000
-House Cuts,   Married, Rate,     4,    12,    25,      35,    39.6
-House Cuts,   Married, Add,      4,     0, 10800,   53300,  312300
-House Cuts2,  Single,  Start,    4,     0, 45000,  200000,  500000
-House Cuts2,  Single,  Rate,     4,    12,    25,      35,    39.6
-House Cuts2,  Single,  Add,      4,     0,  5400,   44150,  149150
-House Cuts2,  Married, Start,    4,     0, 90000,  260000, 1000000
-House Cuts2,  Married, Rate,     4,    12,    25,      35,    39.6
-House Cuts2,  Married, Add,      4,     0, 10800,   53300,  312300
+House Bill,   Single,  Start,    4,     0, 45000,  200000,  500000
+House Bill,   Single,  Rate,     4,    12,    25,      35,    39.6
+House Bill,   Single,  Add,      4,     0,  5400,   44150,  149150
+House Bill,   Married, Start,    4,     0, 90000,  260000, 1000000
+House Bill,   Married, Rate,     4,    12,    25,      35,    39.6
+House Bill,   Married, Add,      4,     0, 10800,   53300,  312300
+House Bill2,  Single,  Start,    4,     0, 45000,  200000,  500000
+House Bill2,  Single,  Rate,     4,    12,    25,      35,    39.6
+House Bill2,  Single,  Add,      4,     0,  5400,   44150,  149150
+House Bill2,  Married, Start,    4,     0, 90000,  260000, 1000000
+House Bill2,  Married, Rate,     4,    12,    25,      35,    39.6
+House Bill2,  Married, Add,      4,     0, 10800,   53300,  312300
 Senate 2017,  Single,  Start,    7,     0,  9525,   38700,   60000,  170000,   200000,   500000
 Senate 2017,  Single,  Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
 Senate 2017,  Single,  Add,      7,     0,952.50, 4453.50,    9246,   36746,    46496,   151496

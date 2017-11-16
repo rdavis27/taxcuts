@@ -128,10 +128,10 @@ shinyServer(function(input, output, session) {
     else if (taxname2 == "Current 2018"){
       name <- "2018"
     }
-    else if (taxname2 == "House Cuts"){
+    else if (taxname2 == "House Bill"){
       name <- "House"
     }
-    else if (taxname2 == "House Cuts w/o Family Credits"){
+    else if (taxname2 == "House Bill w/o Family Credits"){
       name <- "House w/o FC"
     }
     else if (taxname2 == "Senate 2017"){
@@ -285,9 +285,9 @@ shinyServer(function(input, output, session) {
     filing <- input$filing
     if (filing == "Married filing jointly") filing = "Married"
     taxname1 <- input$taxname1
-    if (taxname1 == "House Cuts w/o Family Credits") taxname1 = "House Cuts2"
+    if (taxname1 == "House Bill w/o Family Credits") taxname1 = "House Bill2"
     taxname2 <- input$taxname2
-    if (taxname2 == "House Cuts w/o Family Credits") taxname2 = "House Cuts2"
+    if (taxname2 == "House Bill w/o Family Credits") taxname2 = "House Bill2"
     taxes1 <- calcTax(getTaxdef(taxname1, filing), getIncdef(), -1)
     taxes2 <- calcTax(getTaxdef(taxname2, filing), getIncdef(), -1)
     Names <- c(input$taxname1, input$taxname2, "Change", "% Change")
@@ -310,9 +310,9 @@ shinyServer(function(input, output, session) {
     filing <- input$filing
     if (filing == "Married filing jointly") filing = "Married"
     taxname1 <- input$taxname1
-    if (taxname1 == "House Cuts w/o Family Credits") taxname1 = "House Cuts2"
+    if (taxname1 == "House Bill w/o Family Credits") taxname1 = "House Bill2"
     taxname2 <- input$taxname2
-    if (taxname2 == "House Cuts w/o Family Credits") taxname2 = "House Cuts2"
+    if (taxname2 == "House Bill w/o Family Credits") taxname2 = "House Bill2"
     wages <- seq(input$wagemin, input$wagemax, input$wagestep)
     df <- data.frame(wages)
     df$taxes1 <- 0
@@ -370,9 +370,9 @@ shinyServer(function(input, output, session) {
     filing <- input$filing
     if (filing == "Married filing jointly") filing = "Married"
     taxname1 <- input$taxname1
-    if (taxname1 == "House Cuts w/o Family Credits") taxname1 = "House Cuts2"
+    if (taxname1 == "House Bill w/o Family Credits") taxname1 = "House Bill2"
     taxname2 <- input$taxname2
-    if (taxname2 == "House Cuts w/o Family Credits") taxname2 = "House Cuts2"
+    if (taxname2 == "House Bill w/o Family Credits") taxname2 = "House Bill2"
     td1 <- getTaxdef(taxname1, filing)
     td2 <- getTaxdef(taxname2, filing)
     id  <- getIncdef()
