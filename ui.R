@@ -28,8 +28,10 @@ shinyUI(fluidPage(
                                 "Example E - Single, High Tax State",
                                 "Example F - Married, High Tax State",
                                 "Example G - Single, 1 Non-Child Dependent",
-                                "Example H - Married, 2 Non-Child Dependents"),
-                    selected = "Example 1 - Family of Four")
+                                "Example H - Married, 2 Non-Child Dependents",
+                                "Example I - Single, 2 Non-Child Dependent",
+                                "Example J - Married, 4 Non-Child Dependents"),
+        selected = "Example 1 - Family of Four")
       ),
       wellPanel(
         h4("General Items"),
