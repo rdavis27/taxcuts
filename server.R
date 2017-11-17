@@ -134,10 +134,19 @@ shinyServer(function(input, output, session) {
     else if (taxname2 == "House Bill w/o Family Credits"){
       name <- "House w/o FC"
     }
-    else if (taxname2 == "Senate 2017"){
+    else if (taxname2 == "Senate Bill"){
       name <- "Senate"
     }
+    else if (taxname2 == "Senate Bill w/ $2000 Child Credit"){
+      name <- "Senate w/ $2000 CC"
+    }
     name
+  }
+  getMidTaxName <- function(longTaxName){
+    midTaxName <- longTaxName
+    if (longTaxName == "House Bill w/o Family Credits")     midTaxName <- "House Bill2"
+    if (longTaxName == "Senate Bill w/ $2000 Child Credit") midTaxName <- "Senate Bill2"
+    midTaxName
   }
   parenTaxName2 <- function(){
     name <- getShortTaxName2()
@@ -284,18 +293,13 @@ shinyServer(function(input, output, session) {
   output$taxPrint <- renderPrint({
     filing <- input$filing
     if (filing == "Married filing jointly") filing = "Married"
-    taxname1 <- input$taxname1
-    if (taxname1 == "House Bill w/o Family Credits") taxname1 = "House Bill2"
-    taxname2 <- input$taxname2
-    if (taxname2 == "House Bill w/o Family Credits") taxname2 = "House Bill2"
+    taxname1 <- getMidTaxName(input$taxname1)
+    taxname2 <- getMidTaxName(input$taxname2)
     taxes1 <- calcTax(getTaxdef(taxname1, filing), getIncdef(), -1)
     taxes2 <- calcTax(getTaxdef(taxname2, filing), getIncdef(), -1)
     Names <- c(input$taxname1, input$taxname2, "Change", "% Change")
     Taxes <- c(taxes1, taxes2, taxes2-taxes1, 100*(taxes2-taxes1)/taxes1)
     df <- data.frame(Names, Taxes, Released)
-    #if (taxname1 == "Senate 2018" | taxname2 == "Senate 2018"){
-    #  cat("<font color=\"red\">WARNING: Using Current 2018 income brackets as Senate 2018 income brackets have not yet been released</font>")
-    #}
     cat("<h4>Comparison of Taxes</h4>")
     cat("<pre>")
     cat(paste0(filing,", ",input$children," children, ",input$otherdep," dependents, ",input$wages," in wages\n\n"))
@@ -309,10 +313,8 @@ shinyServer(function(input, output, session) {
   taxdata <- reactive({
     filing <- input$filing
     if (filing == "Married filing jointly") filing = "Married"
-    taxname1 <- input$taxname1
-    if (taxname1 == "House Bill w/o Family Credits") taxname1 = "House Bill2"
-    taxname2 <- input$taxname2
-    if (taxname2 == "House Bill w/o Family Credits") taxname2 = "House Bill2"
+    taxname1 <- getMidTaxName(input$taxname1)
+    taxname2 <- getMidTaxName(input$taxname2)
     wages <- seq(input$wagemin, input$wagemax, input$wagestep)
     df <- data.frame(wages)
     df$taxes1 <- 0
@@ -369,10 +371,8 @@ shinyServer(function(input, output, session) {
     df <- taxdata() # log message on change
     filing <- input$filing
     if (filing == "Married filing jointly") filing = "Married"
-    taxname1 <- input$taxname1
-    if (taxname1 == "House Bill w/o Family Credits") taxname1 = "House Bill2"
-    taxname2 <- input$taxname2
-    if (taxname2 == "House Bill w/o Family Credits") taxname2 = "House Bill2"
+    taxname1 <- getMidTaxName(input$taxname1)
+    taxname2 <- getMidTaxName(input$taxname2)
     td1 <- getTaxdef(taxname1, filing)
     td2 <- getTaxdef(taxname2, filing)
     id  <- getIncdef()

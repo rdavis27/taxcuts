@@ -23,9 +23,15 @@ House Bill2,  Single,  Add,      4,     0,  5400,   44150,  149150
 House Bill2,  Married, Start,    4,     0, 90000,  260000, 1000000
 House Bill2,  Married, Rate,     4,    12,    25,      35,    39.6
 House Bill2,  Married, Add,      4,     0, 10800,   53300,  312300
-Senate 2017,  Single,  Start,    7,     0,  9525,   38700,   60000,  170000,   200000,   500000
-Senate 2017,  Single,  Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
-Senate 2017,  Single,  Add,      7,     0,952.50, 4453.50,    9246,   36746,    46496,   151496
-Senate 2017,  Married, Start,    7,     0, 19050,   77400,  120000,  290000,   390000,  1000000
-Senate 2017,  Married, Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
-Senate 2017,  Married, Add,      7,     0,  1905,    8907,   18492,   60992,    93492,   306992
+Senate Bill,  Single,  Start,    7,     0,  9525,   38700,   60000,  170000,   200000,   500000
+Senate Bill,  Single,  Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
+Senate Bill,  Single,  Add,      7,     0,952.50, 4453.50,    9246,   36746,    46496,   151496
+Senate Bill,  Married, Start,    7,     0, 19050,   77400,  120000,  290000,   390000,  1000000
+Senate Bill,  Married, Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
+Senate Bill,  Married, Add,      7,     0,  1905,    8907,   18492,   60992,    93492,   306992
+Senate Bill2, Single,  Start,    7,     0,  9525,   38700,   60000,  170000,   200000,   500000
+Senate Bill2, Single,  Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
+Senate Bill2, Single,  Add,      7,     0,952.50, 4453.50,    9246,   36746,    46496,   151496
+Senate Bill2, Married, Start,    7,     0, 19050,   77400,  120000,  290000,   390000,  1000000
+Senate Bill2, Married, Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
+Senate Bill2, Married, Add,      7,     0,  1905,    8907,   18492,   60992,    93492,   306992
