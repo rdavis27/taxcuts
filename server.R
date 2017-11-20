@@ -326,14 +326,16 @@ shinyServer(function(input, output, session) {
       df$taxes1[i] <- calcTax(taxdef1, incdef, wages[i])
       df$taxes2[i] <- calcTax(taxdef2, incdef, wages[i])
     }
-    if (last_example == input$examples){
+    if (input$wages != 0){
       cat(file=stderr(), paste0(input$taxname1,"|",input$taxname2,"|",input$examples,"#",
                                 input$filing,"|", input$children,"|",input$otherdep,"|",input$wages,"#",
                                 input$medical,"|",input$stateloc,"|",input$property,"|",input$mortgage,"|",input$charity,"|",input$repealed,"#",
                                 input$wagemin,"|",input$wagemax, "|",input$wagestep,"|",input$taxcutmin,"|",input$taxcutmax,"\n"))
-    } else {
-      last_example <<- input$examples # skip since this will rerun after example sets parameters
     }
+    # if (last_example == input$examples){
+    # } else {
+    #   last_example <<- input$examples # skip since this will rerun after example sets parameters
+    # }
     return(df)
   })
   output$taxPlot <- renderPlot({
