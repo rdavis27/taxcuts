@@ -64,7 +64,8 @@ shinyServer(function(input, output, session) {
     pretax <- (income-td$Start[i]) * (td$Rate[i]/100) + td$Add[i]
   }
   calcEITC <- function(name, wages, children, filing){
-    ee <- eitcdefs[eitcdefs$Name == as.character(name) & as.numeric(eitcdefs$C) == children,]
+    eechildren <- min(children, 3)
+    ee <- eitcdefs[eitcdefs$Name == as.character(name) & as.numeric(eitcdefs$C) == eechildren,]
     if (identical(filing, "Married filing jointly")){
       ee$Wage2 <- ee$Wage2 + ee$Madd
       ee$Wage3 <- ee$Wage3 + ee$Madd
@@ -454,12 +455,32 @@ shinyServer(function(input, output, session) {
     cat("<pre>")
     print(ddf)
     cat("</pre>")
+    EITCdesc <- c("Wage1", "Wage2", "Wage3", "Slope1", "Slope2", "Maximum_Credit")
+    eechildren <- min(input$children, 3)
+    ee1 <- eitcdefs[eitcdefs$Name == as.character(td1["EITC"]) & as.numeric(eitcdefs$C) == eechildren,]
+    ee2 <- eitcdefs[eitcdefs$Name == as.character(td1["EITC"]) & as.numeric(eitcdefs$C) == eechildren,]
+    EITCval1 <- c(ee1$Wage1, ee1$Wage2 + ee1$Madd, ee1$Wage3 + ee1$Madd,
+                  ee1$Per1, ee1$Per2, ee1$Ymax)
+    EITCval2 <- c(ee2$Wage1, ee2$Wage2 + ee2$Madd, ee2$Wage3 + ee2$Madd,
+                  ee2$Per1, ee2$Per2, ee2$Ymax)
+    ddf2 <- data.frame("Description"=EITCdesc, "Plan_1"=EITCval1, "Plan_2"=EITCval2)
+    cat("<h4>Comparison of Earned Income Tax Credit Parameters</h4>")
+    cat("<pre>")
+    print(ddf2)
+    cat("\n")
+    cat("    0 <= wage <  Wage1: EITC = Slope1 * wage\n")
+    cat("Wage1 <= wage <= Wage2: EITC = Maximum_Credit\n")
+    cat("Wage2 <  wage <= Wage3: EITC = Slope2 * (Wage3 - wage)")
+    cat("</pre>")
     cat("<pre>")
     cat("Sources: <A HREF=\"https://waysandmeans.house.gov/wp-content/uploads/2017/11/WM_TCJA_TaxPayerExamples.pdf\">Taxpayer Examples from the Committee on Ways and Means</A> (House).\n")
     cat("         <A HREF=\"https://waysandmeans.house.gov/wp-content/uploads/2017/10/WM_TCJA_PolicyOnePagers.pdf\">The Tax Cuts & Jobs Act - Communications and Policy Details</A> (House).\n")
     cat("         <A HREF=\"https://www.finance.senate.gov/imo/media/doc/11.9.17%20Chairman's%20Mark.pdf\">Description of the Chairman's Mark of the \"Tax Cuts and Jobs Act\"</A> (Senate).\n")
     cat("<br>")
-    cat("Notes: Blog post on this application can be found at <A HREF=\"http://usbudget.blogspot.com/2017/11/the-problems-with-taxpayer-examples.html\">this link</A>.")
+    cat("Notes: Taxes in this application are calculated using the above values.\n")
+    cat("       Any items not shown above (such as the phase out of the child)\n")
+    cat("       credit are not included in the calculations.\n")
+    cat("       Blog post on this application can be found at <A HREF=\"http://usbudget.blogspot.com/2017/11/the-problems-with-taxpayer-examples.html\">this link</A>.")
     cat("</pre>")
   })
 })
