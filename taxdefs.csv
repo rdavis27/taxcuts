@@ -1,8 +1,8 @@
 Name,         Filing,  Exempt, StdDeduct, ChildCredit, DepCredit, Medical, StateLoc, Property, Mortgage, Charity, Repealed, EITC
 Current 2017, Single,    4050,      6350,        1000,         0,       1,        1,        1,        1,       1,        1, 2017
 Current 2017, Married,   4050,     12700,        1000,         0,       1,        1,        1,        1,       1,        1, 2017
-Current 2018, Single,    4150,      6500,        1000,         0,       1,        1,        1,        1,       1,        1, 2017
-Current 2018, Married,   4150,     13000,        1000,         0,       1,        1,        1,        1,       1,        1, 2017
+Current 2018, Single,    4150,      6500,        1000,         0,       1,        1,        1,        1,       1,        1, 2018
+Current 2018, Married,   4150,     13000,        1000,         0,       1,        1,        1,        1,       1,        1, 2018
 House Bill,   Single,       0,     12000,        1600,       300,       0,        0,        1,        1,       1,        0, 2017
 House Bill,   Married,      0,     24000,        1600,       300,       0,        0,        1,        1,       1,        0, 2017
 House Bill2,  Single,       0,     12000,        1600,         0,       0,        0,        1,        1,       1,        0, 2017

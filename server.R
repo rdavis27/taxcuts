@@ -296,8 +296,10 @@ shinyServer(function(input, output, session) {
     if (filing == "Married filing jointly") filing = "Married"
     taxname1 <- getMidTaxName(input$taxname1)
     taxname2 <- getMidTaxName(input$taxname2)
-    taxes1 <- calcTax(getTaxdef(taxname1, filing), getIncdef(), -1)
-    taxes2 <- calcTax(getTaxdef(taxname2, filing), getIncdef(), -1)
+    taxdef1 <- getTaxdef(taxname1, filing)
+    taxdef2 <- getTaxdef(taxname2, filing)
+    taxes1 <- calcTax(taxdef1, getIncdef(), -1)
+    taxes2 <- calcTax(taxdef2, getIncdef(), -1)
     Names <- c(input$taxname1, input$taxname2, "Change", "% Change")
     Taxes <- c(taxes1, taxes2, taxes2-taxes1, 100*(taxes2-taxes1)/taxes1)
     df <- data.frame(Names, Taxes, Released)
@@ -305,9 +307,10 @@ shinyServer(function(input, output, session) {
     cat("<pre>")
     cat(paste0(filing,", ",input$children," children, ",input$otherdep," dependents, ",input$wages," in wages\n\n"))
     print(df)
-    eitc <- calcEITC("2017", input$wages, input$children, input$filing)
-    if (eitc > 0){
-      cat(paste0("\nNote: Taxes for both plans include an EITC of $", eitc, " (using the 2017 formula)\n"))
+    eitc1 <- calcEITC(taxdef1[["EITC"]], input$wages, input$children, input$filing)
+    eitc2 <- calcEITC(taxdef2[["EITC"]], input$wages, input$children, input$filing)
+    if (eitc1 > 0 | eitc2 > 0){
+      cat(paste0("\nNote: Taxes for plans include EITCs of $", eitc1, " and $", eitc2, ", respectively.\n"))
     }
     cat("</pre>")
   })
@@ -458,7 +461,7 @@ shinyServer(function(input, output, session) {
     EITCdesc <- c("Wage1", "Wage2", "Wage3", "Slope1", "Slope2", "Maximum_Credit")
     eechildren <- min(input$children, 3)
     ee1 <- eitcdefs[eitcdefs$Name == as.character(td1["EITC"]) & as.numeric(eitcdefs$C) == eechildren,]
-    ee2 <- eitcdefs[eitcdefs$Name == as.character(td1["EITC"]) & as.numeric(eitcdefs$C) == eechildren,]
+    ee2 <- eitcdefs[eitcdefs$Name == as.character(td2["EITC"]) & as.numeric(eitcdefs$C) == eechildren,]
     EITCval1 <- c(ee1$Wage1, ee1$Wage2 + ee1$Madd, ee1$Wage3 + ee1$Madd,
                   ee1$Per1, ee1$Per2, ee1$Ymax)
     EITCval2 <- c(ee2$Wage1, ee2$Wage2 + ee2$Madd, ee2$Wage3 + ee2$Madd,
