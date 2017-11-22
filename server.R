@@ -129,24 +129,27 @@ shinyServer(function(input, output, session) {
     else if (taxname2 == "Current 2018"){
       name <- "2018"
     }
-    else if (taxname2 == "House Bill"){
-      name <- "House"
+    else if (taxname2 == "House 2017"){
+      name <- "House 2017"
     }
-    else if (taxname2 == "House Bill w/o Family Credits"){
-      name <- "House w/o FC"
+    else if (taxname2 == "House 2017 w/o Family Credits"){
+      name <- "House 2017 w/o FC"
     }
-    else if (taxname2 == "Senate Bill"){
+    else if (taxname2 == "House 2018"){
+      name <- "House 2018"
+    }
+    else if (taxname2 == "Senate 2018"){
       name <- "Senate"
     }
-    else if (taxname2 == "Senate Bill w/ $2000 Child Credit"){
+    else if (taxname2 == "Senate 2018 w/ $2000 Child Credit"){
       name <- "Senate w/ $2000 CC"
     }
     name
   }
   getMidTaxName <- function(longTaxName){
     midTaxName <- longTaxName
-    if (longTaxName == "House Bill w/o Family Credits")     midTaxName <- "House Bill2"
-    if (longTaxName == "Senate Bill w/ $2000 Child Credit") midTaxName <- "Senate Bill2"
+    if (longTaxName == "House 2017 w/o Family Credits")     midTaxName <- "House 2017b"
+    if (longTaxName == "Senate 2018 w/ $2000 Child Credit") midTaxName <- "Senate 2018b"
     midTaxName
   }
   parenTaxName2 <- function(){
@@ -173,7 +176,7 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "wages", value = 30000)
       updateNumericInput(session, "children", value = 1)
       updateNumericInput(session, "otherdep", value = 1)
-      updateNumericInput(session, "filing", value = "Single")
+      updateNumericInput(session, "filing", value = "Head of Household")
       Released <<- c("","< -1000","< -700","")
       Title <<- "Example 2 - Single Mother Making $30,000 Per Year"
     }
@@ -293,6 +296,7 @@ shinyServer(function(input, output, session) {
   })
   output$taxPrint <- renderPrint({
     filing <- input$filing
+    if (filing == "Head of Household") filing = "Household"
     if (filing == "Married filing jointly") filing = "Married"
     taxname1 <- getMidTaxName(input$taxname1)
     taxname2 <- getMidTaxName(input$taxname2)
@@ -316,6 +320,7 @@ shinyServer(function(input, output, session) {
   })
   taxdata <- reactive({
     filing <- input$filing
+    if (filing == "Head of Household") filing = "Household"
     if (filing == "Married filing jointly") filing = "Married"
     taxname1 <- getMidTaxName(input$taxname1)
     taxname2 <- getMidTaxName(input$taxname2)
@@ -376,6 +381,7 @@ shinyServer(function(input, output, session) {
   output$rulePrint <- renderPrint({
     df <- taxdata() # log message on change
     filing <- input$filing
+    if (filing == "Head of Household") filing = "Household"
     if (filing == "Married filing jointly") filing = "Married"
     taxname1 <- getMidTaxName(input$taxname1)
     taxname2 <- getMidTaxName(input$taxname2)

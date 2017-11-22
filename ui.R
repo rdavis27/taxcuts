@@ -11,13 +11,13 @@ shinyUI(fluidPage(
       wellPanel(
         h4("Tax Plans to Compare"),
         selectInput("taxname1", "Tax Plan 1",
-                    choices = c("Current 2017", "Current 2018", "House Bill", "House Bill w/o Family Credits",
-                                "Senate Bill", "Senate Bill w/ $2000 Child Credit"),
+                    choices = c("Current 2017", "Current 2018", "House 2017", "House 2017 w/o Family Credits", "House 2018",
+                                "Senate 2018", "Senate 2018 w/ $2000 Child Credit"),
                     selected = "Current 2017"),
         selectInput("taxname2", "Tax Plan 2",
-                    choices = c("Current 2017", "Current 2018", "House Bill", "House Bill w/o Family Credits",
-                                "Senate Bill", "Senate Bill w/ $2000 Child Credit"),
-                    selected = "House Bill"),
+                    choices = c("Current 2017", "Current 2018", "House 2017", "House 2017 w/o Family Credits", "House 2018",
+                                "Senate 2018", "Senate 2018 w/ $2000 Child Credit"),
+                    selected = "House 2017"),
         selectInput("examples", "Tax Examples",
                     choices = c("Example 1 - Family of Four",
                                 "Example 2 - Single Mother",
@@ -38,7 +38,7 @@ shinyUI(fluidPage(
       wellPanel(
         h4("General Items"),
         selectInput("filing", "Filing status",
-                    choices = c("Single", "Married filing jointly")),
+                    choices = c("Single", "Head of Household", "Married filing jointly")),
         numericInput("children", "Number of children under age 17", value = 0, min = 0, step = 1),
         numericInput("otherdep", "Number of other dependents", value = 0, min = 0, step = 1),
         numericInput("wages", "Wages, salaries, tips, etc.", value = 0, min = 0, step = 1000)

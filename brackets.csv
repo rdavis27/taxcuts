@@ -1,37 +1,64 @@
-Name,         Filing,  Prop, Nspan, Span1, Span2,   Span3,   Span4,   Span5,    Span6,    Span7
-Current 2017, Single,  Start,    7,     0,  9325,   37950,   91900,  191650,   416700,   418400
-Current 2017, Single,  Rate,     7,    10,    15,      25,      28,      33,       35,     39.6
-Current 2017, Single,  Add,      7,     0,932.50, 5226.25,18713.75,46643.75,120910.25,121505.25
-Current 2017, Married, Start,    7,     0, 18650,   75900,  153100,  233350,   416700,   470700
-Current 2017, Married, Rate,     7,    10,    15,      25,      28,      33,       35,     39.6
-Current 2017, Married, Add,      7,     0,  1865,10452.50,29752.50,52222.50,   112728,   131628
-Current 2018, Single,  Start,    7,     0,  9525,   38700,   93700,  195450,   424950,   426700
-Current 2018, Single,  Rate,     7,    10,    15,      25,      28,      33,       35,     39.6
-Current 2018, Single,  Add,      7,     0,952.50, 5328.75,19078.75,47568.75,123303.75,123916.25
-Current 2018, Married, Start,    7,     0, 19050,   77400,  156150,  237950,   424950,   480050
-Current 2018, Married, Rate,     7,    10,    15,      25,      28,      33,       35,     39.6
-Current 2018, Married, Add,      7,     0,  1905,10657.50,   30345,   53249,   114959,   134244
-House Bill,   Single,  Start,    4,     0, 45000,  200000,  500000
-House Bill,   Single,  Rate,     4,    12,    25,      35,    39.6
-House Bill,   Single,  Add,      4,     0,  5400,   44150,  149150
-House Bill,   Married, Start,    4,     0, 90000,  260000, 1000000
-House Bill,   Married, Rate,     4,    12,    25,      35,    39.6
-House Bill,   Married, Add,      4,     0, 10800,   53300,  312300
-House Bill2,  Single,  Start,    4,     0, 45000,  200000,  500000
-House Bill2,  Single,  Rate,     4,    12,    25,      35,    39.6
-House Bill2,  Single,  Add,      4,     0,  5400,   44150,  149150
-House Bill2,  Married, Start,    4,     0, 90000,  260000, 1000000
-House Bill2,  Married, Rate,     4,    12,    25,      35,    39.6
-House Bill2,  Married, Add,      4,     0, 10800,   53300,  312300
-Senate Bill,  Single,  Start,    7,     0,  9525,   38700,   60000,  170000,   200000,   500000
-Senate Bill,  Single,  Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
-Senate Bill,  Single,  Add,      7,     0,952.50, 4453.50,    9246,   36746,    46496,   151496
-Senate Bill,  Married, Start,    7,     0, 19050,   77400,  120000,  290000,   390000,  1000000
-Senate Bill,  Married, Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
-Senate Bill,  Married, Add,      7,     0,  1905,    8907,   18492,   60992,    93492,   306992
-Senate Bill2, Single,  Start,    7,     0,  9525,   38700,   60000,  170000,   200000,   500000
-Senate Bill2, Single,  Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
-Senate Bill2, Single,  Add,      7,     0,952.50, 4453.50,    9246,   36746,    46496,   151496
-Senate Bill2, Married, Start,    7,     0, 19050,   77400,  120000,  290000,   390000,  1000000
-Senate Bill2, Married, Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
-Senate Bill2, Married, Add,      7,     0,  1905,    8907,   18492,   60992,    93492,   306992
+Name,         Filing,    Prop, Nspan, Span1, Span2,   Span3,   Span4,   Span5,    Span6,    Span7
+Current 2017, Single,    Start,    7,     0,  9325,   37950,   91900,  191650,   416700,   418400
+Current 2017, Single,    Rate,     7,    10,    15,      25,      28,      33,       35,     39.6
+Current 2017, Single,    Add,      7,     0,932.50, 5226.25,18713.75,46643.75,120910.25,121505.25
+Current 2017, Household, Start,    7,     0, 13350,   50800,  131200,  212500,   416700,   444500
+Current 2017, Household, Rate,     7,    10,    15,      25,      28,      33,       35,     39.6
+Current 2017, Household, Add,      7,     0,  1335, 6952.50,27052.50,49816.50,117202.50,   126950
+Current 2017, Married,   Start,    7,     0, 18650,   75900,  153100,  233350,   416700,   470700
+Current 2017, Married,   Rate,     7,    10,    15,      25,      28,      33,       35,     39.6
+Current 2017, Married,   Add,      7,     0,  1865,10452.50,29752.50,52222.50,   112728,   131628
+Current 2018, Single,    Start,    7,     0,  9525,   38700,   93700,  195450,   424950,   426700
+Current 2018, Single,    Rate,     7,    10,    15,      25,      28,      33,       35,     39.6
+Current 2018, Single,    Add,      7,     0,952.50, 5328.75,19078.75,47568.75,123303.75,123916.25
+Current 2018, Household, Start,    7,     0, 13600,   51850,  133850,  216700,   424950,   453350
+Current 2018, Household, Rate,     7,    10,    15,      25,      28,      33,       35,     39.6
+Current 2018, Household, Add,      7,     0,  1360, 7097.50,27597.50,50795.50,   119518,   129458
+Current 2018, Married,   Start,    7,     0, 19050,   77400,  156150,  237950,   424950,   480050
+Current 2018, Married,   Rate,     7,    10,    15,      25,      28,      33,       35,     39.6
+Current 2018, Married,   Add,      7,     0,  1905,10657.50,   30345,   53249,   114959,   134244
+House 2017,   Single,    Start,    4,     0, 45000,  200000,  500000
+House 2017,   Single,    Rate,     4,    12,    25,      35,    39.6
+House 2017,   Single,    Add,      4,     0,  5400,   44150,  149150
+House 2017,   Household, Start,    4,     0, 67500,  200000,  500000
+House 2017,   Household, Rate,     4,    12,    25,      35,    39.6
+House 2017,   Household, Add,      4,     0,  8100,   41225,  146225
+House 2017,   Married,   Start,    4,     0, 90000,  260000, 1000000
+House 2017,   Married,   Rate,     4,    12,    25,      35,    39.6
+House 2017,   Married,   Add,      4,     0, 10800,   53300,  312300
+House 2017b,  Single,    Start,    4,     0, 45000,  200000,  500000
+House 2017b,  Single,    Rate,     4,    12,    25,      35,    39.6
+House 2017b,  Single,    Add,      4,     0,  5400,   44150,  149150
+House 2017b,  Household, Start,    4,     0, 67500,  200000,  500000
+House 2017b,  Household, Rate,     4,    12,    25,      35,    39.6
+House 2017b,  Household, Add,      4,     0,  8100,   41225,  146225
+House 2017b,  Married,   Start,    4,     0, 90000,  260000, 1000000
+House 2017b,  Married,   Rate,     4,    12,    25,      35,    39.6
+House 2017b,  Married,   Add,      4,     0, 10800,   53300,  312300
+House 2018,   Single,    Start,    4,     0, 45000,  200000,  500000
+House 2018,   Single,    Rate,     4,    12,    25,      35,    39.6
+House 2018,   Single,    Add,      4,     0,  5400,   44150,  149150
+House 2018,   Household, Start,    4,     0, 67500,  200000,  500000
+House 2018,   Household, Rate,     4,    12,    25,      35,    39.6
+House 2018,   Household, Add,      4,     0,  8100,   41225,  146225
+House 2018,   Married,   Start,    4,     0, 90000,  260000, 1000000
+House 2018,   Married,   Rate,     4,    12,    25,      35,    39.6
+House 2018,   Married,   Add,      4,     0, 10800,   53300,  312300
+Senate 2018,  Single,    Start,    7,     0,  9525,   38700,   60000,  170000,   200000,   500000
+Senate 2018,  Single,    Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
+Senate 2018,  Single,    Add,      7,     0,952.50, 4453.50,    9246,   36746,    46496,   151496
+Senate 2018,  Household, Start,    7,     0, 13600,   51850,  133850,  216700,   424950,   453350
+Senate 2018,  Household, Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
+Senate 2018,  Household, Add,      0
+Senate 2018,  Married,   Start,    7,     0, 19050,   77400,  120000,  290000,   390000,  1000000
+Senate 2018,  Married,   Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
+Senate 2018,  Married,   Add,      7,     0,  1905,    8907,   18492,   60992,    93492,   306992
+Senate 2018b, Single,    Start,    7,     0,  9525,   38700,   60000,  170000,   200000,   500000
+Senate 2018b, Single,    Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
+Senate 2018b, Single,    Add,      7,     0,952.50, 4453.50,    9246,   36746,    46496,   151496
+Senate 2018b, Household, Start,    7,     0, 13600,   51850,  133850,  216700,   424950,   453350
+Senate 2018b, Household, Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
+Senate 2018b, Household, Add,      0
+Senate 2018b, Married,   Start,    7,     0, 19050,   77400,  120000,  290000,   390000,  1000000
+Senate 2018b, Married,   Rate,     7,    10,    12,    22.5,      25,    32.5,       35,     38.5
+Senate 2018b, Married,   Add,      7,     0,  1905,    8907,   18492,   60992,    93492,   306992
