@@ -126,6 +126,18 @@ shinyServer(function(input, output, session) {
     updateNumericInput(session, "wagemin",  value = 0)
     updateNumericInput(session, "wagemax",  value = 200000)
   }
+  setHouse2017 <- function(){
+    updateNumericInput(session, "taxname1",  value = "Current 2017")
+    updateNumericInput(session, "taxname2",  value = "House 2017")
+  }
+  setSenate2018 <- function(){
+    updateNumericInput(session, "taxname1",  value = "Current 2018")
+    updateNumericInput(session, "taxname2",  value = "Senate 2018")
+  }
+  setSenate2017_2018 <- function(){
+    updateNumericInput(session, "taxname1",  value = "Current 2017")
+    updateNumericInput(session, "taxname2",  value = "Senate 2018")
+  }
   getShortTaxName2 <- function(){
     taxname2 <- input$taxname2
     name <- ""
@@ -144,18 +156,18 @@ shinyServer(function(input, output, session) {
     else if (taxname2 == "House 2018"){
       name <- "House 2018"
     }
+    else if (taxname2 == "Senate 2018 w/ $1650 Child Credit"){
+      name <- "Senate w/ $1650 CC"
+    }
     else if (taxname2 == "Senate 2018"){
       name <- "Senate"
-    }
-    else if (taxname2 == "Senate 2018 w/ $2000 Child Credit"){
-      name <- "Senate w/ $2000 CC"
     }
     name
   }
   getMidTaxName <- function(longTaxName){
     midTaxName <- longTaxName
     if (longTaxName == "House 2017 w/o Family Credits")     midTaxName <- "House 2017b"
-    if (longTaxName == "Senate 2018 w/ $2000 Child Credit") midTaxName <- "Senate 2018b"
+    if (longTaxName == "Senate 2018 w/ $1650 Child Credit") midTaxName <- "Senate 2018a"
     midTaxName
   }
   parenTaxName2 <- function(){
@@ -170,7 +182,9 @@ shinyServer(function(input, output, session) {
     #print(paste0("example=",example))
     clearDeductions()
     resetWageLimits()
+    setSenate2018()
     if (example == "Example 1"){
+      setHouse2017()
       updateNumericInput(session, "wages", value = 59000)
       updateNumericInput(session, "children", value = 2)
       updateNumericInput(session, "otherdep", value = 0)
@@ -179,6 +193,7 @@ shinyServer(function(input, output, session) {
       Title <<- "Example 1 - Family of Four Making $59,000 Per Year"
     }
     else if (example == "Example 2"){
+      setHouse2017()
       updateNumericInput(session, "wages", value = 30000)
       updateNumericInput(session, "children", value = 1)
       updateNumericInput(session, "otherdep", value = 0)
@@ -187,6 +202,7 @@ shinyServer(function(input, output, session) {
       Title <<- "Example 2 - Single Mother Making $30,000 Per Year"
     }
     else if (example == "Example 3"){
+      setHouse2017()
       updateNumericInput(session, "wages", value = 48000)
       updateNumericInput(session, "children", value = 0)
       updateNumericInput(session, "otherdep", value = 0)
@@ -195,6 +211,7 @@ shinyServer(function(input, output, session) {
       Title <<- "Example 3 - Firefighter Making $48,000 Per Year"
     }
     else if (example == "Example 4"){
+      setHouse2017()
       updateNumericInput(session, "wages", value = 115000)
       updateNumericInput(session, "children", value = 0)
       updateNumericInput(session, "otherdep", value = 0)
@@ -204,6 +221,24 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "mortgage", value = 8400)
       Released <<- c("12180","11050","-1130","")
       Title <<- "Example 4 - New Homeowners Making $115,000 Per Year in a High Tax State"
+    }
+    else if (example == "Example 5"){
+      setSenate2017_2018()
+      updateNumericInput(session, "wages", value = 73000)
+      updateNumericInput(session, "children", value = 2)
+      updateNumericInput(session, "otherdep", value = 0)
+      updateNumericInput(session, "filing", value = "Married filing jointly")
+      Released <<- c("3683","1499","-2184","nearly 60 percent")
+      Title <<- "Example 5 - Family of Four Earning $73,000 Per Year"
+    }
+    else if (example == "Example 6"){
+      setSenate2017_2018()
+      updateNumericInput(session, "wages", value = 41000)
+      updateNumericInput(session, "children", value = 1)
+      updateNumericInput(session, "otherdep", value = 0)
+      updateNumericInput(session, "filing", value = "Head of Household")
+      Released <<- c("1865","488","1377","nearly 75 percent")
+      Title <<- "Example 6 - Single Parent with One Child Earning $41,000 Per Year"
     }
     else if (example == "Example A"){
       updateNumericInput(session, "wages", value = 25000)
