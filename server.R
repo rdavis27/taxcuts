@@ -36,6 +36,7 @@ shinyServer(function(input, output, session) {
       StdDeduct   = rowDef$StdDeduct,
       ChildCredit = rowDef$ChildCredit,
       DepCredit   = rowDef$DepCredit,
+      ParCredit   = rowDef$ParCredit,
       Medical     = rowDef$Medical,
       StateLoc    = rowDef$StateLoc,
       Property    = rowDef$Property,
@@ -46,10 +47,13 @@ shinyServer(function(input, output, session) {
     ))
   }
   getIncdef <- reactive({
+    nparents = 1
+    if (input$filing == "Married filing jointly") nparents = 2
     return(list(
       wages      = input$wages,
       children   = input$children,
       dependents = input$otherdep,
+      parents    = nparents,
       medical    = input$medical,
       stateloc   = input$stateloc,
       property   = input$property,
@@ -86,11 +90,13 @@ shinyServer(function(input, output, session) {
     StdDeduct   <- as.numeric(td["StdDeduct"])
     ChildCredit <- as.numeric(td["ChildCredit"])
     DepCredit   <- as.numeric(td["DepCredit"])
+    ParCredit   <- as.numeric(td["ParCredit"])
     
     if (wages < 0) wages <- as.numeric(id["wages"])
     children <- as.numeric(id["children"])
     dependents <- as.numeric(id["dependents"])
-    medical <-  as.numeric(td["Medical"])  * as.numeric(id["medical"])  * wages / 100.0
+    parents  <- as.numeric(id["parents"])
+    medical  <- as.numeric(td["Medical"])  * as.numeric(id["medical"])  * wages / 100.0
     stateloc <- as.numeric(td["StateLoc"]) * as.numeric(id["stateloc"]) * wages / 100.0
     property <- as.numeric(td["Property"]) * as.numeric(id["property"])
     mortgage <- as.numeric(td["Mortgage"]) * as.numeric(id["mortgage"])
@@ -103,9 +109,9 @@ shinyServer(function(input, output, session) {
     Deduct <- StdDeduct
     if (Deduct < CalcDeduct) Deduct <- CalcDeduct
     
-    adjinc <- wages - Deduct - (children + dependents) * Exempt
+    adjinc <- wages - Deduct - (children + dependents + parents) * Exempt
     pretax <- calcPretax(td, adjinc)
-    tax <- pretax - children * ChildCredit - dependents * DepCredit - eitc
+    tax <- pretax - children * ChildCredit - dependents * DepCredit - parents * ParCredit - eitc
     tax
   }
   clearDeductions <- function(){
@@ -167,7 +173,7 @@ shinyServer(function(input, output, session) {
     if (example == "Example 1"){
       updateNumericInput(session, "wages", value = 59000)
       updateNumericInput(session, "children", value = 2)
-      updateNumericInput(session, "otherdep", value = 2)
+      updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing", value = "Married filing jointly")
       Released <<- c("1582","400","-1182","")
       Title <<- "Example 1 - Family of Four Making $59,000 Per Year"
@@ -175,7 +181,7 @@ shinyServer(function(input, output, session) {
     else if (example == "Example 2"){
       updateNumericInput(session, "wages", value = 30000)
       updateNumericInput(session, "children", value = 1)
-      updateNumericInput(session, "otherdep", value = 1)
+      updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing", value = "Head of Household")
       Released <<- c("","< -1000","< -700","")
       Title <<- "Example 2 - Single Mother Making $30,000 Per Year"
@@ -183,7 +189,7 @@ shinyServer(function(input, output, session) {
     else if (example == "Example 3"){
       updateNumericInput(session, "wages", value = 48000)
       updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 1)
+      updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing", value = "Single")
       Released <<- c("5173","3872","-1301","")
       Title <<- "Example 3 - Firefighter Making $48,000 Per Year"
@@ -191,7 +197,7 @@ shinyServer(function(input, output, session) {
     else if (example == "Example 4"){
       updateNumericInput(session, "wages", value = 115000)
       updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 2)
+      updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing", value = "Married filing jointly")
       updateNumericInput(session, "stateloc", value = 7.64347)
       updateNumericInput(session, "property", value = 6900)
@@ -202,7 +208,7 @@ shinyServer(function(input, output, session) {
     else if (example == "Example A"){
       updateNumericInput(session, "wages", value = 25000)
       updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 1)
+      updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Single")
       updateNumericInput(session, "mortgage", value = 6000)
       updateNumericInput(session, "charity",  value = 6000)
@@ -212,7 +218,7 @@ shinyServer(function(input, output, session) {
     else if (example == "Example B"){
       updateNumericInput(session, "wages", value = 50000)
       updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 2)
+      updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Married filing jointly")
       updateNumericInput(session, "mortgage", value = 12000)
       updateNumericInput(session, "charity",  value = 12000)
@@ -222,7 +228,7 @@ shinyServer(function(input, output, session) {
     else if (example == "Example C"){
       updateNumericInput(session, "wages", value = 25000)
       updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 1)
+      updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Single")
       updateNumericInput(session, "repealed", value = 15000)
       Released <<- c("","","","")
@@ -231,7 +237,7 @@ shinyServer(function(input, output, session) {
     else if (example == "Example D"){
       updateNumericInput(session, "wages", value = 50000)
       updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 2)
+      updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Married filing jointly")
       updateNumericInput(session, "repealed", value = 30000)
       Released <<- c("","","","")
@@ -240,7 +246,7 @@ shinyServer(function(input, output, session) {
     else if (example == "Example E"){
       updateNumericInput(session, "wages", value = 470000)
       updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 1)
+      updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Single")
       updateNumericInput(session, "stateloc", value = 10)
       updateNumericInput(session, "wagemin",  value = 10000)
@@ -252,7 +258,7 @@ shinyServer(function(input, output, session) {
     else if (example == "Example F"){
       updateNumericInput(session, "wages", value = 530000)
       updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 2)
+      updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Married filing jointly")
       updateNumericInput(session, "stateloc", value = 10)
       updateNumericInput(session, "wagemin",  value = 10000)
@@ -264,7 +270,7 @@ shinyServer(function(input, output, session) {
     else if (example == "Example G"){
       updateNumericInput(session, "wages", value = 25000)
       updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 2)
+      updateNumericInput(session, "otherdep", value = 1)
       updateNumericInput(session, "filing",   value = "Single")
       Released <<- c("","","","")
       Title <<- "Example G - Single Person Making $25,000 Per Year with 1 Non-Child Dependent"
@@ -272,7 +278,7 @@ shinyServer(function(input, output, session) {
     else if (example == "Example H"){
       updateNumericInput(session, "wages", value = 50000)
       updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 4)
+      updateNumericInput(session, "otherdep", value = 2)
       updateNumericInput(session, "filing",   value = "Married filing jointly")
       Released <<- c("","","","")
       Title <<- "Example H - Married Couple Making $50,000 Per Year with 2 Non-Child Dependents"
@@ -280,7 +286,7 @@ shinyServer(function(input, output, session) {
     else if (example == "Example I"){
       updateNumericInput(session, "wages", value = 25000)
       updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 3)
+      updateNumericInput(session, "otherdep", value = 2)
       updateNumericInput(session, "filing",   value = "Single")
       Released <<- c("","","","")
       Title <<- "Example G - Single Person Making $25,000 Per Year with 2 Non-Child Dependent"
@@ -288,7 +294,7 @@ shinyServer(function(input, output, session) {
     else if (example == "Example J"){
       updateNumericInput(session, "wages", value = 50000)
       updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 6)
+      updateNumericInput(session, "otherdep", value = 4)
       updateNumericInput(session, "filing",   value = "Married filing jointly")
       Released <<- c("","","","")
       Title <<- "Example H - Married Couple Making $50,000 Per Year with 4 Non-Child Dependents"
@@ -442,9 +448,10 @@ shinyServer(function(input, output, session) {
     Rules  <- c("Exemption Amount",
                 "Standard Deduction",
                 "Child Credit",
-                "Family Credit")
-    Rule1 <- c(td1$Exempt, td1$StdDeduct, td1$ChildCredit, td1$DepCredit)
-    Rule2 <- c(td2$Exempt, td2$StdDeduct, td2$ChildCredit, td2$DepCredit)
+                "Dependent Credit",
+                "Parent Credit")
+    Rule1 <- c(td1$Exempt, td1$StdDeduct, td1$ChildCredit, td1$DepCredit, td1$ParCredit)
+    Rule2 <- c(td2$Exempt, td2$StdDeduct, td2$ChildCredit, td2$DepCredit, td2$ParCredit)
     RDiff <- Rule2 - Rule1
     rdf <- data.frame("Tax_Rule"=Rules, "Plan_1"=Rule1, "Plan_2"=Rule2, "Change"=RDiff)
     cat("<h4>Comparison of Tax Rules</h4>")

@@ -1,22 +1,22 @@
-Name,         Filing,    Exempt, StdDeduct, ChildCredit, DepCredit, Medical, StateLoc, Property, Mortgage, Charity, Repealed, EITC
-Current 2017, Single,      4050,      6350,        1000,         0,       1,        1,        1,        1,       1,        1, 2017
-Current 2017, Household,   4050,      9350,        1000,         0,       1,        1,        1,        1,       1,        1, 2017
-Current 2017, Married,     4050,     12700,        1000,         0,       1,        1,        1,        1,       1,        1, 2017
-Current 2018, Single,      4150,      6500,        1000,         0,       1,        1,        1,        1,       1,        1, 2018
-Current 2018, Household,   4150,      9550,        1000,         0,       1,        1,        1,        1,       1,        1, 2018
-Current 2018, Married,     4150,     13000,        1000,         0,       1,        1,        1,        1,       1,        1, 2018
-House 2017,   Single,         0,     12000,        1600,       300,       0,        0,        1,        1,       1,        0, 2017
-House 2017,   Household,      0,     18000,        1600,       300,       0,        0,        1,        1,       1,        0, 2017
-House 2017,   Married,        0,     24000,        1600,       300,       0,        0,        1,        1,       1,        0, 2017
-House 2017b,  Single,         0,     12000,        1600,         0,       0,        0,        1,        1,       1,        0, 2017
-House 2017b,  Household,      0,     18000,        1600,         0,       0,        0,        1,        1,       1,        0, 2017
-House 2017b,  Married,        0,     24000,        1600,         0,       0,        0,        1,        1,       1,        0, 2017
-House 2018,   Single,         0,     12200,        1600,       300,       0,        0,        1,        1,       1,        0, 2018
-House 2018,   Household,      0,     18300,        1600,       300,       0,        0,        1,        1,       1,        0, 2018
-House 2018,   Married,        0,     24400,        1600,       300,       0,        0,        1,        1,       1,        0, 2018
-Senate 2018,  Single,         0,     12000,        1650,       500,       1,        0,        0,        1,       1,        0, 2018
-Senate 2018,  Household,      0,     18000,        1650,       500,       1,        0,        0,        1,       1,        0, 2018
-Senate 2018,  Married,        0,     24000,        1650,       500,       1,        0,        0,        1,       1,        0, 2018
-Senate 2018b, Single,         0,     12000,        2000,       500,       1,        0,        0,        1,       1,        0, 2018
-Senate 2018b, Household,      0,     18000,        2000,       500,       1,        0,        0,        1,       1,        0, 2018
-Senate 2018b, Married,        0,     24000,        2000,       500,       1,        0,        0,        1,       1,        0, 2018
+Name,         Filing,    Exempt, StdDeduct, ChildCredit, DepCredit, ParCredit, Medical, StateLoc, Property, Mortgage, Charity, Repealed, EITC
+Current 2017, Single,      4050,      6350,        1000,         0,         0,       1,        1,        1,        1,       1,        1, 2017
+Current 2017, Household,   4050,      9350,        1000,         0,         0,       1,        1,        1,        1,       1,        1, 2017
+Current 2017, Married,     4050,     12700,        1000,         0,         0,       1,        1,        1,        1,       1,        1, 2017
+Current 2018, Single,      4150,      6500,        1000,         0,         0,       1,        1,        1,        1,       1,        1, 2018
+Current 2018, Household,   4150,      9550,        1000,         0,         0,       1,        1,        1,        1,       1,        1, 2018
+Current 2018, Married,     4150,     13000,        1000,         0,         0,       1,        1,        1,        1,       1,        1, 2018
+House 2017,   Single,         0,     12000,        1600,       300,       300,       0,        0,        1,        1,       1,        0, 2017
+House 2017,   Household,      0,     18000,        1600,       300,       300,       0,        0,        1,        1,       1,        0, 2017
+House 2017,   Married,        0,     24000,        1600,       300,       300,       0,        0,        1,        1,       1,        0, 2017
+House 2017b,  Single,         0,     12000,        1600,         0,         0,       0,        0,        1,        1,       1,        0, 2017
+House 2017b,  Household,      0,     18000,        1600,         0,         0,       0,        0,        1,        1,       1,        0, 2017
+House 2017b,  Married,        0,     24000,        1600,         0,         0,       0,        0,        1,        1,       1,        0, 2017
+House 2018,   Single,         0,     12200,        1600,       300,       300,       0,        0,        1,        1,       1,        0, 2018
+House 2018,   Household,      0,     18300,        1600,       300,       300,       0,        0,        1,        1,       1,        0, 2018
+House 2018,   Married,        0,     24400,        1600,       300,       300,       0,        0,        1,        1,       1,        0, 2018
+Senate 2018,  Single,         0,     12000,        1650,       500,         0,       1,        0,        0,        1,       1,        0, 2018
+Senate 2018,  Household,      0,     18000,        1650,       500,         0,       1,        0,        0,        1,       1,        0, 2018
+Senate 2018,  Married,        0,     24000,        1650,       500,         0,       1,        0,        0,        1,       1,        0, 2018
+Senate 2018b, Single,         0,     12000,        2000,       500,         0,       1,        0,        0,        1,       1,        0, 2018
+Senate 2018b, Household,      0,     18000,        2000,       500,         0,       1,        0,        0,        1,       1,        0, 2018
+Senate 2018b, Married,        0,     24000,        2000,       500,         0,       1,        0,        0,        1,       1,        0, 2018
