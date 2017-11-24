@@ -156,17 +156,21 @@ shinyServer(function(input, output, session) {
     else if (taxname2 == "House 2018"){
       name <- "House 2018"
     }
+    else if (taxname2 == "House 2018 w/o Family Credits"){
+      name <- "House 2018 w/o FC"
+    }
     else if (taxname2 == "Senate 2018 w/ $1650 Child Credit"){
-      name <- "Senate w/ $1650 CC"
+      name <- "Senate 2018 w/ $1650 CC"
     }
     else if (taxname2 == "Senate 2018"){
-      name <- "Senate"
+      name <- "Senate 2018"
     }
     name
   }
   getMidTaxName <- function(longTaxName){
     midTaxName <- longTaxName
     if (longTaxName == "House 2017 w/o Family Credits")     midTaxName <- "House 2017b"
+    if (longTaxName == "House 2018 w/o Family Credits")     midTaxName <- "House 2018b"
     if (longTaxName == "Senate 2018 w/ $1650 Child Credit") midTaxName <- "Senate 2018a"
     midTaxName
   }
@@ -324,7 +328,7 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "otherdep", value = 2)
       updateNumericInput(session, "filing",   value = "Single")
       Released <<- c("","","","")
-      Title <<- "Example G - Single Person Making $25,000 Per Year with 2 Non-Child Dependent"
+      Title <<- "Example I - Single Person Making $25,000 Per Year with 2 Non-Child Dependent"
     }
     else if (example == "Example J"){
       updateNumericInput(session, "wages", value = 50000)
@@ -332,7 +336,7 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "otherdep", value = 4)
       updateNumericInput(session, "filing",   value = "Married filing jointly")
       Released <<- c("","","","")
-      Title <<- "Example H - Married Couple Making $50,000 Per Year with 4 Non-Child Dependents"
+      Title <<- "Example J - Married Couple Making $50,000 Per Year with 4 Non-Child Dependents"
     }
   })
   output$taxPrint <- renderPrint({
