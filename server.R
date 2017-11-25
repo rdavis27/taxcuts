@@ -85,7 +85,7 @@ shinyServer(function(input, output, session) {
     }
     eitc
   }
-  calcTax <- function(td, id, wages){
+  getTaxItems <- function(td, id, wages){
     Exempt      <- as.numeric(td["Exempt"])
     StdDeduct   <- as.numeric(td["StdDeduct"])
     ChildCredit <- as.numeric(td["ChildCredit"])
@@ -105,13 +105,25 @@ shinyServer(function(input, output, session) {
     EITCname <- as.character(td["EITC"])
     eitc     <- calcEITC(EITCname, wages, children, input$filing)
     #print(paste0(medical,"|",stateloc,"|",property,"|",mortgage,"|",charity"|",repealed)) #DEBUG
+    Exemptions <- (children + dependents + parents) * Exempt
     CalcDeduct <- medical + stateloc + property + mortgage + charity + repealed
-    Deduct <- StdDeduct
-    if (Deduct < CalcDeduct) Deduct <- CalcDeduct
+    if (StdDeduct < CalcDeduct){
+      Deduct <- CalcDeduct
+      items <- c(wages, -Exemptions,          0, -CalcDeduct, 0, -medical, -stateloc, -property, -mortgage, -charity, -repealed, 0)
+    } else {
+      Deduct <- StdDeduct
+      items <- c(wages, -Exemptions, -StdDeduct,           0, 0, -medical, -stateloc, -property, -mortgage, -charity, -repealed, 0)
+    }
     
-    adjinc <- wages - Deduct - (children + dependents + parents) * Exempt
+    adjinc <- wages - Deduct - Exemptions
     pretax <- calcPretax(td, adjinc)
     tax <- pretax - children * ChildCredit - dependents * DepCredit - parents * ParCredit - eitc
+    items <- c(items, adjinc, 0, pretax, -children * ChildCredit, -dependents * DepCredit, -parents * ParCredit, -eitc, 0, tax)
+    items
+  }
+  calcTax <- function(td, id, wages){
+    taxItems <- getTaxItems(td, id, wages)
+    tax <- taxItems[length(taxItems)]
     tax
   }
   clearDeductions <- function(){
@@ -137,6 +149,34 @@ shinyServer(function(input, output, session) {
   setSenate2017_2018 <- function(){
     updateNumericInput(session, "taxname1",  value = "Current 2017")
     updateNumericInput(session, "taxname2",  value = "Senate 2018")
+  }
+  getShortTaxName <- function(taxname){
+    name <- ""
+    if (taxname == "Current 2017"){
+      name <- "2017"
+    }
+    else if (taxname == "Current 2018"){
+      name <- "2018"
+    }
+    else if (taxname == "House 2017"){
+      name <- "House 2017"
+    }
+    else if (taxname == "House 2017 w/o Family Credits"){
+      name <- "House 2017 w/o FC"
+    }
+    else if (taxname == "House 2018"){
+      name <- "House 2018"
+    }
+    else if (taxname == "House 2018 w/o Family Credits"){
+      name <- "House 2018 w/o FC"
+    }
+    else if (taxname == "Senate 2018 w/ $1650 Child Credit"){
+      name <- "Senate 2018 w/ $1650 CC"
+    }
+    else if (taxname == "Senate 2018"){
+      name <- "Senate 2018"
+    }
+    name
   }
   getShortTaxName2 <- function(){
     taxname2 <- input$taxname2
@@ -175,9 +215,9 @@ shinyServer(function(input, output, session) {
     midTaxName
   }
   parenTaxName2 <- function(){
-    name <- getShortTaxName2()
+    name <- getShortTaxName(input$taxname2)
     if (name != ""){
-      name <- paste0(" (",getShortTaxName2(),")")
+      name <- paste0(" (",getShortTaxName(input$taxname2),")")
     }
     name
   }
@@ -536,6 +576,48 @@ shinyServer(function(input, output, session) {
     cat("       Any items not shown above (such as the phase out of the child)\n")
     cat("       credit are not included in the calculations.\n")
     cat("       Blog post on this application can be found at <A HREF=\"http://usbudget.blogspot.com/2017/11/the-problems-with-taxpayer-examples.html\">this link</A>.")
+    cat("</pre>")
+  })
+  output$taxCalcPrint <- renderPrint({
+    filing <- input$filing
+    if (filing == "Head of Household") filing = "Household"
+    if (filing == "Married filing jointly") filing = "Married"
+    taxname1 <- getMidTaxName(input$taxname1)
+    taxname2 <- getMidTaxName(input$taxname2)
+    taxdef1 <- getTaxdef(taxname1, filing)
+    taxdef2 <- getTaxdef(taxname2, filing)
+    incdef  <- getIncdef()
+    taxItemNames <- c(
+      "Wages, salaries, tips, etc.",
+      "Exemptions",
+      "Standard deductions",
+      "Itemized deductions",
+      "---------------------------",
+      "Medical",
+      "State and local taxes",
+      "Real estate taxes",
+      "Home mortgage interest",
+      "Charity",
+      "Misc. repealed deductions",
+      "---------------------------",
+      "Taxable income",
+      "---------------------------",
+      "Tax on taxable income",
+      "Child credit",
+      "Other dependent credit",
+      "Parent credit",
+      "Earned income tax credit",
+      "---------------------------",
+      "Amount owed"
+    )
+    getTaxItems1 <- as.character(getTaxItems(taxdef1, incdef, -1))
+    getTaxItems2 <- as.character(getTaxItems(taxdef2, incdef, -1))
+    getTaxItems1[c(5,12,14,20)] <- "--------"
+    getTaxItems2[c(5,12,14,20)] <- "--------"
+    df <- data.frame(taxItemNames, getTaxItems1, getTaxItems2)
+    colnames(df) = c("Tax Plan", getShortTaxName(taxname1), getShortTaxName(taxname2))
+    cat("<pre>")
+    print(df)
     cat("</pre>")
   })
 })

@@ -82,6 +82,9 @@ shinyUI(fluidPage(
         ),
         tabPanel("Comparison of Plans",
                  htmlOutput("rulePrint")
+        ),
+        tabPanel("Calculation of Taxes",
+                 htmlOutput("taxCalcPrint")
         )
       )
     )
