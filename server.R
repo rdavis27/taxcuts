@@ -281,7 +281,7 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "children", value = 1)
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing", value = "Head of Household")
-      Released <<- c("1865","488","1377","nearly 75 percent")
+      Released <<- c("1865","488","-1377","nearly 75 percent")
       Title <<- "Example 6 - Single Parent with One Child Earning $41,000 Per Year"
     }
     else if (example == "Example A"){
@@ -519,7 +519,8 @@ shinyServer(function(input, output, session) {
       }
     }
     Diff <- rr2 - rr1
-    df <- data.frame("Start"=ss, "Rate_1"=rr1, "Rate_2"=rr2, "Change"=Diff)
+    df <- data.frame(ss, rr1, rr2, Diff)
+    colnames(df) = c("Start", getShortTaxName(taxname1), getShortTaxName(taxname2), "Change")
     cat("<h4>Comparison of Brackets</h4>")
     cat("<pre>")
     print(df)
@@ -532,7 +533,8 @@ shinyServer(function(input, output, session) {
     Rule1 <- c(td1$Exempt, td1$StdDeduct, td1$ChildCredit, td1$DepCredit, td1$ParCredit)
     Rule2 <- c(td2$Exempt, td2$StdDeduct, td2$ChildCredit, td2$DepCredit, td2$ParCredit)
     RDiff <- Rule2 - Rule1
-    rdf <- data.frame("Tax_Rule"=Rules, "Plan_1"=Rule1, "Plan_2"=Rule2, "Change"=RDiff)
+    rdf <- data.frame(Rules, Rule1, Rule2, RDiff)
+    colnames(rdf) = c("Tax_Rule", getShortTaxName(taxname1), getShortTaxName(taxname2), "Change")
     cat("<h4>Comparison of Tax Rules</h4>")
     cat("<pre>")
     print(rdf)
@@ -545,7 +547,8 @@ shinyServer(function(input, output, session) {
                  "Misc. repealed deductions")
     Deduct1 <- c(td1$Medical, td1$StateLoc, td1$Property, td1$Mortgage, td1$Charity, td1$Repealed)
     Deduct2 <- c(td2$Medical, td2$StateLoc, td2$Property, td2$Mortgage, td2$Charity, td2$Repealed)
-    ddf <- data.frame("Deduction"=Deducts, "Plan_1"=Deduct1, "Plan_2"=Deduct2)
+    ddf <- data.frame(Deducts, Deduct1, Deduct2)
+    colnames(ddf) = c("Deduction", getShortTaxName(taxname1), getShortTaxName(taxname2))
     cat("<h4>Comparison of Deductions (0=not deductible, 1=deductible)</h4>")
     cat("<pre>")
     print(ddf)
@@ -558,7 +561,8 @@ shinyServer(function(input, output, session) {
                   ee1$Per1, ee1$Per2, ee1$Ymax)
     EITCval2 <- c(ee2$Wage1, ee2$Wage2 + ee2$Madd, ee2$Wage3 + ee2$Madd,
                   ee2$Per1, ee2$Per2, ee2$Ymax)
-    ddf2 <- data.frame("Description"=EITCdesc, "Plan_1"=EITCval1, "Plan_2"=EITCval2)
+    ddf2 <- data.frame(EITCdesc, EITCval1, EITCval2)
+    colnames(ddf2) = c("Description", getShortTaxName(taxname1), getShortTaxName(taxname2))
     cat("<h4>Comparison of Earned Income Tax Credit Parameters</h4>")
     cat("<pre>")
     print(ddf2)
