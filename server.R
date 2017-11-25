@@ -109,10 +109,10 @@ shinyServer(function(input, output, session) {
     CalcDeduct <- medical + stateloc + property + mortgage + charity + repealed
     if (StdDeduct < CalcDeduct){
       Deduct <- CalcDeduct
-      items <- c(wages, -Exemptions,          0, -CalcDeduct, 0, -medical, -stateloc, -property, -mortgage, -charity, -repealed, 0)
+      items <- c(0, wages, -Exemptions,          0, -CalcDeduct, 0, -medical, -stateloc, -property, -mortgage, -charity, -repealed, 0)
     } else {
       Deduct <- StdDeduct
-      items <- c(wages, -Exemptions, -StdDeduct,           0, 0, -medical, -stateloc, -property, -mortgage, -charity, -repealed, 0)
+      items <- c(0, wages, -Exemptions, -StdDeduct,           0, 0, -medical, -stateloc, -property, -mortgage, -charity, -repealed, 0)
     }
     
     adjinc <- wages - Deduct - Exemptions
@@ -588,6 +588,7 @@ shinyServer(function(input, output, session) {
     taxdef2 <- getTaxdef(taxname2, filing)
     incdef  <- getIncdef()
     taxItemNames <- c(
+      "---------------------------",
       "Wages, salaries, tips, etc.",
       "Exemptions",
       "Standard deductions",
@@ -610,13 +611,19 @@ shinyServer(function(input, output, session) {
       "---------------------------",
       "Amount owed"
     )
-    getTaxItems1 <- as.character(getTaxItems(taxdef1, incdef, -1))
-    getTaxItems2 <- as.character(getTaxItems(taxdef2, incdef, -1))
-    getTaxItems1[c(5,12,14,20)] <- "--------"
-    getTaxItems2[c(5,12,14,20)] <- "--------"
-    df <- data.frame(taxItemNames, getTaxItems1, getTaxItems2)
-    colnames(df) = c("Tax Plan", getShortTaxName(taxname1), getShortTaxName(taxname2))
+    getTaxItems1 <- getTaxItems(taxdef1, incdef, -1)
+    getTaxItems2 <- getTaxItems(taxdef2, incdef, -1)
+    getTaxChange <- getTaxItems2 - getTaxItems1
+    taxItems1 <- as.character(getTaxItems1)
+    taxItems2 <- as.character(getTaxItems2)
+    taxChange <- as.character(getTaxChange)
+    taxItems1[c(1,6,13,15,21)] <- "--------"
+    taxItems2[c(1,6,13,15,21)] <- "--------"
+    taxChange[c(1,6,13,15,21)] <- "--------"
+    df <- data.frame(taxItemNames, taxItems1, taxItems2, taxChange)
+    colnames(df) = c("Tax Plan", getShortTaxName(taxname1), getShortTaxName(taxname2), "Change")
     cat("<pre>")
+    cat(paste0(Title,"\n\n"))
     print(df)
     cat("</pre>")
   })
