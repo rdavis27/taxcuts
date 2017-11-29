@@ -36,7 +36,9 @@ shinyUI(fluidPage(
                                 "Example G - Single, 1 Non-Child Dependent",
                                 "Example H - Married, 2 Non-Child Dependents",
                                 "Example I - Single, 2 Non-Child Dependent",
-                                "Example J - Married, 4 Non-Child Dependents"),
+                                "Example J - Married, 4 Non-Child Dependents",
+                                "Example K - Single Itemizer, $36,000 Income",
+                                "Example L - Married Itemizer, $72,000 Income"),
         selected = "Example 5 - Family of Four (Senate)")
       ),
       wellPanel(

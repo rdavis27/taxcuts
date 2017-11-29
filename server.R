@@ -378,6 +378,26 @@ shinyServer(function(input, output, session) {
       Released <<- c("","","","")
       Title <<- "Example J - Married Couple Making $50,000 Per Year with 4 Non-Child Dependents"
     }
+    else if (example == "Example K"){
+      updateNumericInput(session, "wages", value = 36000)
+      updateNumericInput(session, "children", value = 0)
+      updateNumericInput(session, "otherdep", value = 0)
+      updateNumericInput(session, "filing",   value = "Single")
+      updateNumericInput(session, "mortgage", value = 6000)
+      updateNumericInput(session, "charity",  value = 6000)
+      Released <<- c("","","","")
+      Title <<- "Example K - Single Person Making $36,000 Per Year with $12,000 in Deductions"
+    }
+    else if (example == "Example L"){
+      updateNumericInput(session, "wages", value = 72000)
+      updateNumericInput(session, "children", value = 0)
+      updateNumericInput(session, "otherdep", value = 0)
+      updateNumericInput(session, "filing",   value = "Married filing jointly")
+      updateNumericInput(session, "mortgage", value = 12000)
+      updateNumericInput(session, "charity",  value = 12000)
+      Released <<- c("","","","")
+      Title <<- "Example L - Married Couple Making $72,000 Per Year with $24,000 in Deductions"
+    }
   })
   output$taxPrint <- renderPrint({
     filing <- input$filing
