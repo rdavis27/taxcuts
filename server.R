@@ -243,6 +243,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$examples, {
     example <- substr(input$examples, 1, 9)
     #print(paste0("example=",example))
+    clearTaxItems()
     clearDeductions()
     resetWageLimits()
     setSenate2018()
