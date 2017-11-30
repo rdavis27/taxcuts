@@ -113,10 +113,10 @@ shinyServer(function(input, output, session) {
     CalcDeduct <- medical + stateloc + property + mortgage + charity + repealed
     if (StdDeduct < CalcDeduct){
       Deduct <- CalcDeduct
-      items <- c(0, wages, -Exemptions,          0, -CalcDeduct, 0, -medical, -stateloc, -property, -mortgage, -charity, -repealed, 0)
+      items <- c(0, wages, -deferred, -Exemptions,          0, -CalcDeduct, 0, -medical, -stateloc, -property, -mortgage, -charity, -repealed, 0)
     } else {
       Deduct <- StdDeduct
-      items <- c(0, wages, -Exemptions, -StdDeduct,           0, 0, -medical, -stateloc, -property, -mortgage, -charity, -repealed, 0)
+      items <- c(0, wages, -deferred, -Exemptions, -StdDeduct,           0, 0, -medical, -stateloc, -property, -mortgage, -charity, -repealed, 0)
     }
     
     adjinc <- wages - Deduct - Exemptions - deferred
@@ -129,8 +129,9 @@ shinyServer(function(input, output, session) {
       maxwage2 <- ifelse(wage2 < 128700, wage2, 128700)
       fica <- 0.062 * (maxwage1 + maxwage2) + 0.0145 * (wage1 + wage2)
     }
-    tax <- fica + pretax - children * ChildCredit - dependents * DepCredit - parents * ParCredit - eitc
-    items <- c(items, adjinc, 0, pretax, -children * ChildCredit, -dependents * DepCredit, -parents * ParCredit, -eitc, 0, tax)
+    inctax <- pretax - children * ChildCredit - dependents * DepCredit - parents * ParCredit - eitc
+    tottax <- fica + inctax
+    items <- c(items, adjinc, 0, pretax, -children * ChildCredit, -dependents * DepCredit, -parents * ParCredit, -eitc, 0, inctax, fica, 0, tottax)
     items
   }
   calcTax <- function(td, id, wages){
@@ -684,6 +685,7 @@ shinyServer(function(input, output, session) {
     taxItemNames <- c(
       "---------------------------",
       "Wages, salaries, tips, etc.",
+      "Tax-deferred contributions",
       "Exemptions",
       "Standard deductions",
       "Itemized deductions",
@@ -703,7 +705,10 @@ shinyServer(function(input, output, session) {
       "Parent credit",
       "Earned income tax credit",
       "---------------------------",
-      "Amount owed"
+      "Income tax",
+      "Payroll tax",
+      "---------------------------",
+      "Total tax"
     )
     getTaxItems1 <- getTaxItems(taxdef1, incdef, -1)
     getTaxItems2 <- getTaxItems(taxdef2, incdef, -1)
@@ -711,10 +716,13 @@ shinyServer(function(input, output, session) {
     taxItems1 <- as.character(getTaxItems1)
     taxItems2 <- as.character(getTaxItems2)
     taxChange <- as.character(getTaxChange)
-    taxItems1[c(1,6,13,15,21)] <- "--------"
-    taxItems2[c(1,6,13,15,21)] <- "--------"
-    taxChange[c(1,6,13,15,21)] <- "--------"
+    taxItems1[c(1,7,14,16,22,25)] <- "--------"
+    taxItems2[c(1,7,14,16,22,25)] <- "--------"
+    taxChange[c(1,7,14,16,22,25)] <- "--------"
     df <- data.frame(taxItemNames, taxItems1, taxItems2, taxChange)
+    if (df$taxItems1[24] == 0){
+      df <- df[1:23,]
+    }
     colnames(df) = c("Tax Plan", getShortTaxName(taxname1), getShortTaxName(taxname2), "Change")
     cat("<pre>")
     cat(paste0(Title,"\n\n"))
