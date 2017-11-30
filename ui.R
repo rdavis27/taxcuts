@@ -38,7 +38,12 @@ shinyUI(fluidPage(
                                 "Example I - Single, 2 Non-Child Dependent",
                                 "Example J - Married, 4 Non-Child Dependents",
                                 "Example K - Single Itemizer, $36,000 Income",
-                                "Example L - Married Itemizer, $72,000 Income"),
+                                "Example L - Married Itemizer, $72,000 Income",
+                                "Example M - Single, $30,000, no kids (Tax Foundation)",
+                                "Example N - Single, $52,000, 2 kids (Tax Foundation)",
+                                "Example O - Single, $75,000, no kids (Tax Foundation)",
+                                "Example P - Married, $85,000, 2 kids (Tax Foundation)",
+                                "Example Q - Married, $165,000, 2 kids, itemizing (Tax Foundation)"),
         selected = "Example 5 - Family of Four (Senate)")
       ),
       wellPanel(
@@ -47,7 +52,9 @@ shinyUI(fluidPage(
                     choices = c("Single", "Head of Household", "Married filing jointly")),
         numericInput("children", "Number of children under age 17", value = 0, min = 0, step = 1),
         numericInput("otherdep", "Number of other dependents", value = 0, min = 0, step = 1),
-        numericInput("wages", "Wages, salaries, tips, etc.", value = 0, min = 0, step = 1000)
+        numericInput("wages", "Wages, salaries, tips, etc.", value = 0, min = 0, step = 1000),
+        numericInput("deferred", "Tax-deferred retirement contributions", value = 0, min = 0, step = 100),
+        numericInput("highwage", "Highest wages (0 to exclude payroll taxes)", value = 0, min = 0, step = 1000)
       ),
       wellPanel(
         h4("Deductions"),

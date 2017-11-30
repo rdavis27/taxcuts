@@ -51,6 +51,8 @@ shinyServer(function(input, output, session) {
     if (input$filing == "Married filing jointly") nparents = 2
     return(list(
       wages      = input$wages,
+      deferred   = input$deferred,
+      highwage   = input$highwage,
       children   = input$children,
       dependents = input$otherdep,
       parents    = nparents,
@@ -93,6 +95,8 @@ shinyServer(function(input, output, session) {
     ParCredit   <- as.numeric(td["ParCredit"])
     
     if (wages < 0) wages <- as.numeric(id["wages"])
+    deferred <- as.numeric(id["deferred"])
+    highwage <- as.numeric(id["highwage"])
     children <- as.numeric(id["children"])
     dependents <- as.numeric(id["dependents"])
     parents  <- as.numeric(id["parents"])
@@ -115,9 +119,17 @@ shinyServer(function(input, output, session) {
       items <- c(0, wages, -Exemptions, -StdDeduct,           0, 0, -medical, -stateloc, -property, -mortgage, -charity, -repealed, 0)
     }
     
-    adjinc <- wages - Deduct - Exemptions
+    adjinc <- wages - Deduct - Exemptions - deferred
     pretax <- calcPretax(td, adjinc)
-    tax <- pretax - children * ChildCredit - dependents * DepCredit - parents * ParCredit - eitc
+    fica <- 0
+    if (highwage > 0){
+      wage1 <- highwage
+      wage2 <- wages - highwage
+      maxwage1 <- ifelse(wage1 < 128700, wage1, 128700)
+      maxwage2 <- ifelse(wage2 < 128700, wage2, 128700)
+      fica <- 0.062 * (maxwage1 + maxwage2) + 0.0145 * (wage1 + wage2)
+    }
+    tax <- fica + pretax - children * ChildCredit - dependents * DepCredit - parents * ParCredit - eitc
     items <- c(items, adjinc, 0, pretax, -children * ChildCredit, -dependents * DepCredit, -parents * ParCredit, -eitc, 0, tax)
     items
   }
@@ -125,6 +137,12 @@ shinyServer(function(input, output, session) {
     taxItems <- getTaxItems(td, id, wages)
     tax <- taxItems[length(taxItems)]
     tax
+  }
+  clearTaxItems <- function(){
+    updateNumericInput(session, "children", value = 0)
+    updateNumericInput(session, "otherdep", value = 0)
+    updateNumericInput(session, "deferred", value = 0)
+    updateNumericInput(session, "highwage", value = 0)
   }
   clearDeductions <- function(){
     updateNumericInput(session, "medical",  value = 0)
@@ -397,6 +415,58 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "charity",  value = 12000)
       Released <<- c("","","","")
       Title <<- "Example L - Married Couple Making $72,000 Per Year with $24,000 in Deductions"
+    }
+    else if (example == "Example M"){
+      updateNumericInput(session, "wages", value = 30000)
+      updateNumericInput(session, "highwage", value = 30000)
+      updateNumericInput(session, "deferred", value = 2600)
+      updateNumericInput(session, "children", value = 0)
+      updateNumericInput(session, "otherdep", value = 0)
+      updateNumericInput(session, "filing",   value = "Single")
+      Released <<- c("4331","3953","-379","-9")
+      Title <<- "Example M - Single, $30,000, no kids"
+    }
+    else if (example == "Example N"){
+      updateNumericInput(session, "wages", value = 52000)
+      updateNumericInput(session, "highwage", value = 52000)
+      updateNumericInput(session, "deferred", value = 4000)
+      updateNumericInput(session, "children", value = 2)
+      updateNumericInput(session, "otherdep", value = 0)
+      updateNumericInput(session, "filing",   value = "Head of Household")
+      Released <<- c("5198","3306","-1892","-36")
+      Title <<- "Example N - Single, $52,000, 2 kids"
+    }
+    else if (example == "Example O"){
+      updateNumericInput(session, "wages", value = 75000)
+      updateNumericInput(session, "highwage", value = 75000)
+      updateNumericInput(session, "deferred", value = 5500)
+      updateNumericInput(session, "children", value = 0)
+      updateNumericInput(session, "otherdep", value = 0)
+      updateNumericInput(session, "filing",   value = "Single")
+      Released <<- c("16104","14327","-1777","-11")
+      Title <<- "Example O - Single, $75,000, no kids"
+    }
+    else if (example == "Example P"){
+      updateNumericInput(session, "wages", value = 85000)
+      updateNumericInput(session, "highwage", value = 85000)
+      updateNumericInput(session, "deferred", value = 5500)
+      updateNumericInput(session, "children", value = 2)
+      updateNumericInput(session, "otherdep", value = 0)
+      updateNumericInput(session, "filing",   value = "Married filing jointly")
+      Released <<- c("11035","8782","-2254","-20")
+      Title <<- "Example P - Married, $85,000, 2 kids"
+    }
+    else if (example == "Example Q"){
+      updateNumericInput(session, "wages", value = 165000)
+      updateNumericInput(session, "highwage", value = 95000)
+      updateNumericInput(session, "deferred", value = 20000)
+      updateNumericInput(session, "children", value = 2)
+      updateNumericInput(session, "otherdep", value = 0)
+      updateNumericInput(session, "filing",   value = "Married filing jointly")
+      updateNumericInput(session, "mortgage", value = 10000)
+      updateNumericInput(session, "charity",  value = 8740)
+      Released <<- c("29345","27122","-2224","-8")
+      Title <<- "Example Q - Married, $165,000, 2 kids, itemizing"
     }
   })
   output$taxPrint <- renderPrint({
