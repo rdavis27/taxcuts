@@ -525,7 +525,11 @@ shinyServer(function(input, output, session) {
     taxes2 <- calcTax(taxdef2, incdef, -1)
     Names <- c(input$taxname1, input$taxname2, "Change", "% Change")
     Taxes <- c(taxes1, taxes2, taxes2-taxes1, 100*(taxes2-taxes1)/taxes1)
-    df <- data.frame(Names, Taxes, Released)
+    wages <- as.numeric(incdef["wages"])
+    aftertax1 <- wages-taxes1
+    aftertax2 <- wages-taxes2
+    AfterTax <- c(aftertax1, aftertax2, aftertax2-aftertax1, 100*(aftertax2-aftertax1)/aftertax1)
+    df <- data.frame(Names, Taxes, Released, "After_Tax"=AfterTax)
     cat("<h4>Comparison of Taxes</h4>")
     cat("<pre>")
     #cat(paste0(filing,", ",input$children," children, ",input$otherdep," dependents, ",input$wages," in wages\n\n"))
