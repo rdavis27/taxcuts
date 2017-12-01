@@ -5,6 +5,7 @@ brackets <- read.csv("brackets.csv", strip.white = TRUE, sep = ",")
 eitcdefs <- read.csv("eitc.csv",     strip.white = TRUE, sep = ",")
 incdef   <- NULL
 last_example <- ""
+Title <- reactiveVal("")
 
 shinyServer(function(input, output, session) {
 
@@ -139,6 +140,42 @@ shinyServer(function(input, output, session) {
     tax <- taxItems[length(taxItems)]
     tax
   }
+  genTitle <- function(td1, td2, id){
+    if (input$gentitle){
+      filing <- input$filing
+      if (filing == "Head of Household") filing = "Household"
+      if (filing == "Married filing jointly") filing = "Married"
+      items1 <- getTaxItems(td1, id, -1)
+      items2 <- getTaxItems(td2, id, -1)
+      children <- input$children
+      otherdep <- input$otherdep
+      wages <- input$wages
+      deferred <- input$deferred
+      title <- filing
+      if (children == 0) title <- paste0(title, ", no children")
+      else if (children == 1) title <- paste0(title, ", 1 child")
+      else title <- paste0(title, ", ", children, " children")
+      if (otherdep == 1) title <- paste0(title, ", 1 other dependent")
+      else if (otherdep > 1) title <- paste0(title, ", ", otherdep, " other dependents")
+      #title <- paste0(title, ", wage of ", wages)
+      title <- paste0(title, ", ", wages, " income")
+      if (deferred > 0) title <- paste0(title, ", ", deferred, " deferred")
+      if (items1[6] == 0) title <- paste0(title, ", standard deduction")
+      else{
+        deductions1 <- items1[8]+items1[9]+items1[10]+items1[11]+items1[12]+items1[13]
+        deductions2 <- items2[8]+items2[9]+items2[10]+items2[11]+items2[12]+items2[13]
+        repealed <- deductions2 - deductions1
+        retained <- -deductions1 - repealed
+        if (retained != 0){
+          title <- paste0(title, ", ", retained, " itemized")
+        }
+        if (repealed != 0){
+          title <- paste0(title, ", ", repealed, " repealed")
+        }
+      }
+      Title <<- title
+    }
+  }
   clearTaxItems <- function(){
     updateNumericInput(session, "children", value = 0)
     updateNumericInput(session, "otherdep", value = 0)
@@ -234,9 +271,12 @@ shinyServer(function(input, output, session) {
     midTaxName
   }
   parenTaxName2 <- function(){
-    name <- getShortTaxName(input$taxname2)
-    if (name != ""){
-      name <- paste0(" (",getShortTaxName(input$taxname2),")")
+    name <- ""
+    if (input$appendTax){
+      name <- getShortTaxName(input$taxname2)
+      if (name != ""){
+        name <- paste0(" (",name,")")
+      }
     }
     name
   }
@@ -479,14 +519,17 @@ shinyServer(function(input, output, session) {
     taxname2 <- getMidTaxName(input$taxname2)
     taxdef1 <- getTaxdef(taxname1, filing)
     taxdef2 <- getTaxdef(taxname2, filing)
-    taxes1 <- calcTax(taxdef1, getIncdef(), -1)
-    taxes2 <- calcTax(taxdef2, getIncdef(), -1)
+    incdef  <- getIncdef()
+    genTitle(taxdef1, taxdef2, incdef)
+    taxes1 <- calcTax(taxdef1, incdef, -1)
+    taxes2 <- calcTax(taxdef2, incdef, -1)
     Names <- c(input$taxname1, input$taxname2, "Change", "% Change")
     Taxes <- c(taxes1, taxes2, taxes2-taxes1, 100*(taxes2-taxes1)/taxes1)
     df <- data.frame(Names, Taxes, Released)
     cat("<h4>Comparison of Taxes</h4>")
     cat("<pre>")
-    cat(paste0(filing,", ",input$children," children, ",input$otherdep," dependents, ",input$wages," in wages\n\n"))
+    #cat(paste0(filing,", ",input$children," children, ",input$otherdep," dependents, ",input$wages," in wages\n\n"))
+    cat(paste0(Title, "\n\n"))
     print(df)
     eitc1 <- calcEITC(taxdef1[["EITC"]], input$wages, input$children, input$filing)
     eitc2 <- calcEITC(taxdef2[["EITC"]], input$wages, input$children, input$filing)
@@ -518,6 +561,7 @@ shinyServer(function(input, output, session) {
                                 input$medical,"|",input$stateloc,"|",input$property,"|",input$mortgage,"|",input$charity,"|",input$repealed,"#",
                                 input$wagemin,"|",input$wagemax, "|",input$wagestep,"|",input$taxcutmin,"|",input$taxcutmax,"\n"))
     }
+    genTitle(taxdef1, taxdef2, incdef)
     # if (last_example == input$examples){
     # } else {
     #   last_example <<- input$examples # skip since this will rerun after example sets parameters
@@ -683,6 +727,7 @@ shinyServer(function(input, output, session) {
     taxdef1 <- getTaxdef(taxname1, filing)
     taxdef2 <- getTaxdef(taxname2, filing)
     incdef  <- getIncdef()
+    genTitle(taxdef1, taxdef2, incdef)
     taxItemNames <- c(
       "---------------------------",
       "Wages, salaries, tips, etc.",

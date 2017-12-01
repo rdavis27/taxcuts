@@ -21,10 +21,10 @@ shinyUI(fluidPage(
                                 "Senate 2018 w/ $1650 Child Credit", "Senate 2018"),
                     selected = "Senate 2018"),
         selectInput("examples", "Tax Examples",
-                    choices = c("Example 1 - Family of Four",
-                                "Example 2 - Single Mother",
-                                "Example 3 - Single Taxpayer",
-                                "Example 4 - Homeowners, High Tax State",
+                    choices = c("Example 1 - Family of Four (House)",
+                                "Example 2 - Single Mother (House)",
+                                "Example 3 - Single Taxpayer (House)",
+                                "Example 4 - Homeowners, High Tax State (House)",
                                 "Example 5 - Family of Four (Senate)",
                                 "Example 6 - Single Parent, One Child (Senate)",
                                 "Example A - Single Itemizer",
@@ -44,7 +44,7 @@ shinyUI(fluidPage(
                                 "Example O - Single, $75,000, no kids (Tax Foundation)",
                                 "Example P - Married, $85,000, 2 kids (Tax Foundation)",
                                 "Example Q - Married, $165,000, 2 kids, itemizing (Tax Foundation)"),
-        selected = "Example 5 - Family of Four (Senate)")
+                    selected = "Example 5 - Family of Four (Senate)")
       ),
       wellPanel(
         h4("General Items"),
@@ -71,7 +71,9 @@ shinyUI(fluidPage(
         numericInput("wagemax", "Wage Maximum", value = 200000, min = 0, step = 1000),
         numericInput("wagestep", "Wage Step", value = 1000, min = 0, step = 100),
         numericInput("taxcutmin", "Taxcut Minimum", value = -100, step = 10),
-        numericInput("taxcutmax", "Taxcut Maximum", value = 100, step = 10)
+        numericInput("taxcutmax", "Taxcut Maximum", value = 100, step = 10),
+        checkboxInput("gentitle", "Generate Title", value = FALSE),
+        checkboxInput("appendTax", "Append Tax Name", value = TRUE)
       )
     ),
 
