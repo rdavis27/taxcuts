@@ -71,6 +71,8 @@ shinyServer(function(input, output, session) {
     pretax <- (income-td$Start[i]) * (td$Rate[i]/100) + td$Add[i]
   }
   calcEITC <- function(name, wages, children, filing){
+    wages    <- chknumeric(wages)
+    children <- chknumeric(children)
     eechildren <- min(children, 3)
     ee <- eitcdefs[eitcdefs$Name == as.character(name) & as.numeric(eitcdefs$C) == eechildren,]
     if (identical(filing, "Married filing jointly")){
@@ -88,6 +90,11 @@ shinyServer(function(input, output, session) {
     }
     eitc
   }
+  chknumeric <- function(n, def=0){
+    if (is.list(n)) n <- unlist(n)
+    if (is.na(n)) n <- as.integer(def)
+    n
+  }
   getTaxItems <- function(td, id, wages){
     Exempt      <- as.numeric(td["Exempt"])
     StdDeduct   <- as.numeric(td["StdDeduct"])
@@ -95,14 +102,15 @@ shinyServer(function(input, output, session) {
     DepCredit   <- as.numeric(td["DepCredit"])
     ParCredit   <- as.numeric(td["ParCredit"])
     
-    if (wages < 0) wages <- as.numeric(id["wages"])
-    deferred <- as.numeric(id["deferred"])
-    highwage <- as.numeric(id["highwage"])
-    children <- as.numeric(id["children"])
-    dependents <- as.numeric(id["dependents"])
+    if (wages < 0) wages <- chknumeric(id["wages"])
+    deferred <- chknumeric(id["deferred"])
+    highwage <- chknumeric(id["highwage"])
+    children <- chknumeric(id["children"])
+    dependents <- chknumeric(id["dependents"])
     parents  <- as.numeric(id["parents"])
-    medical  <- as.numeric(td["Medical"])  * as.numeric(id["medical"])  * wages / 100.0
-    stateloc <- as.numeric(td["StateLoc"]) * as.numeric(id["stateloc"]) * wages / 100.0
+    medical  <- as.numeric(td["Medical"])  * as.numeric(id["medical"])
+    stateloc <- as.numeric(td["StateLoc"]) * as.numeric(id["stateloc"])
+    if (stateloc < 0) stateloc <- -stateloc * wages / 100.0
     property <- as.numeric(td["Property"]) * as.numeric(id["property"])
     mortgage <- as.numeric(td["Mortgage"]) * as.numeric(id["mortgage"])
     charity  <- as.numeric(td["Charity"])  * as.numeric(id["charity"])
@@ -320,7 +328,7 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "children", value = 0)
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing", value = "Married filing jointly")
-      updateNumericInput(session, "stateloc", value = 7.64347)
+      updateNumericInput(session, "stateloc", value = -7.64347)
       updateNumericInput(session, "property", value = 6900)
       updateNumericInput(session, "mortgage", value = 8400)
       Released <<- c("12180","11050","-1130","")
@@ -387,7 +395,7 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "children", value = 0)
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Single")
-      updateNumericInput(session, "stateloc", value = 10)
+      updateNumericInput(session, "stateloc", value = -10)
       updateNumericInput(session, "wagemin",  value = 10000)
       updateNumericInput(session, "wagemax",  value = 2000000)
       Released <<- c("","","","")
@@ -399,7 +407,7 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "children", value = 0)
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Married filing jointly")
-      updateNumericInput(session, "stateloc", value = 10)
+      updateNumericInput(session, "stateloc", value = -10)
       updateNumericInput(session, "wagemin",  value = 10000)
       updateNumericInput(session, "wagemax",  value = 2000000)
       Released <<- c("","","","")
@@ -559,7 +567,7 @@ shinyServer(function(input, output, session) {
       df$taxes1[i] <- calcTax(taxdef1, incdef, wages[i])
       df$taxes2[i] <- calcTax(taxdef2, incdef, wages[i])
     }
-    if (input$wages != 0){
+    if (chknumeric(input$wages) != 0){
       cat(file=stderr(), paste0(input$taxname1,"|",input$taxname2,"|",input$examples,"#",
                                 input$filing,"|", input$children,"|",input$otherdep,"|",input$wages,"#",
                                 input$medical,"|",input$stateloc,"|",input$property,"|",input$mortgage,"|",input$charity,"|",input$repealed,"#",

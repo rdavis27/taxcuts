@@ -58,8 +58,8 @@ shinyUI(fluidPage(
       ),
       wellPanel(
         h4("Deductions"),
-        numericInput("medical", "Medical and dental expenses (% over 10% of income)", value = 0, min = 0, max = 99, step = 1),
-        numericInput("stateloc", "State & local income or sales taxes (% of income)", value = 0, min = 0, max = 99, step = 1),
+        numericInput("medical", "Medical and dental expenses (eligible dollars)", value = 0, min = 0, step = 1000),
+        numericInput("stateloc", "State & local income or sales taxes (+dollars or -percent)", value = 0, min = -99, step = 1000),
         numericInput("property", "Real estate property taxes", value = 0, min = 0, step = 1000),
         numericInput("mortgage", "Mortgage interest", value = 0, min = 0, step = 1000),
         numericInput("charity", "Charitable contributions", value = 0, min = 0, step = 1000),
