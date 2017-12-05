@@ -590,6 +590,16 @@ shinyServer(function(input, output, session) {
     grid(col = "lightgray")
     abline(v = input$wages, col = "red")
   })
+  output$taxPlotDollars <- renderPlot({
+    df <- taxdata()
+    df$taxcut <- df$taxes1 - df$taxes2
+    #df$taxcut[df$taxes1 <= 0 | df$taxes2 <= 0] <- NA
+    #df$taxcut[df$taxcut < input$taxcutmin | df$taxcut > input$taxcutmax] <- NA
+    plot(df$wages, df$taxcut, xlab = "Wages", ylab = "Taxcut (dollars)")
+    title(main = paste0(Title,parenTaxName2()))
+    grid(col = "lightgray")
+    abline(v = input$wages, col = "red")
+  })
   output$incomePlot <- renderPlot({
     df <- taxdata()
     df$aftertax <- 100 * ((df$wages-df$taxes2) - (df$wages-df$taxes1)) / (df$wages-df$taxes1)
