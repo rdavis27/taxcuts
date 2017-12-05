@@ -108,13 +108,13 @@ shinyServer(function(input, output, session) {
     children <- chknumeric(id["children"])
     dependents <- chknumeric(id["dependents"])
     parents  <- as.numeric(id["parents"])
-    medical  <- as.numeric(td["Medical"])  * as.numeric(id["medical"])
-    stateloc <- as.numeric(td["StateLoc"]) * as.numeric(id["stateloc"])
+    medical  <- as.numeric(td["Medical"])  * chknumeric(id["medical"])
+    stateloc <- as.numeric(td["StateLoc"]) * chknumeric(id["stateloc"])
     if (stateloc < 0) stateloc <- -stateloc * wages / 100.0
-    property <- as.numeric(td["Property"]) * as.numeric(id["property"])
-    mortgage <- as.numeric(td["Mortgage"]) * as.numeric(id["mortgage"])
-    charity  <- as.numeric(td["Charity"])  * as.numeric(id["charity"])
-    repealed <- as.numeric(td["Repealed"]) * as.numeric(id["repealed"])
+    property <- as.numeric(td["Property"]) * chknumeric(id["property"])
+    mortgage <- as.numeric(td["Mortgage"]) * chknumeric(id["mortgage"])
+    charity  <- as.numeric(td["Charity"])  * chknumeric(id["charity"])
+    repealed <- as.numeric(td["Repealed"]) * chknumeric(id["repealed"])
     EITCname <- as.character(td["EITC"])
     eitc     <- calcEITC(EITCname, wages, children, input$filing)
     #print(paste0(medical,"|",stateloc,"|",property,"|",mortgage,"|",charity"|",repealed)) #DEBUG
@@ -155,10 +155,10 @@ shinyServer(function(input, output, session) {
       if (filing == "Married filing jointly") filing = "Married"
       items1 <- getTaxItems(td1, id, -1)
       items2 <- getTaxItems(td2, id, -1)
-      children <- input$children
-      otherdep <- input$otherdep
-      wages <- input$wages
-      deferred <- input$deferred
+      children <- chknumeric(input$children)
+      otherdep <- chknumeric(input$otherdep)
+      wages <- chknumeric(input$wages)
+      deferred <- chknumeric(input$deferred)
       title <- filing
       if (children == 0) title <- paste0(title, ", no children")
       else if (children == 1) title <- paste0(title, ", 1 child")
@@ -556,7 +556,7 @@ shinyServer(function(input, output, session) {
     if (filing == "Married filing jointly") filing = "Married"
     taxname1 <- getMidTaxName(input$taxname1)
     taxname2 <- getMidTaxName(input$taxname2)
-    wages <- seq(input$wagemin, input$wagemax, input$wagestep)
+    wages <- seq(chknumeric(input$wagemin), chknumeric(input$wagemax,200000), chknumeric(input$wagestep,1000))
     df <- data.frame(wages)
     df$taxes1 <- 0
     df$taxes2 <- 0
