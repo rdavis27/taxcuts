@@ -214,8 +214,10 @@ shinyServer(function(input, output, session) {
     updateNumericInput(session, "taxname1",  value = "Current 2017")
     updateNumericInput(session, "taxname2",  value = "Senate 2018")
   }
+  # Convert name from ui.R or data files to short name for column
   getShortTaxName <- function(taxname){
     name <- ""
+    #name <- taxname #DEBUG
     if (taxname == "Current 2017"){
       name <- "2017"
     }
@@ -240,37 +242,18 @@ shinyServer(function(input, output, session) {
     else if (taxname == "Senate 2018"){
       name <- "Senate 2018"
     }
-    name
-  }
-  getShortTaxName2 <- function(){
-    taxname2 <- input$taxname2
-    name <- ""
-    if (taxname2 == "Current 2017"){
-      name <- "2017"
+    else if (taxname == "House 2017b"){
+      name <- "House 2017b"
     }
-    else if (taxname2 == "Current 2018"){
-      name <- "2018"
+    else if (taxname == "House 2018b"){
+      name <- "House 2018b"
     }
-    else if (taxname2 == "House 2017"){
-      name <- "House 2017"
-    }
-    else if (taxname2 == "House 2017 w/o Family Credits"){
-      name <- "House 2017 w/o FC"
-    }
-    else if (taxname2 == "House 2018"){
-      name <- "House 2018"
-    }
-    else if (taxname2 == "House 2018 w/o Family Credits"){
-      name <- "House 2018 w/o FC"
-    }
-    else if (taxname2 == "Senate 2018 w/ $1650 Child Credit"){
-      name <- "Senate 2018 w/ $1650 CC"
-    }
-    else if (taxname2 == "Senate 2018"){
-      name <- "Senate 2018"
+    else if (taxname == "Senate 2018a"){
+      name <- "Senate 2018a"
     }
     name
   }
+  # Convert name from ui.R to name in data files
   getMidTaxName <- function(longTaxName){
     midTaxName <- longTaxName
     if (longTaxName == "House 2017 w/o Family Credits")     midTaxName <- "House 2017b"
