@@ -44,6 +44,7 @@ shinyUI(fluidPage(
                                 "Example O - Single, $75,000, no kids (Tax Foundation)",
                                 "Example P - Married, $85,000, 2 kids (Tax Foundation)",
                                 "Example Q - Married, $165,000, 2 kids, itemizing (Tax Foundation)"),
+                                #"Example R - Married, $325,000, 3 kids, itemizing (Tax Foundation)"),
                     selected = "Example 5 - Family of Four (Senate)")
       ),
       wellPanel(

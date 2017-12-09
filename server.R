@@ -44,7 +44,9 @@ shinyServer(function(input, output, session) {
       Mortgage    = rowDef$Mortgage,
       Charity     = rowDef$Charity,
       Repealed    = rowDef$Repealed,
-      EITC        = rowDef$EITC
+      EITC        = rowDef$EITC,
+      SSMax       = rowDef$SSMax,
+      CCMax       = rowDef$CCMax
     ))
   }
   getIncdef <- reactive({
@@ -116,6 +118,8 @@ shinyServer(function(input, output, session) {
     charity  <- as.numeric(td["Charity"])  * chknumeric(id["charity"])
     repealed <- as.numeric(td["Repealed"]) * chknumeric(id["repealed"])
     EITCname <- as.character(td["EITC"])
+    SSMax    <- as.numeric(td["SSMax"])
+    CCMax    <- as.numeric(td["CCMax"])
     eitc     <- calcEITC(EITCname, wages, children, input$filing)
     #print(paste0(medical,"|",stateloc,"|",property,"|",mortgage,"|",charity"|",repealed)) #DEBUG
     Exemptions <- (children + dependents + parents) * Exempt
@@ -134,13 +138,17 @@ shinyServer(function(input, output, session) {
     if (highwage > 0){
       wage1 <- highwage
       wage2 <- wages - highwage
-      maxwage1 <- ifelse(wage1 < 128700, wage1, 128700)
-      maxwage2 <- ifelse(wage2 < 128700, wage2, 128700)
+      maxwage1 <- ifelse(wage1 < SSMax, wage1, SSMax)
+      maxwage2 <- ifelse(wage2 < SSMax, wage2, SSMax)
       fica <- 0.062 * (maxwage1 + maxwage2) + 0.0145 * (wage1 + wage2)
     }
-    inctax <- pretax - children * ChildCredit - dependents * DepCredit - parents * ParCredit - eitc
+    adjCC <- children * ChildCredit
+    subCC <- floor((wages - deferred - CCMax)/1000) * 50
+    if (subCC > 0) adjCC <- adjCC - subCC
+    if (adjCC < 0) adjCC <- 0
+    inctax <- pretax - adjCC - dependents * DepCredit - parents * ParCredit - eitc
     tottax <- fica + inctax
-    items <- c(items, adjinc, 0, pretax, -children * ChildCredit, -dependents * DepCredit, -parents * ParCredit, -eitc, 0, inctax, fica, 0, tottax)
+    items <- c(items, adjinc, 0, pretax, -adjCC, -dependents * DepCredit, -parents * ParCredit, -eitc, 0, inctax, fica, 0, tottax)
     items
   }
   calcTax <- function(td, id, wages){
@@ -496,10 +504,26 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "children", value = 2)
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Married filing jointly")
-      updateNumericInput(session, "mortgage", value = 10000)
-      updateNumericInput(session, "charity",  value = 8740)
+      updateNumericInput(session, "stateloc", value = 8250)
+      updateNumericInput(session, "property", value = 3400)
+      updateNumericInput(session, "mortgage", value = 9520)
+      updateNumericInput(session, "charity",  value = 4125)
       Released <<- c("29345","27122","-2224","-8")
       Title <<- "Example Q - Married, $165,000, 2 kids, itemizing"
+    }
+    else if (example == "Example R"){
+      updateNumericInput(session, "wages", value = 325000)
+      updateNumericInput(session, "highwage", value = 250000)
+      updateNumericInput(session, "deferred", value = 37000)
+      updateNumericInput(session, "children", value = 3)
+      updateNumericInput(session, "otherdep", value = 0)
+      updateNumericInput(session, "filing",   value = "Married filing jointly")
+      updateNumericInput(session, "stateloc", value = 16250)
+      updateNumericInput(session, "property", value = 10000)
+      updateNumericInput(session, "mortgage", value = 22400)
+      updateNumericInput(session, "charity",  value = 8125)
+      Released <<- c("71629","64456","-7173","-10")
+      Title <<- "Example Q - Married, $325,000, 3 kids, itemizing"
     }
   })
   output$taxPrint <- renderPrint({
