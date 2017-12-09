@@ -44,6 +44,7 @@ shinyUI(fluidPage(
                                 "Example O - Single, $75,000, no kids (Tax Foundation)",
                                 "Example P - Married, $85,000, 2 kids (Tax Foundation)",
                                 "Example Q - Married, $165,000, 2 kids, itemizing (Tax Foundation)"),
+                                #"Example Q - Married, $165,000, 2 kids, itemizing (Tax Foundation)",
                                 #"Example R - Married, $325,000, 3 kids, itemizing (Tax Foundation)"),
                     selected = "Example 5 - Family of Four (Senate)")
       ),
@@ -73,6 +74,8 @@ shinyUI(fluidPage(
         numericInput("wagestep", "Wage Step", value = 1000, min = 0, step = 100),
         numericInput("taxcutmin", "Taxcut Minimum", value = -100, step = 10),
         numericInput("taxcutmax", "Taxcut Maximum", value = 100, step = 10),
+        numericInput("nsmall",    "Decimal places", value = 0, min = 0, step = 1),
+        checkboxInput("bigmark", "Comma separator", value = TRUE),
         checkboxInput("gentitle", "Generate Title", value = FALSE),
         checkboxInput("appendTax", "Append Tax Name", value = TRUE)
       )

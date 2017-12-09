@@ -92,6 +92,13 @@ shinyServer(function(input, output, session) {
     }
     eitc
   }
+  numformat <- function(n){
+    if (input$bigmark){
+      format(round(n, input$nsmall), nsmall=input$nsmall, big.mark=",")
+    } else {
+      format(round(n, input$nsmall), nsmall=input$nsmall)
+    }
+  }
   chknumeric <- function(n, def=0){
     if (is.list(n)) n <- unlist(n)
     if (is.na(n)) n <- as.integer(def)
@@ -107,16 +114,23 @@ shinyServer(function(input, output, session) {
     if (wages < 0) wages <- chknumeric(id["wages"])
     deferred <- chknumeric(id["deferred"])
     highwage <- chknumeric(id["highwage"])
+    if (deferred < 0) deferred <- -deferred * wages / 100.0
+    if (highwage < 0) highwage <- -highwage * wages / 100.0
     children <- chknumeric(id["children"])
     dependents <- chknumeric(id["dependents"])
     parents  <- as.numeric(id["parents"])
     medical  <- as.numeric(td["Medical"])  * chknumeric(id["medical"])
     stateloc <- as.numeric(td["StateLoc"]) * chknumeric(id["stateloc"])
-    if (stateloc < 0) stateloc <- -stateloc * wages / 100.0
     property <- as.numeric(td["Property"]) * chknumeric(id["property"])
     mortgage <- as.numeric(td["Mortgage"]) * chknumeric(id["mortgage"])
     charity  <- as.numeric(td["Charity"])  * chknumeric(id["charity"])
     repealed <- as.numeric(td["Repealed"]) * chknumeric(id["repealed"])
+    if (medical  < 0) medical  <- -medical  * wages / 100.0
+    if (stateloc < 0) stateloc <- -stateloc * wages / 100.0
+    if (property < 0) property <- -property * wages / 100.0
+    if (mortgage < 0) mortgage <- -mortgage * wages / 100.0
+    if (charity  < 0) charity  <- -charity  * wages / 100.0
+    if (repealed < 0) repealed <- -repealed * wages / 100.0
     EITCname <- as.character(td["EITC"])
     SSMax    <- as.numeric(td["SSMax"])
     CCMax    <- as.numeric(td["CCMax"])
@@ -499,31 +513,33 @@ shinyServer(function(input, output, session) {
     }
     else if (example == "Example Q"){
       updateNumericInput(session, "wages", value = 165000)
-      updateNumericInput(session, "highwage", value = 95000)
-      updateNumericInput(session, "deferred", value = 20000)
+      updateNumericInput(session, "highwage", value = -57.57575758) # 100*95000/165000
+      updateNumericInput(session, "deferred", value = -12.12121212) # 100*20000/165000
       updateNumericInput(session, "children", value = 2)
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Married filing jointly")
-      updateNumericInput(session, "stateloc", value = 8250)
-      updateNumericInput(session, "property", value = 3400)
-      updateNumericInput(session, "mortgage", value = 9520)
-      updateNumericInput(session, "charity",  value = 4125)
+      updateNumericInput(session, "stateloc", value = -5)
+      updateNumericInput(session, "property", value = -2.060606061) # 100*3400/165000
+      updateNumericInput(session, "mortgage", value = -5.76969697) # 100*9520/165000
+      updateNumericInput(session, "charity",  value = -2.5)
       Released <<- c("29345","27122","-2224","-8")
       Title <<- "Example Q - Married, $165,000, 2 kids, itemizing"
     }
     else if (example == "Example R"){
       updateNumericInput(session, "wages", value = 325000)
-      updateNumericInput(session, "highwage", value = 250000)
-      updateNumericInput(session, "deferred", value = 37000)
+      updateNumericInput(session, "highwage", value = -76.92307692) # 100*250000/325000
+      updateNumericInput(session, "deferred", value = -11.38461538) # 100*37000/325000
       updateNumericInput(session, "children", value = 3)
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Married filing jointly")
-      updateNumericInput(session, "stateloc", value = 16250)
-      updateNumericInput(session, "property", value = 10000)
-      updateNumericInput(session, "mortgage", value = 22400)
-      updateNumericInput(session, "charity",  value = 8125)
+      updateNumericInput(session, "stateloc", value = -5)
+      updateNumericInput(session, "property", value = -3.076923077) # 100*10000/325000
+      updateNumericInput(session, "mortgage", value = -6.892307692) # 100*22400/325000
+      updateNumericInput(session, "charity",  value = -2.5)
+      #updateNumericInput(session, "wagemin",  value = 10000)
+      updateNumericInput(session, "wagemax",  value = 400000)
       Released <<- c("71629","64456","-7173","-10")
-      Title <<- "Example Q - Married, $325,000, 3 kids, itemizing"
+      Title <<- "Example R - Married, $325,000, 3 kids, itemizing"
     }
   })
   output$taxPrint <- renderPrint({
@@ -544,6 +560,8 @@ shinyServer(function(input, output, session) {
     aftertax1 <- wages-taxes1
     aftertax2 <- wages-taxes2
     AfterTax <- c(aftertax1, aftertax2, aftertax2-aftertax1, 100*(aftertax2-aftertax1)/aftertax1)
+    Taxes    <- numformat(Taxes)
+    AfterTax <- numformat(AfterTax)
     df <- data.frame(Names, Taxes, Released, "After_Tax"=AfterTax)
     cat("<h4>Comparison of Taxes</h4>")
     cat("<pre>")
@@ -788,9 +806,9 @@ shinyServer(function(input, output, session) {
     getTaxItems1 <- getTaxItems(taxdef1, incdef, -1)
     getTaxItems2 <- getTaxItems(taxdef2, incdef, -1)
     getTaxChange <- getTaxItems2 - getTaxItems1
-    taxItems1 <- as.character(getTaxItems1)
-    taxItems2 <- as.character(getTaxItems2)
-    taxChange <- as.character(getTaxChange)
+    taxItems1 <- numformat(getTaxItems1)
+    taxItems2 <- numformat(getTaxItems2)
+    taxChange <- numformat(getTaxChange)
     taxItems1[c(1,7,14,16,22,25)] <- "--------"
     taxItems2[c(1,7,14,16,22,25)] <- "--------"
     taxChange[c(1,7,14,16,22,25)] <- "--------"
