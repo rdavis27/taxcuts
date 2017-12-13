@@ -46,7 +46,14 @@ shinyUI(fluidPage(
                                 "Example Q - Married, $165,000, 2 kids, itemizing (Tax Foundation)"),
                                 #"Example Q - Married, $165,000, 2 kids, itemizing (Tax Foundation)",
                                 #"Example R - Married, $325,000, 3 kids, itemizing (Tax Foundation)"),
-                    selected = "Example 5 - Family of Four (Senate)")
+                    selected = "Example 5 - Family of Four (Senate)"),
+        selectInput("taxadj1", "Tax Plan 1 Adjustment",
+                    choices = c("No adjustment",
+                                "Brackets only",
+                                "Standard Deduction only*",
+                                "Child Tax Credit only*",
+                                "Dependent Credit only*"),
+                    selected = "No adjustment")
       ),
       wellPanel(
         h4("General Items"),

@@ -9,6 +9,38 @@ Title <- reactiveVal("")
 
 shinyServer(function(input, output, session) {
 
+  getTaxdefAdj <- function(taxname, filing, td2){
+    td <- getTaxdef(taxname, filing)
+    taxadj1 <- input$taxadj1
+    
+    if (taxadj1 == "Brackets only"){
+      td1 <- td
+      td <- td2
+      td["Start"] <- td1["Start"]
+      td["Rate"]  <- td1["Rate"]
+      td["Add"]   <- td1["Add"]
+    }
+    else if (taxadj1 == "Standard Deduction only*"){
+      td1 <- td
+      td <- td2
+      td["StdDeduct"] <- td1["StdDeduct"]
+      td["Exempt"]    <- as.numeric(td1["Exempt"])
+    }
+    else if (taxadj1 == "Child Tax Credit only*"){
+      td1 <- td
+      td <- td2
+      td["ChildCredit"] <- td1["ChildCredit"]
+      td["CCMax"]       <- td1["CCMax"]
+      td["Exempt"]      <- as.numeric(td1["Exempt"])
+    }
+    else if (taxadj1 == "Dependent Credit only*"){
+      td1 <- td
+      td <- td2
+      td["DepCredit"] <- td1["DepCredit"]
+      td["Exempt"]    <- as.numeric(td1["Exempt"])
+    }
+    td
+  }
   getTaxdef <- function(taxname, filing){
     rowStart <- brackets[brackets$Name == taxname & brackets$Filing == filing & brackets$Prop == "Start",]
     rowRate  <- brackets[brackets$Name == taxname & brackets$Filing == filing & brackets$Prop == "Rate",]
@@ -136,7 +168,19 @@ shinyServer(function(input, output, session) {
     CCMax    <- as.numeric(td["CCMax"])
     eitc     <- calcEITC(EITCname, wages, children, input$filing)
     #print(paste0(medical,"|",stateloc,"|",property,"|",mortgage,"|",charity"|",repealed)) #DEBUG
-    Exemptions <- (children + dependents + parents) * Exempt
+    taxadj1 <- input$taxadj1
+    if (taxadj1 == "Standard Deduction only*"){
+      Exemptions <- parents * Exempt
+    }
+    else if (taxadj1 == "Child Tax Credit only*"){
+      Exemptions <- children * Exempt
+    }
+    else if (taxadj1 == "Dependent Credit only*"){
+      Exemptions <- dependents * Exempt
+    }
+    else{
+      Exemptions <- (children + dependents + parents) * Exempt
+    }
     CalcDeduct <- medical + stateloc + property + mortgage + charity + repealed
     if (StdDeduct < CalcDeduct){
       Deduct <- CalcDeduct
@@ -548,8 +592,8 @@ shinyServer(function(input, output, session) {
     if (filing == "Married filing jointly") filing = "Married"
     taxname1 <- getMidTaxName(input$taxname1)
     taxname2 <- getMidTaxName(input$taxname2)
-    taxdef1 <- getTaxdef(taxname1, filing)
     taxdef2 <- getTaxdef(taxname2, filing)
+    taxdef1 <- getTaxdefAdj(taxname1, filing, taxdef2)
     incdef  <- getIncdef()
     genTitle(taxdef1, taxdef2, incdef)
     taxes1 <- calcTax(taxdef1, incdef, -1)
@@ -585,8 +629,8 @@ shinyServer(function(input, output, session) {
     df <- data.frame(wages)
     df$taxes1 <- 0
     df$taxes2 <- 0
-    taxdef1 <- getTaxdef(taxname1, filing)
     taxdef2 <- getTaxdef(taxname2, filing)
+    taxdef1 <- getTaxdefAdj(taxname1, filing, taxdef2)
     incdef  <- getIncdef()
     for (i in 1:length(df$wages)){
       df$taxes1[i] <- calcTax(taxdef1, incdef, wages[i])
@@ -653,8 +697,8 @@ shinyServer(function(input, output, session) {
     if (filing == "Married filing jointly") filing = "Married"
     taxname1 <- getMidTaxName(input$taxname1)
     taxname2 <- getMidTaxName(input$taxname2)
-    td1 <- getTaxdef(taxname1, filing)
     td2 <- getTaxdef(taxname2, filing)
+    td1 <- getTaxdefAdj(taxname1, filing, td2)
     id  <- getIncdef()
     Start1 <- td1$Start
     Rate1  <- td1$Rate
@@ -771,8 +815,8 @@ shinyServer(function(input, output, session) {
     if (filing == "Married filing jointly") filing = "Married"
     taxname1 <- getMidTaxName(input$taxname1)
     taxname2 <- getMidTaxName(input$taxname2)
-    taxdef1 <- getTaxdef(taxname1, filing)
     taxdef2 <- getTaxdef(taxname2, filing)
+    taxdef1 <- getTaxdefAdj(taxname1, filing, taxdef2)
     incdef  <- getIncdef()
     genTitle(taxdef1, taxdef2, incdef)
     taxItemNames <- c(
