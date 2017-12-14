@@ -30,8 +30,9 @@ shinyServer(function(input, output, session) {
       td1 <- td
       td <- td2
       td["ChildCredit"] <- td1["ChildCredit"]
-      td["CCMax"]       <- td1["CCMax"]
       td["CCRef"]       <- td1["CCRef"]
+      td["CCMin"]       <- td1["CCMin"]
+      td["CCMax"]       <- td1["CCMax"]
       td["Exempt"]      <- as.numeric(td1["Exempt"])
     }
     else if (taxadj1 == "Dependent Credit only*"){
@@ -79,8 +80,10 @@ shinyServer(function(input, output, session) {
       Repealed    = rowDef$Repealed,
       EITC        = rowDef$EITC,
       SSMax       = rowDef$SSMax,
+      CCRef       = rowDef$CCRef,
+      CCMin       = rowDef$CCMin,
       CCMax       = rowDef$CCMax,
-      CCRef       = rowDef$CCRef
+      StMax       = rowDef$StMax
     ))
   }
   getIncdef <- reactive({
@@ -167,8 +170,10 @@ shinyServer(function(input, output, session) {
     if (repealed < 0) repealed <- -repealed * wages / 100.0
     EITCname <- as.character(td["EITC"])
     SSMax    <- as.numeric(td["SSMax"])
-    CCMax    <- as.numeric(td["CCMax"])
     CCRef    <- as.numeric(td["CCRef"])
+    CCMin    <- as.numeric(td["CCMin"])
+    CCMax    <- as.numeric(td["CCMax"])
+    StMax    <- as.numeric(td["StMax"])
     eitc     <- calcEITC(EITCname, wages, children, input$filing)
     #print(paste0(medical,"|",stateloc,"|",property,"|",mortgage,"|",charity"|",repealed)) #DEBUG
     taxadj1 <- input$taxadj1
@@ -183,6 +188,15 @@ shinyServer(function(input, output, session) {
     }
     else{
       Exemptions <- (children + dependents + parents) * Exempt
+    }
+    StTax <- stateloc + property
+    if (StMax > 0 & StTax > StMax){
+      StSub <- StMax - StTax
+      stateloc <- stateloc + StSub
+      if (stateloc < 0){
+        property <- property + stateloc
+        stateloc <- 0
+      }
     }
     CalcDeduct <- medical + stateloc + property + mortgage + charity + repealed
     Deduct <- StdDeduct
@@ -215,7 +229,7 @@ shinyServer(function(input, output, session) {
     }
     # Child Tax Credit refundability
     totCC <- children * ChildCredit
-    refCC <- (income - 3000)  * 0.15
+    refCC <- (income - CCMin)  * 0.15
     totCCRef <- CCRef * children
     if (refCC > totCCRef) refCC <- totCCRef
     nonrefCC <- totCC - refCC
@@ -801,10 +815,12 @@ shinyServer(function(input, output, session) {
                 "Dependent Credit",
                 "Parent Credit",
                 "CTC Refundable",
+                "CTC Phase In",
                 "CTC Phase Out",
+                "Max State Deduction",
                 "SS Wage Ceiling")
-    Rule1 <- c(td1$Exempt, td1$StdDeduct, td1$ChildCredit, td1$DepCredit, td1$ParCredit, td1$CCRef, td1$CCMax, td1$SSMax)
-    Rule2 <- c(td2$Exempt, td2$StdDeduct, td2$ChildCredit, td2$DepCredit, td2$ParCredit, td2$CCRef, td2$CCMax, td2$SSMax)
+    Rule1 <- c(td1$Exempt, td1$StdDeduct, td1$ChildCredit, td1$DepCredit, td1$ParCredit, td1$CCRef, td1$CCMin, td1$CCMax, td1$StMax, td1$SSMax)
+    Rule2 <- c(td2$Exempt, td2$StdDeduct, td2$ChildCredit, td2$DepCredit, td2$ParCredit, td2$CCRef, td2$CCMin, td2$CCMax, td2$StMax, td2$SSMax)
     RDiff <- Rule2 - Rule1
     rdf <- data.frame(Rules, Rule1, Rule2, RDiff)
     colnames(rdf) = c("Tax_Rule", getShortTaxName(taxname1), getShortTaxName(taxname2), "Change")
