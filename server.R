@@ -31,6 +31,7 @@ shinyServer(function(input, output, session) {
       td <- td2
       td["ChildCredit"] <- td1["ChildCredit"]
       td["CCMax"]       <- td1["CCMax"]
+      td["CCRef"]       <- td1["CCRef"]
       td["Exempt"]      <- as.numeric(td1["Exempt"])
     }
     else if (taxadj1 == "Dependent Credit only*"){
@@ -78,7 +79,8 @@ shinyServer(function(input, output, session) {
       Repealed    = rowDef$Repealed,
       EITC        = rowDef$EITC,
       SSMax       = rowDef$SSMax,
-      CCMax       = rowDef$CCMax
+      CCMax       = rowDef$CCMax,
+      CCRef       = rowDef$CCRef
     ))
   }
   getIncdef <- reactive({
@@ -166,6 +168,7 @@ shinyServer(function(input, output, session) {
     EITCname <- as.character(td["EITC"])
     SSMax    <- as.numeric(td["SSMax"])
     CCMax    <- as.numeric(td["CCMax"])
+    CCRef    <- as.numeric(td["CCRef"])
     eitc     <- calcEITC(EITCname, wages, children, input$filing)
     #print(paste0(medical,"|",stateloc,"|",property,"|",mortgage,"|",charity"|",repealed)) #DEBUG
     taxadj1 <- input$taxadj1
@@ -182,15 +185,25 @@ shinyServer(function(input, output, session) {
       Exemptions <- (children + dependents + parents) * Exempt
     }
     CalcDeduct <- medical + stateloc + property + mortgage + charity + repealed
+    Deduct <- StdDeduct
+    if (StdDeduct < CalcDeduct) Deduct <- CalcDeduct
+    
+    income <- wages - deferred
+    adjinc <- income - Deduct - Exemptions
+    if (adjinc < 0){
+      Exemptions <- Exemptions + adjinc
+      if (Exemptions < 0){
+        Deduct <- Deduct + Exemptions
+        Exemptions <- 0
+      }
+      adjinc <- 0
+    }
     if (StdDeduct < CalcDeduct){
-      Deduct <- CalcDeduct
       items <- c(0, wages, -deferred, -Exemptions,          0, -CalcDeduct, 0, -medical, -stateloc, -property, -mortgage, -charity, -repealed, 0)
     } else {
-      Deduct <- StdDeduct
       items <- c(0, wages, -deferred, -Exemptions, -StdDeduct,           0, 0, -medical, -stateloc, -property, -mortgage, -charity, -repealed, 0)
     }
-    
-    adjinc <- wages - Deduct - Exemptions - deferred
+
     pretax <- calcPretax(td, adjinc)
     fica <- 0
     if (highwage > 0){
@@ -200,13 +213,43 @@ shinyServer(function(input, output, session) {
       maxwage2 <- ifelse(wage2 < SSMax, wage2, SSMax)
       fica <- 0.062 * (maxwage1 + maxwage2) + 0.0145 * (wage1 + wage2)
     }
-    adjCC <- children * ChildCredit
-    subCC <- floor((wages - deferred - CCMax)/1000) * 50
-    if (subCC > 0) adjCC <- adjCC - subCC
-    if (adjCC < 0) adjCC <- 0
-    inctax <- pretax - adjCC - dependents * DepCredit - parents * ParCredit - eitc
+    # Child Tax Credit refundability
+    totCC <- children * ChildCredit
+    refCC <- (income - 3000)  * 0.15
+    totCCRef <- CCRef * children
+    if (refCC > totCCRef) refCC <- totCCRef
+    nonrefCC <- totCC - refCC
+    subCC <- floor((income - CCMax)/1000) * 50
+    # CTC Phase Out
+    if (subCC > 0){
+      totCC <- totCC - subCC
+      refCC <- totCC
+      nonrefCC <- 0
+    }
+    if (totCC < 0){
+      totCC <- 0
+      refCC <- 0
+      nonrefCC <- 0
+    }
+    totDC <- dependents * DepCredit
+    totPC <- parents * ParCredit
+    #inctax <- pretax - totCC - dependents * DepCredit - parents * ParCredit - eitc
+    inctax <- pretax - nonrefCC - totDC - totPC
+    if (inctax < 0){
+      totPC <- totPC + inctax
+      if (totPC < 0){
+        totDC <- totDC + totPC
+        totPC <- 0
+        if (totDC < 0){
+          totCC <- totCC + totDC
+          totDC <- 0
+        }
+      }
+      inctax <- 0
+    }
+    inctax <- inctax - refCC - eitc
     tottax <- fica + inctax
-    items <- c(items, adjinc, 0, pretax, -adjCC, -dependents * DepCredit, -parents * ParCredit, -eitc, 0, inctax, fica, 0, tottax)
+    items <- c(items, adjinc, 0, pretax, -totCC, -totDC, -totPC, -eitc, 0, inctax, fica, 0, tottax)
     items
   }
   calcTax <- function(td, id, wages){
@@ -756,9 +799,12 @@ shinyServer(function(input, output, session) {
                 "Standard Deduction",
                 "Child Credit",
                 "Dependent Credit",
-                "Parent Credit")
-    Rule1 <- c(td1$Exempt, td1$StdDeduct, td1$ChildCredit, td1$DepCredit, td1$ParCredit)
-    Rule2 <- c(td2$Exempt, td2$StdDeduct, td2$ChildCredit, td2$DepCredit, td2$ParCredit)
+                "Parent Credit",
+                "CTC Refundable",
+                "CTC Phase Out",
+                "SS Wage Ceiling")
+    Rule1 <- c(td1$Exempt, td1$StdDeduct, td1$ChildCredit, td1$DepCredit, td1$ParCredit, td1$CCRef, td1$CCMax, td1$SSMax)
+    Rule2 <- c(td2$Exempt, td2$StdDeduct, td2$ChildCredit, td2$DepCredit, td2$ParCredit, td2$CCRef, td2$CCMax, td2$SSMax)
     RDiff <- Rule2 - Rule1
     rdf <- data.frame(Rules, Rule1, Rule2, RDiff)
     colnames(rdf) = c("Tax_Rule", getShortTaxName(taxname1), getShortTaxName(taxname2), "Change")
