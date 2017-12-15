@@ -50,9 +50,13 @@ shinyUI(fluidPage(
         selectInput("taxadj1", "Tax Plan 1 Adjustment",
                     choices = c("No adjustment",
                                 "Brackets only",
-                                "Standard Deduction only*",
-                                "Child Tax Credit only*",
-                                "Dependent Credit only*"),
+                                "Exemptions only",
+                                "Standard Deduction only",
+                                "Standard Deduction + Exemptions",
+                                "Child Tax Credit only",
+                                "Child Tax Credit + Exemptions",
+                                "Dependent Credit only",
+                                "Dependent Credit + Exemptions"),
                     selected = "No adjustment")
       ),
       wellPanel(
@@ -66,9 +70,9 @@ shinyUI(fluidPage(
         numericInput("highwage", "Highest wages (0 to exclude payroll taxes)", value = 0, min = 0, step = 1000)
       ),
       wellPanel(
-        h4("Deductions"),
-        numericInput("medical", "Medical and dental expenses (eligible dollars)", value = 0, min = 0, step = 1000),
-        numericInput("stateloc", "State & local income or sales taxes (+dollars or -percent)", value = 0, min = -99, step = 1000),
+        h4("Deductions (+dollars or -percent)"),
+        numericInput("medical", "Medical and dental expenses (eligible amount)", value = 0, min = 0, step = 1000),
+        numericInput("stateloc", "State & local income or sales taxes", value = 0, min = -99, step = 1000),
         numericInput("property", "Real estate property taxes", value = 0, min = 0, step = 1000),
         numericInput("mortgage", "Mortgage interest", value = 0, min = 0, step = 1000),
         numericInput("charity", "Charitable contributions", value = 0, min = 0, step = 1000),
