@@ -30,12 +30,6 @@ shinyServer(function(input, output, session) {
       td <- td2
       td["StdDeduct"] <- td1["StdDeduct"]
     }
-    else if (taxadj1 == "Standard Deduction + Exemptions"){
-      td1 <- td
-      td <- td2
-      td["StdDeduct"] <- td1["StdDeduct"]
-      td["Exempt"]    <- as.numeric(td1["Exempt"])
-    }
     else if (taxadj1 == "Child Tax Credit only"){
       td1 <- td
       td <- td2
@@ -44,25 +38,28 @@ shinyServer(function(input, output, session) {
       td["CCMin"]       <- td1["CCMin"]
       td["CCMax"]       <- td1["CCMax"]
     }
-    else if (taxadj1 == "Child Tax Credit + Exemptions"){
-      td1 <- td
-      td <- td2
-      td["ChildCredit"] <- td1["ChildCredit"]
-      td["CCRef"]       <- td1["CCRef"]
-      td["CCMin"]       <- td1["CCMin"]
-      td["CCMax"]       <- td1["CCMax"]
-      td["Exempt"]      <- as.numeric(td1["Exempt"])
-    }
     else if (taxadj1 == "Dependent Credit only"){
       td1 <- td
       td <- td2
       td["DepCredit"] <- td1["DepCredit"]
     }
-    else if (taxadj1 == "Dependent Credit + Exemptions"){
+    else if (taxadj1 == "Standard Deduction + Exemptions"){
       td1 <- td
       td <- td2
-      td["DepCredit"] <- td1["DepCredit"]
+      td["StdDeduct"] <- td1["StdDeduct"]
       td["Exempt"]    <- as.numeric(td1["Exempt"])
+    }
+    else if (taxadj1 == "Standard Deduction + Exemptions + all Credits"){
+      td1 <- td
+      td <- td2
+      td["StdDeduct"]   <- td1["StdDeduct"]
+      td["Exempt"]      <- as.numeric(td1["Exempt"])
+      td["ChildCredit"] <- td1["ChildCredit"]
+      td["CCRef"]       <- td1["CCRef"]
+      td["CCMin"]       <- td1["CCMin"]
+      td["CCMax"]       <- td1["CCMax"]
+      td["DepCredit"]   <- td1["DepCredit"]
+      td["ParCredit"]   <- td1["ParCredit"]
     }
     td
   }

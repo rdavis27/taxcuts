@@ -52,11 +52,10 @@ shinyUI(fluidPage(
                                 "Brackets only",
                                 "Exemptions only",
                                 "Standard Deduction only",
-                                "Standard Deduction + Exemptions",
                                 "Child Tax Credit only",
-                                "Child Tax Credit + Exemptions",
                                 "Dependent Credit only",
-                                "Dependent Credit + Exemptions"),
+                                "Standard Deduction + Exemptions",
+                                "Standard Deduction + Exemptions + all Credits"),
                     selected = "No adjustment")
       ),
       wellPanel(
