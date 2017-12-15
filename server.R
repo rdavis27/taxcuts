@@ -231,6 +231,7 @@ shinyServer(function(input, output, session) {
     totCC <- children * ChildCredit
     refCC <- (income - CCMin)  * 0.15
     totCCRef <- CCRef * children
+    if (refCC < 0) refCC <- 0
     if (refCC > totCCRef) refCC <- totCCRef
     nonrefCC <- totCC - refCC
     subCC <- floor((income - CCMax)/1000) * 50
@@ -255,13 +256,14 @@ shinyServer(function(input, output, session) {
         totDC <- totDC + totPC
         totPC <- 0
         if (totDC < 0){
-          totCC <- totCC + totDC
+          nonrefCC <- nonrefCC + totDC
           totDC <- 0
         }
       }
       inctax <- 0
     }
     inctax <- inctax - refCC - eitc
+    totCC  <- nonrefCC + refCC
     tottax <- fica + inctax
     items <- c(items, adjinc, 0, pretax, -totCC, -totDC, -totPC, -eitc, 0, inctax, fica, 0, tottax)
     items
@@ -373,6 +375,9 @@ shinyServer(function(input, output, session) {
     }
     else if (taxname == "Senate 2018a"){
       name <- "Senate 2018a"
+    }
+    else if (taxname == "Conference"){
+      name <- "Conference"
     }
     name
   }

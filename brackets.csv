@@ -71,3 +71,12 @@ Senate 2018,  Household, Add,      7,     0,  1360,    5944,    9948,   31548,  
 Senate 2018,  Married,   Start,    7,     0, 19050,   77400,  140000,  320000,   400000,  1000000
 Senate 2018,  Married,   Rate,     7,    10,    12,      22,      24,      32,       35,     38.5
 Senate 2018,  Married,   Add,      7,     0,  1905,    8907,   22679,   65879,    91479,   301479 
+Conference,   Single,    Start,    7,     0,  9525,   38700,   70000,  160000,   200000,   500000
+Conference,   Single,    Rate,     7,    10,    12,      22,      24,      32,       35,       37
+Conference,   Single,    Add,      7,     0,952.50, 4453.50,11339.50,32929.50, 45739.50,150739.50
+Conference,   Household, Start,    7,     0, 13600,   51800,   70000,  160000,   200000,   500000
+Conference,   Household, Rate,     7,    10,    12,      22,      24,      32,       35,       37
+Conference,   Household, Add,      7,     0,  1360,    5944,    9948,   31548,    44348,   149348
+Conference,   Married,   Start,    7,     0, 19050,   77400,  140000,  320000,   400000,  1000000
+Conference,   Married,   Rate,     7,    10,    12,      22,      24,      32,       35,       37
+Conference,   Married,   Add,      7,     0,  1905,    8907,   22679,   65879,    91479,   301479 
