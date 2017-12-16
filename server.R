@@ -539,43 +539,49 @@ shinyServer(function(input, output, session) {
       Title <<- "Example B - Married Couple Making $50,000 Per Year with $24,000 in Deductions"
     }
     else if (example == "Example C"){
-      updateNumericInput(session, "wages", value = 25000)
+      updateNumericInput(session, "wages", value = 30000)
       updateNumericInput(session, "children", value = 0)
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Single")
-      updateNumericInput(session, "repealed", value = 15000)
+      updateNumericInput(session, "mortgage", value = 12000)
+      updateNumericInput(session, "repealed", value = 3000)
       Released <<- c("","","","")
-      Title <<- "Example C - Single Person Making $25,000 Per Year with $15,000 in Repealed Deductions"
+      #Title <<- "Example C - Single Person Making $29,000 Per Year with $15,000 in Repealed Deductions"
+      Title <<- "Example C - Single Person Making $30,000 Per Year with $12,000 in Itemized and $3,000 in Repealed Deductions"
     }
     else if (example == "Example D"){
-      updateNumericInput(session, "wages", value = 50000)
+      updateNumericInput(session, "wages", value = 60000)
       updateNumericInput(session, "children", value = 0)
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Married filing jointly")
-      updateNumericInput(session, "repealed", value = 30000)
+      updateNumericInput(session, "mortgage", value = 24000)
+      updateNumericInput(session, "repealed", value = 6000)
       Released <<- c("","","","")
-      Title <<- "Example D - Married Couple Making $50,000 Per Year with $30,000 in Repealed Deductions"
+      #Title <<- "Example D - Married Couple Making $57,000 Per Year with $30,000 in Repealed Deductions"
+      Title <<- "Example D - Married Couple Making $60,000 Per Year with $24,000 in Itemized and $6,000 in Repealed Deductions"
     }
     else if (example == "Example E"){
-      updateNumericInput(session, "wages", value = 470000)
+      updateNumericInput(session, "wages", value = 480000)
       updateNumericInput(session, "children", value = 0)
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Single")
       updateNumericInput(session, "stateloc", value = -10)
       updateNumericInput(session, "wagemin",  value = 10000)
       updateNumericInput(session, "wagemax",  value = 2000000)
+      updateNumericInput(session, "taxcutmax",value = 20)
       Released <<- c("","","","")
       #Title <<- "Example E - Single Person with 10 Percent of Income in State & Local Income/Sales Taxes"
       Title <<- "Example E - Single Person with 10 Percent of Income in State and Local Taxes"
     }
     else if (example == "Example F"){
-      updateNumericInput(session, "wages", value = 530000)
+      updateNumericInput(session, "wages", value = 550000)
       updateNumericInput(session, "children", value = 0)
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Married filing jointly")
       updateNumericInput(session, "stateloc", value = -10)
       updateNumericInput(session, "wagemin",  value = 10000)
       updateNumericInput(session, "wagemax",  value = 2000000)
+      updateNumericInput(session, "taxcutmax",value = 20)
       Released <<- c("","","","")
       #Title <<- "Example F - Married Couple with 10 Percent of Income in State & Local Income/Sales Taxes"
       Title <<- "Example F - Married Couple with 10 Percent of Income in State and Local Taxes"
