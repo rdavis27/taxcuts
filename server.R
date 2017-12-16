@@ -6,6 +6,7 @@ eitcdefs <- read.csv("eitc.csv",     strip.white = TRUE, sep = ",")
 incdef   <- NULL
 last_example <- ""
 Title <- reactiveVal("")
+TitleDefault <- ""
 
 shinyServer(function(input, output, session) {
 
@@ -308,7 +309,8 @@ shinyServer(function(input, output, session) {
     tax
   }
   genTitle <- function(td1, td2, id){
-    if (input$gentitle){
+    titleopt <- input$titleopt
+    if (titleopt == "Generate title"){
       filing <- input$filing
       if (filing == "Head of Household") filing = "Household"
       if (filing == "Married filing jointly") filing = "Married"
@@ -341,6 +343,12 @@ shinyServer(function(input, output, session) {
         }
       }
       Title <<- title
+    }
+    else if (titleopt == "Use title below"){
+      Title <<- input$title
+    }
+    else{
+      Title <<- TitleDefault
     }
   }
   clearTaxItems <- function(){
@@ -693,6 +701,7 @@ shinyServer(function(input, output, session) {
       Released <<- c("71629","64456","-7173","-10")
       Title <<- "Example R - Married, $325,000, 3 kids, itemizing"
     }
+    TitleDefault <<- Title
   })
   output$taxPrint <- renderPrint({
     filing <- input$filing

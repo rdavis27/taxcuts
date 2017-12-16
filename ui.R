@@ -87,9 +87,14 @@ shinyUI(fluidPage(
         numericInput("taxcutmax", "Taxcut Maximum", value = 100, step = 10),
         numericInput("nsmall",    "Decimal places", value = 0, min = 0, step = 1),
         checkboxInput("bigmark", "Comma separator", value = TRUE),
-        checkboxInput("gentitle", "Generate Title", value = FALSE),
-        checkboxInput("appendTax", "Append Tax Name", value = TRUE),
-        checkboxInput("lockplans", "Lock Tax Plans", value = FALSE)
+        checkboxInput("lockplans", "Lock Tax Plans", value = FALSE),
+        selectInput("titleopt", "Title Options",
+                    choices = c("Use default title",
+                                "Generate title",
+                                "Use title below"),
+                    selected = "Use default title"),
+        textInput("title", "Title", value = ""),
+        checkboxInput("appendTax", "Append Tax Name", value = TRUE)
       )
     ),
 
