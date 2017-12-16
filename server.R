@@ -7,6 +7,7 @@ incdef   <- NULL
 last_example <- ""
 Title <- reactiveVal("")
 TitleDefault <- ""
+dosource <- TRUE
 
 shinyServer(function(input, output, session) {
 
@@ -766,6 +767,13 @@ shinyServer(function(input, output, session) {
     # }
     return(df)
   })
+  addTitle <- function(){
+    title(main = paste0(Title,parenTaxName2()))
+    if (dosource){
+      # font.sub=1(normal), 2(bold), 3(italics)
+      title(sub="generated at https://econdata.shinyapps.io/taxcuts/", cex.sub=0.75, font.sub=3, col.sub="black")
+    }
+  }
   output$taxPlot <- renderPlot({
     df <- taxdata()
     df$taxcut <- 100 * (df$taxes1 - df$taxes2) / df$taxes1
@@ -773,7 +781,7 @@ shinyServer(function(input, output, session) {
     df$taxcut[df$taxes1 <= 0 | df$taxes2 <= 0] <- NA
     df$taxcut[df$taxcut < input$taxcutmin | df$taxcut > input$taxcutmax] <- NA
     plot(df$wages, df$taxcut, xlab = "Wages", ylab = "Taxcut (percent)")
-    title(main = paste0(Title,parenTaxName2()))
+    addTitle()
     grid(col = "lightgray")
     abline(v = input$wages, col = "red")
   })
@@ -783,7 +791,7 @@ shinyServer(function(input, output, session) {
     #df$taxcut[df$taxes1 <= 0 | df$taxes2 <= 0] <- NA
     #df$taxcut[df$taxcut < input$taxcutmin | df$taxcut > input$taxcutmax] <- NA
     plot(df$wages, df$taxcut, xlab = "Wages", ylab = "Taxcut (dollars)")
-    title(main = paste0(Title,parenTaxName2()))
+    addTitle()
     grid(col = "lightgray")
     abline(v = input$wages, col = "red")
   })
@@ -791,7 +799,7 @@ shinyServer(function(input, output, session) {
     df <- taxdata()
     df$aftertax <- 100 * ((df$wages-df$taxes2) - (df$wages-df$taxes1)) / (df$wages-df$taxes1)
     plot(df$wages, df$aftertax, xlab = "Wages", ylab = "Change in after-tax income (percent)")
-    title(main = paste0(Title,parenTaxName2()))
+    addTitle()
     grid(col = "lightgray")
     abline(v = input$wages, col = "red")
   })
@@ -804,7 +812,7 @@ shinyServer(function(input, output, session) {
     efftax  <- matrix(c(efftax1, efftax2), length(efftax1), 2)
     matplot(df$wages, efftax, type = "l", xlab = "Wages", ylab = "Effective Tax Rate (percent)")
     legend("topleft", c("Tax Plan 1", "Tax Plan 2"), col = c(1,2), fill = c(1,2))
-    title(main = paste0(Title,parenTaxName2()))
+    addTitle()
     grid(col = "lightgray")
     abline(v = input$wages, col = "red")
   })
