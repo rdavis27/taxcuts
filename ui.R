@@ -14,12 +14,12 @@ shinyUI(fluidPage(
                     choices = c("Current 2017", "Current 2018",
                                 "House 2017", "House 2017 w/o Family Credits", "House 2018", "House 2018 w/o Family Credits",
                                 "Senate 2018 w/ $1650 Child Credit", "Senate 2018", "Conference"),
-                    selected = "Current 2017"),
+                    selected = "Current 2018"),
         selectInput("taxname2", "Tax Plan 2",
                     choices = c("Current 2017", "Current 2018",
                                 "House 2017", "House 2017 w/o Family Credits", "House 2018", "House 2018 w/o Family Credits",
                                 "Senate 2018 w/ $1650 Child Credit", "Senate 2018", "Conference"),
-                    selected = "Senate 2018"),
+                    selected = "Conference"),
         selectInput("examples", "Tax Examples",
                     choices = c("Example 1 - Family of Four (House)",
                                 "Example 2 - Single Mother (House)",
@@ -46,7 +46,7 @@ shinyUI(fluidPage(
                                 "Example Q - Married, $165,000, 2 kids, itemizing (Tax Foundation)"),
                                 #"Example Q - Married, $165,000, 2 kids, itemizing (Tax Foundation)",
                                 #"Example R - Married, $325,000, 3 kids, itemizing (Tax Foundation)"),
-                    selected = "Example 5 - Family of Four (Senate)"),
+                    selected = "Example A - Single Itemizer"),
         selectInput("taxadj1", "Tax Plan 1 Adjustment",
                     choices = c("No adjustment",
                                 "Brackets only",
@@ -54,8 +54,9 @@ shinyUI(fluidPage(
                                 "Standard Deduction only",
                                 "Child Tax Credit only",
                                 "Dependent Credit only",
-                                "Standard Deduction + Exemptions",
-                                "Standard Deduction + Exemptions + all Credits"),
+                                "Standard Deduction, Exemptions & all Credits",
+                                "Standard Deduction, Exemptions, all Credits & Brackets",
+                                "Add $300 to CTC Refundability (per Rubio)"),
                     selected = "No adjustment")
       ),
       wellPanel(
@@ -87,7 +88,8 @@ shinyUI(fluidPage(
         numericInput("nsmall",    "Decimal places", value = 0, min = 0, step = 1),
         checkboxInput("bigmark", "Comma separator", value = TRUE),
         checkboxInput("gentitle", "Generate Title", value = FALSE),
-        checkboxInput("appendTax", "Append Tax Name", value = TRUE)
+        checkboxInput("appendTax", "Append Tax Name", value = TRUE),
+        checkboxInput("lockplans", "Lock Tax Plans", value = FALSE)
       )
     ),
 

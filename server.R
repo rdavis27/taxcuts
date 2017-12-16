@@ -43,13 +43,7 @@ shinyServer(function(input, output, session) {
       td <- td2
       td["DepCredit"] <- td1["DepCredit"]
     }
-    else if (taxadj1 == "Standard Deduction + Exemptions"){
-      td1 <- td
-      td <- td2
-      td["StdDeduct"] <- td1["StdDeduct"]
-      td["Exempt"]    <- as.numeric(td1["Exempt"])
-    }
-    else if (taxadj1 == "Standard Deduction + Exemptions + all Credits"){
+    else if (taxadj1 == "Standard Deduction, Exemptions & all Credits"){
       td1 <- td
       td <- td2
       td["StdDeduct"]   <- td1["StdDeduct"]
@@ -60,6 +54,26 @@ shinyServer(function(input, output, session) {
       td["CCMax"]       <- td1["CCMax"]
       td["DepCredit"]   <- td1["DepCredit"]
       td["ParCredit"]   <- td1["ParCredit"]
+    }
+    else if (taxadj1 == "Standard Deduction, Exemptions, all Credits & Brackets"){
+      td1 <- td
+      td <- td2
+      td["StdDeduct"]   <- td1["StdDeduct"]
+      td["Exempt"]      <- as.numeric(td1["Exempt"])
+      td["ChildCredit"] <- td1["ChildCredit"]
+      td["CCRef"]       <- td1["CCRef"]
+      td["CCMin"]       <- td1["CCMin"]
+      td["CCMax"]       <- td1["CCMax"]
+      td["DepCredit"]   <- td1["DepCredit"]
+      td["ParCredit"]   <- td1["ParCredit"]
+      td["Start"]       <- td1["Start"]
+      td["Rate"]        <- td1["Rate"]
+      td["Add"]         <- td1["Add"]
+    }
+    else if (taxadj1 == "Add $300 to CTC Refundability (per Rubio)"){
+      td1 <- td
+      td <- td2
+      td["CCRef"]       <- as.numeric(td2["CCRef"]) - 300
     }
     td
   }
@@ -348,16 +362,28 @@ shinyServer(function(input, output, session) {
     updateNumericInput(session, "wagemax",  value = 200000)
   }
   setHouse2017 <- function(){
-    updateNumericInput(session, "taxname1",  value = "Current 2017")
-    updateNumericInput(session, "taxname2",  value = "House 2017")
+    if (!input$lockplans){
+      updateNumericInput(session, "taxname1",  value = "Current 2017")
+      updateNumericInput(session, "taxname2",  value = "House 2017")
+    }
   }
   setSenate2018 <- function(){
-    updateNumericInput(session, "taxname1",  value = "Current 2018")
-    updateNumericInput(session, "taxname2",  value = "Senate 2018")
+    if (!input$lockplans){
+      updateNumericInput(session, "taxname1",  value = "Current 2018")
+      updateNumericInput(session, "taxname2",  value = "Senate 2018")
+    }
   }
   setSenate2017_2018 <- function(){
-    updateNumericInput(session, "taxname1",  value = "Current 2017")
-    updateNumericInput(session, "taxname2",  value = "Senate 2018")
+    if (!input$lockplans){
+      updateNumericInput(session, "taxname1",  value = "Current 2017")
+      updateNumericInput(session, "taxname2",  value = "Senate 2018")
+    }
+  }
+  setConference <- function(){
+    if (!input$lockplans){
+      updateNumericInput(session, "taxname1",  value = "Current 2018")
+      updateNumericInput(session, "taxname2",  value = "Conference")
+    }
   }
   # Convert name from ui.R or data files to short name for column
   getShortTaxName <- function(taxname){
@@ -425,7 +451,7 @@ shinyServer(function(input, output, session) {
     clearTaxItems()
     clearDeductions()
     resetWageLimits()
-    setSenate2018()
+    setConference()
     if (example == "Example 1"){
       setHouse2017()
       updateNumericInput(session, "wages", value = 59000)
@@ -734,6 +760,7 @@ shinyServer(function(input, output, session) {
   output$taxPlot <- renderPlot({
     df <- taxdata()
     df$taxcut <- 100 * (df$taxes1 - df$taxes2) / df$taxes1
+    df$taxcut[df$taxes == 0] <- NA
     df$taxcut[df$taxes1 <= 0 | df$taxes2 <= 0] <- NA
     df$taxcut[df$taxcut < input$taxcutmin | df$taxcut > input$taxcutmax] <- NA
     plot(df$wages, df$taxcut, xlab = "Wages", ylab = "Taxcut (percent)")
