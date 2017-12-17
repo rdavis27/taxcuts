@@ -573,14 +573,14 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Single")
       #updateNumericInput(session, "stateloc", value = -10)
-      updateNumericInput(session, "stateloc", value = -9)
+      updateNumericInput(session, "stateloc", value = -8)
       updateNumericInput(session, "wagemin",  value = 10000)
       updateNumericInput(session, "wagemax",  value = 2000000)
       updateNumericInput(session, "taxcutmax",value = 20)
       Released <<- c("","","","")
       #Title <<- "Example E - Single Person with 10 Percent of Income in State & Local Income/Sales Taxes"
       #Title <<- "Example E - Single Person with 10 Percent of Income in State and Local Taxes"
-      Title <<- "Example E - Single Person with 9 Percent of Income in State and Local Taxes"
+      Title <<- "Example E - Single Person with 8 Percent of Income in State and Local Taxes"
     }
     else if (example == "Example F"){
       #updateNumericInput(session, "wages", value = 550000)
@@ -589,14 +589,14 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Married filing jointly")
       #updateNumericInput(session, "stateloc", value = -10)
-      updateNumericInput(session, "stateloc", value = -9)
+      updateNumericInput(session, "stateloc", value = -8)
       updateNumericInput(session, "wagemin",  value = 10000)
       updateNumericInput(session, "wagemax",  value = 2000000)
       updateNumericInput(session, "taxcutmax",value = 20)
       Released <<- c("","","","")
       #Title <<- "Example F - Married Couple with 10 Percent of Income in State & Local Income/Sales Taxes"
       #Title <<- "Example F - Married Couple with 10 Percent of Income in State and Local Taxes"
-      Title <<- "Example F - Married Couple with 9 Percent of Income in State and Local Taxes"
+      Title <<- "Example F - Married Couple with 8 Percent of Income in State and Local Taxes"
     }
     else if (example == "Example G"){
       updateNumericInput(session, "wages", value = 25000)
@@ -795,7 +795,7 @@ shinyServer(function(input, output, session) {
   output$taxPlot <- renderPlot({
     df <- taxdata()
     df$taxcut <- 100 * (df$taxes1 - df$taxes2) / df$taxes1
-    df$taxcut[df$taxes == 0] <- NA
+    df$taxcut[df$taxes1 == 0] <- NA
     df$taxcut[df$taxes1 <= 0 | df$taxes2 <= 0] <- NA
     df$taxcut[df$taxcut < input$taxcutmin | df$taxcut > input$taxcutmax] <- NA
     plot(df$wages, df$taxcut, xlab = "Wages", ylab = "Taxcut (percent)")
