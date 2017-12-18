@@ -369,6 +369,7 @@ shinyServer(function(input, output, session) {
   resetWageLimits <- function(){
     updateNumericInput(session, "wagemin",  value = 0)
     updateNumericInput(session, "wagemax",  value = 200000)
+    updateNumericInput(session, "wagestep", value = 1000)
   }
   setHouse2017 <- function(){
     if (!input$lockplans){
@@ -501,21 +502,23 @@ shinyServer(function(input, output, session) {
       Title <<- "Example 4 - New Homeowners Making $115,000 Per Year in a High Tax State"
     }
     else if (example == "Example 5"){
-      setSenate2017_2018()
+      #setSenate2017_2018()
       updateNumericInput(session, "wages", value = 73000)
       updateNumericInput(session, "children", value = 2)
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing", value = "Married filing jointly")
-      Released <<- c("3683","1499","-2184","nearly 60 percent")
+      #Released <<- c("3683","1499","-2184","nearly 60 percent")
+      Released <<- c("","","-2059","")
       Title <<- "Example 5 - Family of Four Earning $73,000 Per Year"
     }
     else if (example == "Example 6"){
-      setSenate2017_2018()
+      #setSenate2017_2018()
       updateNumericInput(session, "wages", value = 41000)
       updateNumericInput(session, "children", value = 1)
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing", value = "Head of Household")
-      Released <<- c("1865","488","-1377","nearly 75 percent")
+      #Released <<- c("1865","488","-1377","nearly 75 percent")
+      Released <<- c("","","","")
       Title <<- "Example 6 - Single Parent with One Child Earning $41,000 Per Year"
     }
     else if (example == "Example A"){
@@ -576,6 +579,7 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "stateloc", value = -8)
       updateNumericInput(session, "wagemin",  value = 10000)
       updateNumericInput(session, "wagemax",  value = 2000000)
+      updateNumericInput(session, "wagestep", value = 10000)
       updateNumericInput(session, "taxcutmax",value = 20)
       Released <<- c("","","","")
       #Title <<- "Example E - Single Person with 10 Percent of Income in State & Local Income/Sales Taxes"
@@ -592,6 +596,7 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "stateloc", value = -8)
       updateNumericInput(session, "wagemin",  value = 10000)
       updateNumericInput(session, "wagemax",  value = 2000000)
+      updateNumericInput(session, "wagestep", value = 10000)
       updateNumericInput(session, "taxcutmax",value = 20)
       Released <<- c("","","","")
       #Title <<- "Example F - Married Couple with 10 Percent of Income in State & Local Income/Sales Taxes"
