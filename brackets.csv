@@ -71,12 +71,12 @@ Senate 2018,  Household, Add,      7,     0,  1360,    5944,    9948,   31548,  
 Senate 2018,  Married,   Start,    7,     0, 19050,   77400,  140000,  320000,   400000,  1000000
 Senate 2018,  Married,   Rate,     7,    10,    12,      22,      24,      32,       35,     38.5
 Senate 2018,  Married,   Add,      7,     0,  1905,    8907,   22679,   65879,    91479,   301479 
-Conference,   Single,    Start,    7,     0,  9525,   38700,   82500,  157500,   200000,   500000
-Conference,   Single,    Rate,     7,    10,    12,      22,      24,      32,       35,       37
-Conference,   Single,    Add,      7,     0,952.50, 4453.50,14089.50,32089.50, 45689.50,150689.50
-Conference,   Household, Start,    7,     0, 13600,   51800,   82500,  157500,   200000,   500000
-Conference,   Household, Rate,     7,    10,    12,      22,      24,      32,       35,       37
-Conference,   Household, Add,      7,     0,  1360,    5944,   12698,   30698,    44298,   149298
-Conference,   Married,   Start,    7,     0, 19050,   77400,  165000,  315000,   400000,   600000
-Conference,   Married,   Rate,     7,    10,    12,      22,      24,      32,       35,       37
-Conference,   Married,   Add,      7,     0,  1905,    8907,   28179,   64179,    91379,   161379
+Final Bill,   Single,    Start,    7,     0,  9525,   38700,   82500,  157500,   200000,   500000
+Final Bill,   Single,    Rate,     7,    10,    12,      22,      24,      32,       35,       37
+Final Bill,   Single,    Add,      7,     0,952.50, 4453.50,14089.50,32089.50, 45689.50,150689.50
+Final Bill,   Household, Start,    7,     0, 13600,   51800,   82500,  157500,   200000,   500000
+Final Bill,   Household, Rate,     7,    10,    12,      22,      24,      32,       35,       37
+Final Bill,   Household, Add,      7,     0,  1360,    5944,   12698,   30698,    44298,   149298
+Final Bill,   Married,   Start,    7,     0, 19050,   77400,  165000,  315000,   400000,   600000
+Final Bill,   Married,   Rate,     7,    10,    12,      22,      24,      32,       35,       37
+Final Bill,   Married,   Add,      7,     0,  1905,    8907,   28179,   64179,    91379,   161379

@@ -389,10 +389,10 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "taxname2",  value = "Senate 2018")
     }
   }
-  setConference <- function(){
+  setFinalBill <- function(){
     if (!input$lockplans){
       updateNumericInput(session, "taxname1",  value = "Current 2018")
-      updateNumericInput(session, "taxname2",  value = "Conference")
+      updateNumericInput(session, "taxname2",  value = "Final Bill")
     }
   }
   # Convert name from ui.R or data files to short name for column
@@ -432,8 +432,8 @@ shinyServer(function(input, output, session) {
     else if (taxname == "Senate 2018a"){
       name <- "Senate 2018a"
     }
-    else if (taxname == "Conference"){
-      name <- "Conference"
+    else if (taxname == "Final Bill"){
+      name <- "Final Bill"
     }
     name
   }
@@ -461,7 +461,7 @@ shinyServer(function(input, output, session) {
     clearTaxItems()
     clearDeductions()
     resetWageLimits()
-    setConference()
+    setFinalBill()
     if (example == "Example 1"){
       setHouse2017()
       updateNumericInput(session, "wages", value = 59000)
