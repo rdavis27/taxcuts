@@ -57,7 +57,16 @@ shinyUI(fluidPage(
                                 "Standard Deduction, Exemptions & all Credits",
                                 "Standard Deduction, Exemptions, all Credits & Brackets",
                                 "Add $300 to CTC Refundability (per Rubio)"),
-                    selected = "No adjustment")
+                    selected = "No adjustment"),
+        selectInput("xvariable", "X Variable",
+                    choices = c("Wages",
+                                "Medical and dental expenses",
+                                "State and local taxes",
+                                "Real estate property taxes",
+                                "Mortgage interest",
+                                "Charitable contributions",
+                                "Misc. repealed deductions"),
+                    selected = "Wages")
       ),
       wellPanel(
         h4("General Items"),
@@ -80,9 +89,9 @@ shinyUI(fluidPage(
       ),
       wellPanel(
         h4("Scales"),
-        numericInput("wagemin", "Wage Minimum", value = 0, min = 0, step = 1000),
-        numericInput("wagemax", "Wage Maximum", value = 200000, min = 0, step = 1000),
-        numericInput("wagestep", "Wage Step", value = 1000, min = 0, step = 100),
+        numericInput("wagemin", "X Minimum", value = 0, min = 0, step = 1000),
+        numericInput("wagemax", "X Maximum", value = 200000, min = 0, step = 1000),
+        numericInput("wagestep", "X Step", value = 1000, min = 0, step = 100),
         numericInput("taxcutmin", "Taxcut Minimum", value = -100, step = 10),
         numericInput("taxcutmax", "Taxcut Maximum", value = 100, step = 10),
         numericInput("nsmall",    "Decimal places", value = 0, min = 0, step = 1),

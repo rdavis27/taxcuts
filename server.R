@@ -177,14 +177,16 @@ shinyServer(function(input, output, session) {
     if (is.na(n)) n <- as.integer(def)
     n
   }
-  getTaxItems <- function(td, id, wages){
+  getTaxItems <- function(td, id, xval){
+    xvariable   <- input$xvariable
     Exempt      <- as.numeric(td["Exempt"])
     StdDeduct   <- as.numeric(td["StdDeduct"])
     ChildCredit <- as.numeric(td["ChildCredit"])
     DepCredit   <- as.numeric(td["DepCredit"])
     ParCredit   <- as.numeric(td["ParCredit"])
     
-    if (wages < 0) wages <- chknumeric(id["wages"])
+    if (xval >= 0 & xvariable == "Wages") wages <- xval
+    else wages <- chknumeric(id["wages"])
     deferred <- chknumeric(id["deferred"])
     highwage <- chknumeric(id["highwage"])
     if (deferred < 0) deferred <- -deferred * wages / 100.0
@@ -204,6 +206,14 @@ shinyServer(function(input, output, session) {
     if (mortgage < 0) mortgage <- -mortgage * wages / 100.0
     if (charity  < 0) charity  <- -charity  * wages / 100.0
     if (repealed < 0) repealed <- -repealed * wages / 100.0
+    if (xval >= 0){
+      if (xvariable == "Medical and dental expenses")      medical <- xval
+      else if (xvariable == "State and local taxes")      stateloc <- xval
+      else if (xvariable == "Real estate property taxes") property <- xval
+      else if (xvariable == "Mortgage interest")          mortgage <- xval
+      else if (xvariable == "Charitable contributions")    charity <- xval
+      else if (xvariable == "Misc. repealed deductions")  repealed <- xval
+    }
     EITCname <- as.character(td["EITC"])
     SSMax    <- as.numeric(td["SSMax"])
     CCRef    <- as.numeric(td["CCRef"])
@@ -454,6 +464,18 @@ shinyServer(function(input, output, session) {
       }
     }
     name
+  }
+  getXValue <- function(){
+    xvariable <- input$xvariable
+    xval <- "(not set)"
+    if (xvariable == "Wages") xval <- input$wages
+    else if (xvariable == "Medical and dental expenses") xval <- input$medical
+    else if (xvariable == "State and local taxes")       xval <- input$stateloc
+    else if (xvariable == "Real estate property taxes")  xval <- input$property
+    else if (xvariable == "Mortgage interest")           xval <- input$mortgage
+    else if (xvariable == "Charitable contributions")    xval <- input$charity
+    else if (xvariable == "Misc. repealed deductions")   xval <- input$repealed
+    xval
   }
   observeEvent(input$examples, {
     example <- substr(input$examples, 1, 9)
@@ -766,16 +788,21 @@ shinyServer(function(input, output, session) {
     if (filing == "Married filing jointly") filing = "Married"
     taxname1 <- getMidTaxName(input$taxname1)
     taxname2 <- getMidTaxName(input$taxname2)
-    wages <- seq(chknumeric(input$wagemin), chknumeric(input$wagemax,200000), chknumeric(input$wagestep,1000))
-    df <- data.frame(wages)
+    if (input$xvariable == "Wages"){
+      xvalues <- seq(chknumeric(input$wagemin), chknumeric(input$wagemax,200000), chknumeric(input$wagestep,1000))
+    }
+    else{
+      xvalues <- seq(0, input$wages, 500)
+    }
+    df <- data.frame(xvalues)
     df$taxes1 <- 0
     df$taxes2 <- 0
     taxdef2 <- getTaxdef(taxname2, filing)
     taxdef1 <- getTaxdefAdj(taxname1, filing, taxdef2)
     incdef  <- getIncdef()
-    for (i in 1:length(df$wages)){
-      df$taxes1[i] <- calcTax(taxdef1, incdef, wages[i])
-      df$taxes2[i] <- calcTax(taxdef2, incdef, wages[i])
+    for (i in 1:length(df$xvalues)){
+      df$taxes1[i] <- calcTax(taxdef1, incdef, xvalues[i])
+      df$taxes2[i] <- calcTax(taxdef2, incdef, xvalues[i])
     }
     if (chknumeric(input$wages) != 0){
       cat(file=stderr(), paste0(input$taxname1,"|",input$taxname2,"|",input$examples,"#",
@@ -803,41 +830,41 @@ shinyServer(function(input, output, session) {
     df$taxcut[df$taxes1 == 0] <- NA
     df$taxcut[df$taxes1 <= 0 | df$taxes2 <= 0] <- NA
     df$taxcut[df$taxcut < input$taxcutmin | df$taxcut > input$taxcutmax] <- NA
-    plot(df$wages, df$taxcut, xlab = "Wages", ylab = "Taxcut (percent)")
+    plot(df$xvalues, df$taxcut, xlab = input$xvariable, ylab = "Taxcut (percent)")
     addTitle()
     grid(col = "lightgray")
-    abline(v = input$wages, col = "red")
+    abline(v = getXValue(), col = "red")
   })
   output$taxPlotDollars <- renderPlot({
     df <- taxdata()
     df$taxcut <- df$taxes1 - df$taxes2
     #df$taxcut[df$taxes1 <= 0 | df$taxes2 <= 0] <- NA
     #df$taxcut[df$taxcut < input$taxcutmin | df$taxcut > input$taxcutmax] <- NA
-    plot(df$wages, df$taxcut, xlab = "Wages", ylab = "Taxcut (dollars)")
+    plot(df$xvalues, df$taxcut, xlab = input$xvariable, ylab = "Taxcut (dollars)")
     addTitle()
     grid(col = "lightgray")
-    abline(v = input$wages, col = "red")
+    abline(v = getXValue(), col = "red")
   })
   output$incomePlot <- renderPlot({
     df <- taxdata()
-    df$aftertax <- 100 * ((df$wages-df$taxes2) - (df$wages-df$taxes1)) / (df$wages-df$taxes1)
-    plot(df$wages, df$aftertax, xlab = "Wages", ylab = "Change in after-tax income (percent)")
+    df$aftertax <- 100 * ((df$xvalues-df$taxes2) - (df$xvalues-df$taxes1)) / (df$xvalues-df$taxes1)
+    plot(df$xvalues, df$aftertax, xlab = input$xvariable, ylab = "Change in after-tax income (percent)")
     addTitle()
     grid(col = "lightgray")
-    abline(v = input$wages, col = "red")
+    abline(v = getXValue(), col = "red")
   })
   output$efftaxPlot <- renderPlot({
     df <- taxdata()
-    efftax1 <- 100 * df$taxes1 / df$wages
+    efftax1 <- 100 * df$taxes1 / df$xvalues
     efftax1[efftax1 < 0] <- NA
-    efftax2 <- 100 * df$taxes2 / df$wages
+    efftax2 <- 100 * df$taxes2 / df$xvalues
     efftax2[efftax2 < 0] <- NA
     efftax  <- matrix(c(efftax1, efftax2), length(efftax1), 2)
-    matplot(df$wages, efftax, type = "l", xlab = "Wages", ylab = "Effective Tax Rate (percent)")
+    matplot(df$xvalues, efftax, type = "l", xlab = input$xvariable, ylab = "Effective Tax Rate (percent)")
     legend("topleft", c("Tax Plan 1", "Tax Plan 2"), col = c(1,2), fill = c(1,2))
     addTitle()
     grid(col = "lightgray")
-    abline(v = input$wages, col = "red")
+    abline(v = getXValue(), col = "red")
   })
   output$rulePrint <- renderPrint({
     df <- taxdata() # log message on change
