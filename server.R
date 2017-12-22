@@ -7,6 +7,8 @@ incdef   <- NULL
 last_example <- ""
 Title <- reactiveVal("")
 TitleDefault <- ""
+color0 <- "gray"
+colneg <- "red"
 dosource <- TRUE
 
 shinyServer(function(input, output, session) {
@@ -826,14 +828,18 @@ shinyServer(function(input, output, session) {
   }
   output$taxPlot <- renderPlot({
     df <- taxdata()
+    df$col <- "black"
     df$taxcut <- 100 * (df$taxes1 - df$taxes2) / df$taxes1
     df$taxcut[df$taxes1 == 0] <- NA
-    df$taxcut[df$taxes1 <= 0 | df$taxes2 <= 0] <- NA
     df$taxcut[df$taxcut < input$taxcutmin | df$taxcut > input$taxcutmax] <- NA
-    plot(df$xvalues, df$taxcut, xlab = input$xvariable, ylab = "Taxcut (percent)")
+    df$taxcut[xor(df$taxes1 <= 0, df$taxes2 <= 0)] <- NA
+    df$col[df$taxes1 < 0 & df$taxes2 < 0] <- colneg
+    df$taxcut[df$taxes1 < 0 & df$taxes2 < 0] <- -df$taxcut[df$taxes1 < 0 & df$taxes2 < 0]
+    plot(df$xvalues, df$taxcut, col = df$col, xlab = input$xvariable, ylab = "Taxcut (percent)")
     addTitle()
     grid(col = "lightgray")
     abline(v = getXValue(), col = "red")
+    abline(h = 0, col = color0)
   })
   output$taxPlotDollars <- renderPlot({
     df <- taxdata()
@@ -844,14 +850,22 @@ shinyServer(function(input, output, session) {
     addTitle()
     grid(col = "lightgray")
     abline(v = getXValue(), col = "red")
+    abline(h = 0, col = color0)
   })
   output$incomePlot <- renderPlot({
     df <- taxdata()
-    df$aftertax <- 100 * ((df$xvalues-df$taxes2) - (df$xvalues-df$taxes1)) / (df$xvalues-df$taxes1)
+    wages <- input$wages
+    if (input$xvariable == "Wages"){
+      df$aftertax <- 100 * ((df$xvalues-df$taxes2) - (df$xvalues-df$taxes1)) / (df$xvalues-df$taxes1)
+    }
+    else{
+      df$aftertax <- 100 * ((wages-df$taxes2) - (wages-df$taxes1)) / (wages-df$taxes1)
+    }
     plot(df$xvalues, df$aftertax, xlab = input$xvariable, ylab = "Change in after-tax income (percent)")
     addTitle()
     grid(col = "lightgray")
     abline(v = getXValue(), col = "red")
+    abline(h = 0, col = color0)
   })
   output$efftaxPlot <- renderPlot({
     df <- taxdata()
@@ -865,6 +879,7 @@ shinyServer(function(input, output, session) {
     addTitle()
     grid(col = "lightgray")
     abline(v = getXValue(), col = "red")
+    abline(h = 0, col = color0)
   })
   output$rulePrint <- renderPrint({
     df <- taxdata() # log message on change
