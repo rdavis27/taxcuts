@@ -9,6 +9,8 @@ Title <- reactiveVal("")
 TitleDefault <- ""
 color0 <- "gray"
 colneg <- "red"
+coldef <- "blue"
+colpos <- "black"
 dosource <- TRUE
 
 shinyServer(function(input, output, session) {
@@ -604,7 +606,7 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "wagemin",  value = 10000)
       updateNumericInput(session, "wagemax",  value = 2000000)
       updateNumericInput(session, "wagestep", value = 10000)
-      updateNumericInput(session, "taxcutmax",value = 20)
+      updateNumericInput(session, "percentmax",value = 20)
       Released <<- c("","","","")
       #Title <<- "Example E - Single Person with 10 Percent of Income in State & Local Income/Sales Taxes"
       #Title <<- "Example E - Single Person with 10 Percent of Income in State and Local Taxes"
@@ -621,7 +623,7 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "wagemin",  value = 10000)
       updateNumericInput(session, "wagemax",  value = 2000000)
       updateNumericInput(session, "wagestep", value = 10000)
-      updateNumericInput(session, "taxcutmax",value = 20)
+      updateNumericInput(session, "percentmax",value = 20)
       Released <<- c("","","","")
       #Title <<- "Example F - Married Couple with 10 Percent of Income in State & Local Income/Sales Taxes"
       #Title <<- "Example F - Married Couple with 10 Percent of Income in State and Local Taxes"
@@ -810,7 +812,7 @@ shinyServer(function(input, output, session) {
       cat(file=stderr(), paste0(input$taxname1,"|",input$taxname2,"|",input$examples,"#",
                                 input$filing,"|", input$children,"|",input$otherdep,"|",input$wages,"#",
                                 input$medical,"|",input$stateloc,"|",input$property,"|",input$mortgage,"|",input$charity,"|",input$repealed,"#",
-                                input$wagemin,"|",input$wagemax, "|",input$wagestep,"|",input$taxcutmin,"|",input$taxcutmax,"\n"))
+                                input$wagemin,"|",input$wagemax, "|",input$wagestep,"|",input$percentmin,"|",input$percentmax,"\n"))
     }
     genTitle(taxdef1, taxdef2, incdef)
     # if (last_example == input$examples){
@@ -828,13 +830,14 @@ shinyServer(function(input, output, session) {
   }
   output$taxPlot <- renderPlot({
     df <- taxdata()
-    df$col <- "black"
+    df$col <- colpos
     df$taxcut <- 100 * (df$taxes1 - df$taxes2) / df$taxes1
+    df$taxcut[df$taxes1 < 0 & df$taxes2 < 0] <- -df$taxcut[df$taxes1 < 0 & df$taxes2 < 0]
     df$taxcut[df$taxes1 == 0] <- NA
-    df$taxcut[df$taxcut < input$taxcutmin | df$taxcut > input$taxcutmax] <- NA
+    df$taxcut[df$taxcut < input$percentmin | df$taxcut > input$percentmax] <- NA
     df$taxcut[xor(df$taxes1 <= 0, df$taxes2 <= 0)] <- NA
     df$col[df$taxes1 < 0 & df$taxes2 < 0] <- colneg
-    df$taxcut[df$taxes1 < 0 & df$taxes2 < 0] <- -df$taxcut[df$taxes1 < 0 & df$taxes2 < 0]
+    df$col[1] <- df$col[2]
     plot(df$xvalues, df$taxcut, col = df$col, xlab = input$xvariable, ylab = "Taxcut (percent)")
     addTitle()
     grid(col = "lightgray")
@@ -845,8 +848,12 @@ shinyServer(function(input, output, session) {
     df <- taxdata()
     df$taxcut <- df$taxes1 - df$taxes2
     #df$taxcut[df$taxes1 <= 0 | df$taxes2 <= 0] <- NA
-    #df$taxcut[df$taxcut < input$taxcutmin | df$taxcut > input$taxcutmax] <- NA
-    plot(df$xvalues, df$taxcut, xlab = input$xvariable, ylab = "Taxcut (dollars)")
+    #df$taxcut[df$taxcut < input$percentmin | df$taxcut > input$percentmax] <- NA
+    df$col <- coldef
+    df$col[df$taxes1 < 0 & df$taxes2 < 0] <- colneg
+    df$col[df$taxes1 > 0 & df$taxes2 > 0] <- colpos
+    df$col[1] <- df$col[2]
+    plot(df$xvalues, df$taxcut, col = df$col, xlab = input$xvariable, ylab = "Taxcut (dollars)")
     addTitle()
     grid(col = "lightgray")
     abline(v = getXValue(), col = "red")
@@ -861,7 +868,12 @@ shinyServer(function(input, output, session) {
     else{
       df$aftertax <- 100 * ((wages-df$taxes2) - (wages-df$taxes1)) / (wages-df$taxes1)
     }
-    plot(df$xvalues, df$aftertax, xlab = input$xvariable, ylab = "Change in after-tax income (percent)")
+    df$aftertax[df$aftertax < input$percentmin | df$aftertax > input$percentmax] <- NA
+    df$col <- coldef
+    df$col[df$taxes1 < 0 & df$taxes2 < 0] <- colneg
+    df$col[df$taxes1 > 0 & df$taxes2 > 0] <- colpos
+    df$col[1] <- df$col[2]
+    plot(df$xvalues, df$aftertax, col = df$col, xlab = input$xvariable, ylab = "Change in after-tax income (percent)")
     addTitle()
     grid(col = "lightgray")
     abline(v = getXValue(), col = "red")
