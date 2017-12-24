@@ -100,6 +100,7 @@ shinyUI(fluidPage(
         selectInput("titleopt", "Title Options",
                     choices = c("Use default title",
                                 "Generate title",
+                                "Generate title and prepend title below",
                                 "Use title below"),
                     selected = "Use default title"),
         textInput("title", "Title", value = ""),

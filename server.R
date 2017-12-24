@@ -325,7 +325,7 @@ shinyServer(function(input, output, session) {
   }
   genTitle <- function(td1, td2, id){
     titleopt <- input$titleopt
-    if (titleopt == "Generate title"){
+    if (substr(titleopt, 1, 14) == "Generate title"){
       filing <- input$filing
       if (filing == "Head of Household") filing = "Household"
       if (filing == "Married filing jointly") filing = "Married"
@@ -336,11 +336,13 @@ shinyServer(function(input, output, session) {
       wages <- chknumeric(input$wages)
       deferred <- chknumeric(input$deferred)
       title <- filing
-      if (children == 0) title <- paste0(title, ", no children")
+      if (children == 0){
+        if (otherdep == 0) title <- paste0(title, ", no children")
+      }
       else if (children == 1) title <- paste0(title, ", 1 child")
       else title <- paste0(title, ", ", children, " children")
-      if (otherdep == 1) title <- paste0(title, ", 1 other dependent")
-      else if (otherdep > 1) title <- paste0(title, ", ", otherdep, " other dependents")
+      if (otherdep == 1) title <- paste0(title, ", 1 nonchild dependent")
+      else if (otherdep > 1) title <- paste0(title, ", ", otherdep, " nonchild dependents")
       #title <- paste0(title, ", wage of ", wages)
       title <- paste0(title, ", ", wages, " income")
       if (deferred > 0) title <- paste0(title, ", ", deferred, " deferred")
@@ -357,7 +359,10 @@ shinyServer(function(input, output, session) {
           title <- paste0(title, ", ", repealed, " repealed")
         }
       }
-      Title <<- title
+      if (titleopt == "Generate title and prepend title below"){
+        Title <<- paste(input$title, title)
+      }
+      else Title <<- title
     }
     else if (titleopt == "Use title below"){
       Title <<- input$title
@@ -838,7 +843,7 @@ shinyServer(function(input, output, session) {
     df$taxcut[xor(df$taxes1 <= 0, df$taxes2 <= 0)] <- NA
     df$col[df$taxes1 < 0 & df$taxes2 < 0] <- colneg
     df$col[1] <- df$col[2]
-    plot(df$xvalues, df$taxcut, col = df$col, xlab = input$xvariable, ylab = "Taxcut (percent)")
+    plot(df$xvalues, df$taxcut, col = df$col, xlab = input$xvariable, ylab = "Tax Cut (percent)")
     addTitle()
     grid(col = "lightgray")
     abline(v = getXValue(), col = "red")
@@ -853,7 +858,7 @@ shinyServer(function(input, output, session) {
     df$col[df$taxes1 < 0 & df$taxes2 < 0] <- colneg
     df$col[df$taxes1 > 0 & df$taxes2 > 0] <- colpos
     df$col[1] <- df$col[2]
-    plot(df$xvalues, df$taxcut, col = df$col, xlab = input$xvariable, ylab = "Taxcut (dollars)")
+    plot(df$xvalues, df$taxcut, col = df$col, xlab = input$xvariable, ylab = "Tax Cut (dollars)")
     addTitle()
     grid(col = "lightgray")
     abline(v = getXValue(), col = "red")
