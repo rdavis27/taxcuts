@@ -84,6 +84,10 @@ shinyServer(function(input, output, session) {
       td <- td2
       td["CCRef"]       <- as.numeric(td2["CCRef"]) - 300
     }
+    else if (taxadj1 == "No adjustment"){}
+    else{
+      cat(file=stderr(), paste0("##### Invalid Tax Plan 1 Adjustment=|", taxadj1, "|\n"))
+    }
     td
   }
   getTaxdef <- function(taxname, filing){
@@ -220,6 +224,10 @@ shinyServer(function(input, output, session) {
       else if (xvariable == "Mortgage interest")          mortgage <- xval
       else if (xvariable == "Charitable contributions")    charity <- xval
       else if (xvariable == "Misc. repealed deductions")  repealed <- xval
+      else if (xvariable == "Wages") {} # already checked above
+      else{
+        cat(file=stderr(), paste0("##### Invalid X Variable=|", xvariable, "|\n"))
+      }
     }
     EITCname <- as.character(td["EITC"])
     SSMax    <- as.numeric(td["SSMax"])
@@ -457,6 +465,9 @@ shinyServer(function(input, output, session) {
     else if (taxname == "Final Bill"){
       name <- "Final Bill"
     }
+    else{
+      cat(file=stderr(), paste0("##### Invalid Tax Plan=|", taxname, "|\n"))
+    }
     name
   }
   # Convert name from ui.R to name in data files
@@ -487,43 +498,47 @@ shinyServer(function(input, output, session) {
     else if (xvariable == "Mortgage interest")           xval <- input$mortgage
     else if (xvariable == "Charitable contributions")    xval <- input$charity
     else if (xvariable == "Misc. repealed deductions")   xval <- input$repealed
+    else{
+      cat(file=stderr(), paste0("##### Invalid X Variable=|", xvariable, "|\n"))
+    }
     xval
   }
   observeEvent(input$examples, {
-    example <- substr(input$examples, 1, 9)
+    exwords <- strsplit(input$examples, " ")
+    example <- paste(exwords[[1]][1], exwords[[1]][2])
     #print(paste0("example=",example))
     clearTaxItems()
     clearDeductions()
     resetWageLimits()
     setFinalBill()
-    if (example == "Example 1"){
+    if (example == "Example H1"){
       setHouse2017()
       updateNumericInput(session, "wages", value = 59000)
       updateNumericInput(session, "children", value = 2)
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing", value = "Married filing jointly")
       Released <<- c("1582","400","-1182","")
-      Title <<- "Example 1 - Family of Four Making $59,000 Per Year"
+      Title <<- "Example H1 - Family of Four Making $59,000 Per Year"
     }
-    else if (example == "Example 2"){
+    else if (example == "Example H2"){
       setHouse2017()
       updateNumericInput(session, "wages", value = 30000)
       updateNumericInput(session, "children", value = 1)
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing", value = "Head of Household")
       Released <<- c("","< -1000","< -700","")
-      Title <<- "Example 2 - Single Mother Making $30,000 Per Year"
+      Title <<- "Example H2 - Single Mother Making $30,000 Per Year"
     }
-    else if (example == "Example 3"){
+    else if (example == "Example H3"){
       setHouse2017()
       updateNumericInput(session, "wages", value = 48000)
       updateNumericInput(session, "children", value = 0)
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing", value = "Single")
       Released <<- c("5173","3872","-1301","")
-      Title <<- "Example 3 - Firefighter Making $48,000 Per Year"
+      Title <<- "Example H3 - Firefighter Making $48,000 Per Year"
     }
-    else if (example == "Example 4"){
+    else if (example == "Example H4"){
       setHouse2017()
       updateNumericInput(session, "wages", value = 115000)
       updateNumericInput(session, "children", value = 0)
@@ -533,9 +548,9 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "property", value = 6900)
       updateNumericInput(session, "mortgage", value = 8400)
       Released <<- c("12180","11050","-1130","")
-      Title <<- "Example 4 - New Homeowners Making $115,000 Per Year in a High Tax State"
+      Title <<- "Example H4 - New Homeowners Making $115,000 Per Year in a High Tax State"
     }
-    else if (example == "Example 5"){
+    else if (example == "Example S1"){
       #setSenate2017_2018()
       updateNumericInput(session, "wages", value = 73000)
       updateNumericInput(session, "children", value = 2)
@@ -543,9 +558,9 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "filing", value = "Married filing jointly")
       #Released <<- c("3683","1499","-2184","nearly 60 percent")
       Released <<- c("","","-2059","")
-      Title <<- "Example 5 - Family of Four Earning $73,000 Per Year"
+      Title <<- "Example S1 - Family of Four Earning $73,000 Per Year"
     }
-    else if (example == "Example 6"){
+    else if (example == "Example S2"){
       #setSenate2017_2018()
       updateNumericInput(session, "wages", value = 41000)
       updateNumericInput(session, "children", value = 1)
@@ -553,143 +568,9 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "filing", value = "Head of Household")
       #Released <<- c("1865","488","-1377","nearly 75 percent")
       Released <<- c("","","","")
-      Title <<- "Example 6 - Single Parent with One Child Earning $41,000 Per Year"
+      Title <<- "Example S2 - Single Parent with One Child Earning $41,000 Per Year"
     }
-    else if (example == "Example A"){
-      updateNumericInput(session, "wages", value = 25000)
-      updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 0)
-      updateNumericInput(session, "filing",   value = "Single")
-      updateNumericInput(session, "property", value = 3000) # 300,000 * 0.01 (1% property tax)
-      updateNumericInput(session, "mortgage", value = 9000) # 300,000 * 0.8 * 0.0375 (20% down, 3.75% interest)
-      Released <<- c("","","","")
-      Title <<- "Example A - Single Person Making $25,000 Per Year with $12,000 in Deductions"
-    }
-    else if (example == "Example B"){
-      updateNumericInput(session, "wages", value = 50000)
-      updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 0)
-      updateNumericInput(session, "filing",   value = "Married filing jointly")
-      updateNumericInput(session, "property", value = 6000) # 600,000 * 0.01 (1% property tax)
-      updateNumericInput(session, "mortgage", value = 18000) # 600,000 * 0.8 * 0.0375 (20% down, 3.75% interest)
-      Released <<- c("","","","")
-      Title <<- "Example B - Married Couple Making $50,000 Per Year with $24,000 in Deductions"
-    }
-    else if (example == "Example C"){
-      #updateNumericInput(session, "wages", value = 30000)
-      updateNumericInput(session, "wages", value = 82000)
-      updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 0)
-      updateNumericInput(session, "filing",   value = "Single")
-      updateNumericInput(session, "property", value = 13000) # 1,000,000 * 0.013 (1.3% property tax)
-      #updateNumericInput(session, "mortgage", value = 2000) # assume house nearly paid off
-      updateNumericInput(session, "mortgage", value = 26000) # 750,000 * 0.034667 (3.4667%)
-      Released <<- c("","","","")
-      #Title <<- "Example C - Single Person Making $29,000 Per Year with $15,000 in Repealed Deductions"
-      #Title <<- "Example C - Single Person Making $30,000 Per Year with $12,000 in Itemized and $3,000 in Repealed Deductions"
-      Title <<- "Example C - Single Person Making $82,000 Per Year with $36,000 in Itemized and $3,000 in Repealed Deductions"
-    }
-    else if (example == "Example D"){
-      #updateNumericInput(session, "wages", value = 60000)
-      updateNumericInput(session, "wages", value = 128000)
-      updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 0)
-      updateNumericInput(session, "filing",   value = "Married filing jointly")
-      updateNumericInput(session, "property", value = 16000) # 1,000,000 * 0.016 (1.6% property tax)
-      #updateNumericInput(session, "mortgage", value = 14000) # assume house mostly paid off
-      updateNumericInput(session, "mortgage", value = 26000) # 750,000 * 0.034667 (3.4667%)
-      Released <<- c("","","","")
-      #Title <<- "Example D - Married Couple Making $57,000 Per Year with $30,000 in Repealed Deductions"
-      #Title <<- "Example D - Married Couple Making $60,000 Per Year with $24,000 in Itemized and $6,000 in Repealed Deductions"
-      Title <<- "Example D - Married Couple Making $128,000 Per Year with $36,000 in Itemized and $6,000 in Repealed Deductions"
-    }
-    else if (example == "Example E"){
-      #updateNumericInput(session, "wages", value = 480000)
-      updateNumericInput(session, "wages", value = 470000)
-      updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 0)
-      updateNumericInput(session, "filing",   value = "Single")
-      #updateNumericInput(session, "stateloc", value = -10)
-      updateNumericInput(session, "stateloc", value = -8)
-      updateNumericInput(session, "wagemin",  value = 10000)
-      updateNumericInput(session, "wagemax",  value = 2000000)
-      updateNumericInput(session, "wagestep", value = 10000)
-      updateNumericInput(session, "percentmax",value = 20)
-      Released <<- c("","","","")
-      #Title <<- "Example E - Single Person with 10 Percent of Income in State & Local Income/Sales Taxes"
-      #Title <<- "Example E - Single Person with 10 Percent of Income in State and Local Taxes"
-      Title <<- "Example E - Single Person with 8 Percent of Income in State and Local Taxes"
-    }
-    else if (example == "Example F"){
-      #updateNumericInput(session, "wages", value = 550000)
-      updateNumericInput(session, "wages", value = 2000000)
-      updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 0)
-      updateNumericInput(session, "filing",   value = "Married filing jointly")
-      #updateNumericInput(session, "stateloc", value = -10)
-      updateNumericInput(session, "stateloc", value = -8)
-      updateNumericInput(session, "wagemin",  value = 10000)
-      updateNumericInput(session, "wagemax",  value = 2000000)
-      updateNumericInput(session, "wagestep", value = 10000)
-      updateNumericInput(session, "percentmax",value = 20)
-      Released <<- c("","","","")
-      #Title <<- "Example F - Married Couple with 10 Percent of Income in State & Local Income/Sales Taxes"
-      #Title <<- "Example F - Married Couple with 10 Percent of Income in State and Local Taxes"
-      Title <<- "Example F - Married Couple with 8 Percent of Income in State and Local Taxes"
-    }
-    else if (example == "Example G"){
-      updateNumericInput(session, "wages", value = 25000)
-      updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 1)
-      updateNumericInput(session, "filing",   value = "Single")
-      Released <<- c("","","","")
-      Title <<- "Example G - Single Person Making $25,000 Per Year with 1 Non-Child Dependent"
-    }
-    else if (example == "Example H"){
-      updateNumericInput(session, "wages", value = 50000)
-      updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 2)
-      updateNumericInput(session, "filing",   value = "Married filing jointly")
-      Released <<- c("","","","")
-      Title <<- "Example H - Married Couple Making $50,000 Per Year with 2 Non-Child Dependents"
-    }
-    else if (example == "Example I"){
-      updateNumericInput(session, "wages", value = 25000)
-      updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 2)
-      updateNumericInput(session, "filing",   value = "Single")
-      Released <<- c("","","","")
-      Title <<- "Example I - Single Person Making $25,000 Per Year with 2 Non-Child Dependent"
-    }
-    else if (example == "Example J"){
-      updateNumericInput(session, "wages", value = 50000)
-      updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 4)
-      updateNumericInput(session, "filing",   value = "Married filing jointly")
-      Released <<- c("","","","")
-      Title <<- "Example J - Married Couple Making $50,000 Per Year with 4 Non-Child Dependents"
-    }
-    else if (example == "Example K"){
-      updateNumericInput(session, "wages", value = 36000)
-      updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 0)
-      updateNumericInput(session, "filing",   value = "Single")
-      updateNumericInput(session, "mortgage", value = 6000)
-      updateNumericInput(session, "charity",  value = 6000)
-      Released <<- c("","","","")
-      Title <<- "Example K - Single Person Making $36,000 Per Year with $12,000 in Deductions"
-    }
-    else if (example == "Example L"){
-      updateNumericInput(session, "wages", value = 72000)
-      updateNumericInput(session, "children", value = 0)
-      updateNumericInput(session, "otherdep", value = 0)
-      updateNumericInput(session, "filing",   value = "Married filing jointly")
-      updateNumericInput(session, "mortgage", value = 12000)
-      updateNumericInput(session, "charity",  value = 12000)
-      Released <<- c("","","","")
-      Title <<- "Example L - Married Couple Making $72,000 Per Year with $24,000 in Deductions"
-    }
-    else if (example == "Example M"){
+    else if (example == "Example T1"){
       updateNumericInput(session, "wages", value = 30000)
       updateNumericInput(session, "highwage", value = 30000)
       updateNumericInput(session, "deferred", value = 2600)
@@ -697,9 +578,9 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Single")
       Released <<- c("4331","3953","-379","-9")
-      Title <<- "Example M - Single, $30,000, no kids"
+      Title <<- "Example T1 - Single, $30,000, no kids"
     }
-    else if (example == "Example N"){
+    else if (example == "Example T2"){
       updateNumericInput(session, "wages", value = 52000)
       updateNumericInput(session, "highwage", value = 52000)
       updateNumericInput(session, "deferred", value = 4000)
@@ -707,9 +588,9 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Head of Household")
       Released <<- c("5198","3306","-1892","-36")
-      Title <<- "Example N - Single, $52,000, 2 kids"
+      Title <<- "Example T2 - Single, $52,000, 2 kids"
     }
-    else if (example == "Example O"){
+    else if (example == "Example T3"){
       updateNumericInput(session, "wages", value = 75000)
       updateNumericInput(session, "highwage", value = 75000)
       updateNumericInput(session, "deferred", value = 5500)
@@ -717,9 +598,9 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Single")
       Released <<- c("16104","14327","-1777","-11")
-      Title <<- "Example O - Single, $75,000, no kids"
+      Title <<- "Example T3 - Single, $75,000, no kids"
     }
-    else if (example == "Example P"){
+    else if (example == "Example T4"){
       updateNumericInput(session, "wages", value = 85000)
       updateNumericInput(session, "highwage", value = 85000)
       updateNumericInput(session, "deferred", value = 5500)
@@ -727,9 +608,9 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "otherdep", value = 0)
       updateNumericInput(session, "filing",   value = "Married filing jointly")
       Released <<- c("11035","8782","-2254","-20")
-      Title <<- "Example P - Married, $85,000, 2 kids"
+      Title <<- "Example T4 - Married, $85,000, 2 kids"
     }
-    else if (example == "Example Q"){
+    else if (example == "Example T5"){
       updateNumericInput(session, "wages", value = 165000)
       updateNumericInput(session, "highwage", value = -57.57575758) # 100*95000/165000
       updateNumericInput(session, "deferred", value = -12.12121212) # 100*20000/165000
@@ -741,9 +622,9 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "mortgage", value = -5.76969697) # 100*9520/165000
       updateNumericInput(session, "charity",  value = -2.5)
       Released <<- c("29345","27122","-2224","-8")
-      Title <<- "Example Q - Married, $165,000, 2 kids, itemizing"
+      Title <<- "Example T5 - Married, $165,000, 2 kids, itemizing"
     }
-    else if (example == "Example R"){
+    else if (example == "Example T6"){
       updateNumericInput(session, "wages", value = 325000)
       updateNumericInput(session, "highwage", value = -76.92307692) # 100*250000/325000
       updateNumericInput(session, "deferred", value = -11.38461538) # 100*37000/325000
@@ -757,7 +638,144 @@ shinyServer(function(input, output, session) {
       #updateNumericInput(session, "wagemin",  value = 10000)
       updateNumericInput(session, "wagemax",  value = 400000)
       Released <<- c("71629","64456","-7173","-10")
-      Title <<- "Example R - Married, $325,000, 3 kids, itemizing"
+      Title <<- "Example T6 - Married, $325,000, 3 kids, itemizing"
+    }
+    else if (example == "Example X1"){
+      updateNumericInput(session, "wages", value = 25000)
+      updateNumericInput(session, "children", value = 0)
+      updateNumericInput(session, "otherdep", value = 0)
+      updateNumericInput(session, "filing",   value = "Single")
+      updateNumericInput(session, "property", value = 3000) # 300,000 * 0.01 (1% property tax)
+      updateNumericInput(session, "mortgage", value = 9000) # 300,000 * 0.8 * 0.0375 (20% down, 3.75% interest)
+      Released <<- c("","","","")
+      Title <<- "Example X1 - Single Person Making $25,000 Per Year with $12,000 in Deductions"
+    }
+    else if (example == "Example X2"){
+      updateNumericInput(session, "wages", value = 50000)
+      updateNumericInput(session, "children", value = 0)
+      updateNumericInput(session, "otherdep", value = 0)
+      updateNumericInput(session, "filing",   value = "Married filing jointly")
+      updateNumericInput(session, "property", value = 6000) # 600,000 * 0.01 (1% property tax)
+      updateNumericInput(session, "mortgage", value = 18000) # 600,000 * 0.8 * 0.0375 (20% down, 3.75% interest)
+      Released <<- c("","","","")
+      Title <<- "Example X2 - Married Couple Making $50,000 Per Year with $24,000 in Deductions"
+    }
+    else if (example == "Example X3"){
+      #updateNumericInput(session, "wages", value = 30000)
+      updateNumericInput(session, "wages", value = 82000)
+      updateNumericInput(session, "children", value = 0)
+      updateNumericInput(session, "otherdep", value = 0)
+      updateNumericInput(session, "filing",   value = "Single")
+      updateNumericInput(session, "property", value = 13000) # 1,000,000 * 0.013 (1.3% property tax)
+      #updateNumericInput(session, "mortgage", value = 2000) # assume house nearly paid off
+      updateNumericInput(session, "mortgage", value = 26000) # 750,000 * 0.034667 (3.4667%)
+      Released <<- c("","","","")
+      #Title <<- "Example X3 - Single Person Making $29,000 Per Year with $15,000 in Repealed Deductions"
+      #Title <<- "Example X3 - Single Person Making $30,000 Per Year with $12,000 in Itemized and $3,000 in Repealed Deductions"
+      Title <<- "Example X3 - Single Person Making $82,000 Per Year with $36,000 in Itemized and $3,000 in Repealed Deductions"
+    }
+    else if (example == "Example X4"){
+      #updateNumericInput(session, "wages", value = 60000)
+      updateNumericInput(session, "wages", value = 128000)
+      updateNumericInput(session, "children", value = 0)
+      updateNumericInput(session, "otherdep", value = 0)
+      updateNumericInput(session, "filing",   value = "Married filing jointly")
+      updateNumericInput(session, "property", value = 16000) # 1,000,000 * 0.016 (1.6% property tax)
+      #updateNumericInput(session, "mortgage", value = 14000) # assume house mostly paid off
+      updateNumericInput(session, "mortgage", value = 26000) # 750,000 * 0.034667 (3.4667%)
+      Released <<- c("","","","")
+      #Title <<- "Example X4 - Married Couple Making $57,000 Per Year with $30,000 in Repealed Deductions"
+      #Title <<- "Example X4 - Married Couple Making $60,000 Per Year with $24,000 in Itemized and $6,000 in Repealed Deductions"
+      Title <<- "Example X4 - Married Couple Making $128,000 Per Year with $36,000 in Itemized and $6,000 in Repealed Deductions"
+    }
+    else if (example == "Example X5"){
+      #updateNumericInput(session, "wages", value = 480000)
+      updateNumericInput(session, "wages", value = 470000)
+      updateNumericInput(session, "children", value = 0)
+      updateNumericInput(session, "otherdep", value = 0)
+      updateNumericInput(session, "filing",   value = "Single")
+      #updateNumericInput(session, "stateloc", value = -10)
+      updateNumericInput(session, "stateloc", value = -8)
+      updateNumericInput(session, "wagemin",  value = 10000)
+      updateNumericInput(session, "wagemax",  value = 2000000)
+      updateNumericInput(session, "wagestep", value = 10000)
+      updateNumericInput(session, "percentmax",value = 20)
+      Released <<- c("","","","")
+      #Title <<- "Example X5 - Single Person with 10 Percent of Income in State & Local Income/Sales Taxes"
+      #Title <<- "Example X5 - Single Person with 10 Percent of Income in State and Local Taxes"
+      Title <<- "Example X5 - Single Person with 8 Percent of Income in State and Local Taxes"
+    }
+    else if (example == "Example X6"){
+      #updateNumericInput(session, "wages", value = 550000)
+      updateNumericInput(session, "wages", value = 2000000)
+      updateNumericInput(session, "children", value = 0)
+      updateNumericInput(session, "otherdep", value = 0)
+      updateNumericInput(session, "filing",   value = "Married filing jointly")
+      #updateNumericInput(session, "stateloc", value = -10)
+      updateNumericInput(session, "stateloc", value = -8)
+      updateNumericInput(session, "wagemin",  value = 10000)
+      updateNumericInput(session, "wagemax",  value = 2000000)
+      updateNumericInput(session, "wagestep", value = 10000)
+      updateNumericInput(session, "percentmax",value = 20)
+      Released <<- c("","","","")
+      #Title <<- "Example X6 - Married Couple with 10 Percent of Income in State & Local Income/Sales Taxes"
+      #Title <<- "Example X6 - Married Couple with 10 Percent of Income in State and Local Taxes"
+      Title <<- "Example X6 - Married Couple with 8 Percent of Income in State and Local Taxes"
+    }
+    else if (example == "Example X7"){
+      updateNumericInput(session, "wages", value = 25000)
+      updateNumericInput(session, "children", value = 0)
+      updateNumericInput(session, "otherdep", value = 1)
+      updateNumericInput(session, "filing",   value = "Single")
+      Released <<- c("","","","")
+      Title <<- "Example X7 - Single Person Making $25,000 Per Year with 1 Non-Child Dependent"
+    }
+    else if (example == "Example X8"){
+      updateNumericInput(session, "wages", value = 50000)
+      updateNumericInput(session, "children", value = 0)
+      updateNumericInput(session, "otherdep", value = 2)
+      updateNumericInput(session, "filing",   value = "Married filing jointly")
+      Released <<- c("","","","")
+      Title <<- "Example X8 - Married Couple Making $50,000 Per Year with 2 Non-Child Dependents"
+    }
+    else if (example == "Example X9"){
+      updateNumericInput(session, "wages", value = 25000)
+      updateNumericInput(session, "children", value = 0)
+      updateNumericInput(session, "otherdep", value = 2)
+      updateNumericInput(session, "filing",   value = "Single")
+      Released <<- c("","","","")
+      Title <<- "Example X9 - Single Person Making $25,000 Per Year with 2 Non-Child Dependent"
+    }
+    else if (example == "Example X10"){
+      updateNumericInput(session, "wages", value = 50000)
+      updateNumericInput(session, "children", value = 0)
+      updateNumericInput(session, "otherdep", value = 4)
+      updateNumericInput(session, "filing",   value = "Married filing jointly")
+      Released <<- c("","","","")
+      Title <<- "Example X10 - Married Couple Making $50,000 Per Year with 4 Non-Child Dependents"
+    }
+    else if (example == "Example X11"){
+      updateNumericInput(session, "wages", value = 36000)
+      updateNumericInput(session, "children", value = 0)
+      updateNumericInput(session, "otherdep", value = 0)
+      updateNumericInput(session, "filing",   value = "Single")
+      updateNumericInput(session, "mortgage", value = 6000)
+      updateNumericInput(session, "charity",  value = 6000)
+      Released <<- c("","","","")
+      Title <<- "Example X11 - Single Person Making $36,000 Per Year with $12,000 in Deductions"
+    }
+    else if (example == "Example X12"){
+      updateNumericInput(session, "wages", value = 72000)
+      updateNumericInput(session, "children", value = 0)
+      updateNumericInput(session, "otherdep", value = 0)
+      updateNumericInput(session, "filing",   value = "Married filing jointly")
+      updateNumericInput(session, "mortgage", value = 12000)
+      updateNumericInput(session, "charity",  value = 12000)
+      Released <<- c("","","","")
+      Title <<- "Example X12 - Married Couple Making $72,000 Per Year with $24,000 in Deductions"
+    }
+    else{
+      cat(file=stderr(), paste0("##### Invalid Example=|", example, "|\n"))
     }
     TitleDefault <<- Title
   })
