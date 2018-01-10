@@ -403,25 +403,25 @@ shinyServer(function(input, output, session) {
   }
   setHouse2017 <- function(){
     if (!input$lockplans){
-      updateNumericInput(session, "taxname1",  value = "Current 2017")
+      updateNumericInput(session, "taxname1",  value = "Prior 2017")
       updateNumericInput(session, "taxname2",  value = "House 2017")
     }
   }
   setSenate2018 <- function(){
     if (!input$lockplans){
-      updateNumericInput(session, "taxname1",  value = "Current 2018")
+      updateNumericInput(session, "taxname1",  value = "Prior 2018")
       updateNumericInput(session, "taxname2",  value = "Senate 2018")
     }
   }
   setSenate2017_2018 <- function(){
     if (!input$lockplans){
-      updateNumericInput(session, "taxname1",  value = "Current 2017")
+      updateNumericInput(session, "taxname1",  value = "Prior 2017")
       updateNumericInput(session, "taxname2",  value = "Senate 2018")
     }
   }
   setFinalBill <- function(){
     if (!input$lockplans){
-      updateNumericInput(session, "taxname1",  value = "Current 2018")
+      updateNumericInput(session, "taxname1",  value = "Prior 2018")
       updateNumericInput(session, "taxname2",  value = "Final Bill")
     }
   }
@@ -429,10 +429,10 @@ shinyServer(function(input, output, session) {
   getShortTaxName <- function(taxname){
     name <- ""
     #name <- taxname #DEBUG
-    if (taxname == "Current 2017"){
+    if (taxname == "Prior 2017"){
       name <- "2017"
     }
-    else if (taxname == "Current 2018"){
+    else if (taxname == "Prior 2018"){
       name <- "2018"
     }
     else if (taxname == "House 2017"){
