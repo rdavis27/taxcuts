@@ -1,0 +1,173 @@
+Usage
+=====
+
+### 1.Purpose ###
+
+This application looks at the Tax Cuts and Jobs Act of 2017 for two main purposes.  First of all, it allows a taxpayer to estimate the effect that this tax bill will have on their taxes.  It looks chiefly at those areas that were changed by the bill but are not involved with business.  As such, it looks at the effect of the changes in the following areas:
+
+```
+1. Changes in the brackets and tax rates
+2. Elimination of the Personal Exemption
+3. Increase in the Standard Deduction
+4. Increase in the Child Tax Credit
+5. New Dependent Tax Credit
+6. $10,000 limit on state tax deductions
+6. Elimination of various deductions
+```
+
+The application will also calculate the affect of the Earned Income Tax Credit (EITC) on taxes although this has not changed.  However, it does not look at numerous other items that have not changed, such as the following:
+
+```
+1. Interest and Dividends
+2. Capital Gains
+3. Business income
+4. Alternate Minimum Tax
+```
+
+Also, it doesn't look at business items that have changed such as the handling of see-through income.
+
+The second main purpose of this application is to verify a number of taxpayer examples that have been issued by various organizations, including the Senate and the House of Representatives.  However, the application expands on these examples by looking at them across a selected span of income levels.  Alternately, the user can look at the example's specific income level across all values of selected deductions.  This serves to give a much wider view of the effect of the tax plan than do the specific examples.
+
+### 2. Tax Plans to Compare panel ###
+
+#### Tax Plan 1 ####
+
+This is the first tax plan to compare and includes the prior 2017 and 2018 tax law, various versions of the House and Senate bills, and the final Conference bill.  The default is the prior 2018 law.
+
+#### Tax Plan 2 ####
+
+This is the second tax plan to compare and includes the prior 2017 and 2018 tax law, various versions of the House and Senate bills, and the final Conference bill. The default is the final 2018 law.
+
+#### Tax Examples ####
+
+These include taxpayer examples that were put out by the House of Representatives, the Senate, and the Tax Foundation.  For those examples, the Comparison of Taxes at the top of the Tax Cuts panels shows the taxes calculated by the application and any calculations that were released by the organizations that put out the examples.  In general, both sets of calculations were very close, if not identical.
+
+#### Tax Plan 1 Adjustment ####
+
+This attempts to isolate the effect of certain changes in the tax plan.  This is done by making Tax Plan 1 identical to Tax Plan 2 and then changing just those items that are selected.  The default is "No adjustment" in which case Tax Plan 1 will include all provisions of the specified tax plan.
+
+#### X Variable ####
+
+This specifies the variable whose value will vary along the x-axis.  The default is Wages.
+
+### 2. General Items panel ###
+
+#### Filing Status ####
+
+This can be "Single", "Head of Household", or "Married filing jointly"."
+
+#### Number of children under age 17 ####
+
+This is the number of children who qualify for the Child Tax Credit.
+
+#### Number of other dependents ####
+
+This is the number of non-child dependents who qualify for the Dependent Credit.
+
+#### Wages, salaries, tips, etc. ####
+
+The application calculates adjusted gross income to be this item minus the next item (tax-deferred retirement contributions).  Hence, other components of adjusted gross income can be added to more accurately calculate the resulting tax.
+
+#### Tax-deferred retirement contributions ####
+
+This was added to match the Tax Foundation examples at https://files.taxfoundation.org/20171219111457/FINAL-TCJA-Filers-Chart.png .  It is subtracted from the prior item (Wages, salaries, tips, etc.) to calculated the adjusted gross income.  The default is 0.
+
+#### Highest wages (0 to exclude payroll taxes) ####
+
+This added to match the Tax Foundation examples.  For two-earner couples, it equals the higher wage.  The default is 0 and indicates that payroll taxes are not to be included.
+
+### 3. Deductions panel (+dollars or -percent) ###
+
+#### Medical and dental expenses (eligible amount) ####
+
+This is the portion of medical expenses that are deductible.  This varies between 7.5 and 10 percent on plans that allow medical deductions.  Because of its complexity, the deductible portion is not calculated by the application and must be entered.
+
+#### State & local income or sales taxes ####
+
+This includes state & local income OR state & local sales taxes (not both).
+
+#### Real estate property taxes ####
+
+This includes real estate taxes.
+
+#### Mortgage interest ####
+
+This includes mortgage interest.  In the final bill, only interest on the first $750,000 of debt is allowed.  However, this application will always allow all interest listed here.
+
+#### Charitable contributions ####
+
+This includes all allowable charitable contributions.
+
+#### Misc. repealed deductions ####
+
+This includes any miscellaneous deductions that have been repealed on the House, Senate, or Final plans.
+
+### 4. Scales panel ###
+
+#### Wage Minimum ####
+
+This is the minimum wage for those plots that have wage on the x-axis.
+
+#### Wage Maximum ####
+
+This is the maximum wage for those plots that have wage on the x-axis.
+
+#### Wage Step ####
+
+This is the increment wage between points for those plots that have wage on the x-axis.
+
+#### Percent Minimum ####
+
+This is the minimum percent for the y-axis on the Tax Cut (percent) and Change in After-Tax Income (percent) plots.
+
+#### Percent Maximum ####
+
+This is the maximum percent for the y-axis on the Tax Cut (percent) and Change in After-Tax Income (percent) plots.
+
+#### Decimal places ####
+
+This is the number of decimal places to show on the Comparison of Taxes section at the top of the Tax Cuts tab and on the Calculation of Taxes tab.
+
+#### Comma separator ####
+
+This indicates whether to include comma separators in the numbers in the Comparison of Taxes section at the top of the Tax Cuts tab and in the Calculation of Taxes tab.
+
+#### Lock Tax Plans ####
+
+This locks the Tax Plans so that they don't automatically change when the Tax Example is changed.  The Tax Plans can still be changed manually in this case.
+
+#### Title Options ####
+
+The options are "Use default title", "Generate title", "Generate title and prepend title below", and "Use title below".  The "Generate title..." options attempt to generate a reasonable title based on the selections.  The default is "Use default title".
+
+#### Title ####
+
+This allows the user to specify all or part of the title.
+
+#### Append Tax Name ####
+
+This specifies that a shortened identifier for Tax Plan 2 is to be appended to the title.
+
+### 5. Tax Cuts tab ###
+
+This tab includes a Comparison of Taxes between Tax Plan 1 and Tax Plan 2, a plot showing the tax cut in dollars, a plot showing the tax cut in percent, and a plot showing the change in after-tax income in percent.
+
+### 6. Effective Taxes tab ###
+
+This tab shows a plot of the effective tax rates of Tax Plan 1 and Tax Plan 2.
+
+### 7. Comparison of Plans tab ###
+
+This tab compares all of the parameters for the two selected tax plans.  This should include all parameters specific to the plan and should therefore indicate whether a tax provision is being accounted for in the calculations.
+
+### 8. Calculation of Taxes tab ###
+
+This tab shows the actual calculation of the taxes shown in the Comparison of Taxes section on the Tax Cuts tab.  This helps to verify that all of the desired provisions are included and calculated correctly.  The calculations for the "Tax on taxable income" are not specifically shown but can be easily derived from the brackets shown at the top of the Comparison of Plans tab.
+
+### 9. Usage tab ###
+
+This tab contains this usage description.
+
+### 10. Questions or suggestions ###
+
+For questions or suggestions regarding this application, I can be reached at "admin at econdataus dot com".

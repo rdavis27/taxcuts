@@ -112,9 +112,9 @@ shinyUI(fluidPage(
       tabsetPanel(
         tabPanel("Tax Cuts",
           htmlOutput("taxPrint"),
-          HTML("<h4><b>Taxcut (dollars)</b></h4>"),
+          HTML("<h4><b>Tax Cut (dollars)</b></h4>"),
           plotOutput("taxPlotDollars"),
-          HTML("<h4><b>Taxcut (percent)</b></h4>"),
+          HTML("<h4><b>Tax Cut (percent)</b></h4>"),
           plotOutput("taxPlot"),
           HTML("<h4><b>Change in After-Tax Income (percent)</b></h4>"),
           plotOutput("incomePlot")
@@ -128,6 +128,10 @@ shinyUI(fluidPage(
         ),
         tabPanel("Calculation of Taxes",
                  htmlOutput("taxCalcPrint")
+        ),
+        tabPanel("Usage",
+                 width = 10,
+                 includeMarkdown("taxcuts_usage.Rmd")
         )
       )
     )
